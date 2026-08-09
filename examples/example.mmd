@@ -1,0 +1,31 @@
+classDiagram
+
+class Order {
+  +id: string
+  +total() number
+}
+
+class Customer {
+  +name: string
+}
+
+class OrderStatus {
+  <<enumeration>>
+  Draft
+  Paid
+  Shipped
+}
+
+Customer "1" --> "*" Order : places
+Order --> OrderStatus : status
+
+%% @note: x=240 y=-19 w=170 h=56
+note for Order "Cleared nightly"
+
+classDef pine fill:#779c8c,stroke:#275340
+class Order pine
+class Customer pine
+
+%% @spatial:Order x=240 y=60 w=170 h=90
+%% @spatial:Customer x=20 y=60 w=150 h=70
+%% @spatial:OrderStatus x=250 y=210 w=150 h=110
