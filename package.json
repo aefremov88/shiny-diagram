@@ -4,8 +4,7 @@
   "description": "Visual editor for Mermaid class diagrams with write-back to source. Built for AI-human co-creation.",
   "version": "0.0.1",
   "license": "MIT",
-  "publisher": "PLACEHOLDER",
-  "// TODO": "Replace publisher with the real Visual Studio Marketplace publisher ID.",
+  "publisher": "anton-efremov",
   "repository": {
     "type": "git",
     "url": "https://github.com/anton-efremov/shiny-diagram"
