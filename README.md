@@ -2,7 +2,7 @@
 
 **Visual editor for Mermaid class diagrams. Edit the picture — Shiny writes the source.**
 
-![Shiny Diagram editor](docs/media/hero.png)
+![Shiny Diagram editor](https://raw.githubusercontent.com/anton-efremov/shiny-diagram/main/docs/media/hero.png)
 
 ## What it does
 
