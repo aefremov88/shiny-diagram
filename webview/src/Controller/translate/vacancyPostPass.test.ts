@@ -110,6 +110,8 @@ function provenance(): ProvenanceIndex {
       self: span(0, 0, 4, 0),
       header: span(0, 0, 0, 12),
       body: span(1, 0, 4, 0),
+      direction: null,
+      configDirectives: [],
     },
     classes: new Map([
       [

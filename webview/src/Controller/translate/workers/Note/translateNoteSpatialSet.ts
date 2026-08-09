@@ -5,12 +5,7 @@
 import type { EditorCommandOf } from "../../../../View/commands";
 import type { DiagramGraph } from "../../../model/diagramGraph";
 import type { ProvenanceIndex } from "../../../model/provenanceIndex";
-import {
-  STATEMENT_KINDS,
-  anchorBeforeKindList,
-  anchorBlockOpening,
-  asSameKind,
-} from "../../anchors/statementAnchors";
+import { anchorAboveStatement } from "../../anchors/statementAnchors";
 import { composeNoteAnnotation } from "../../syntax/noteSyntax";
 import type { WriteIntent } from "../../writeIntent";
 
@@ -26,22 +21,19 @@ import type { WriteIntent } from "../../writeIntent";
  *       - in place
  *    4. spatial coordinate **value** for h
  *       - in place
- * b. otherwise → note annotation **statement**, in **diagram body** (anchored at first match)
- *    - immediately before the bound note statement
- *    - at block opening
+ *
+ * b. otherwise → note annotation **statement**, in **diagram body**
+ *    - directly above the bound note statement
  */
 export function translateNoteSpatialSet(
   command: EditorCommandOf<"note.spatial.set">,
   graph: DiagramGraph,
   provenance: ProvenanceIndex
 ): WriteIntent[] {
+  void graph;
   if (!provenance.noteAnnotations.has(command.noteId)) {
-    const note = provenance.notes.get(command.noteId);
-    if (!note) throw new Error(`Missing provenance for note ${command.noteId}`);
-    const diagram = { kind: "diagram" as const };
-    const anchor =
-      asSameKind(anchorBeforeKindList(graph, provenance, diagram, note.self, STATEMENT_KINDS)) ??
-      anchorBlockOpening(diagram);
+    const anchor = anchorAboveStatement(provenance, { kind: "note", noteId: command.noteId });
+    if (!anchor) throw new Error(`Missing provenance for note ${command.noteId}`);
     return [{ kind: "insertStatement", payload: composeNoteAnnotation(command.spatial), anchor }];
   }
   return [

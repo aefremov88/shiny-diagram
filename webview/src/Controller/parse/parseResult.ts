@@ -27,6 +27,10 @@ export type EditorDiagnostic = {
  */
 export type ParseResult =
   | {
+      readonly status: "unsupportedDiagramType";
+      readonly diagramType: string;
+    }
+  | {
       readonly status: "ready";
       readonly graph: DiagramGraph;
       readonly provenance: ProvenanceIndex;

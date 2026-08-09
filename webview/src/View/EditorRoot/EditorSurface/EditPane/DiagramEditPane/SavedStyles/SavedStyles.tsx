@@ -7,9 +7,9 @@ import type { ReactElement } from "react";
 import type { StyleDefId } from "../../../../../../shared/ids";
 import type { SelectionState } from "../../../../../state/editorStates";
 import type { DeclaredStyleView } from "../../../../../views/schema";
-import Button from "../../../../../../ui/chrome/primitives/Button/Button";
-import ControlGroup from "../../../../../../ui/chrome/templates/ControlGroup/ControlGroup";
-import PaneSection from "../../../../../../ui/chrome/templates/PaneSection/PaneSection";
+import Button from "../../../../../../Ui/chrome/primitives/Button/Button";
+import ControlGroup from "../../../../../../Ui/chrome/templates/ControlGroup/ControlGroup";
+import PaneSection from "../../../../../../Ui/chrome/templates/PaneSection/PaneSection";
 import StyleChip from "./StyleChip/StyleChip";
 
 type SavedStylesProps = {

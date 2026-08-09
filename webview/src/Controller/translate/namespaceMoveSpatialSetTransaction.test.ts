@@ -106,7 +106,13 @@ function spatial(x: number, y: number, width: number, height: number): SpatialAt
 
 function provenanceWithSpatial(classIds: readonly ClassNode["id"][]): ProvenanceIndex {
   return {
-    diagram: { self: span(), header: span(), body: span() },
+    diagram: {
+      self: span(),
+      header: span(),
+      body: span(),
+      direction: null,
+      configDirectives: [],
+    },
     classes: new Map(),
     namespaces: new Map(),
     namespaceStyles: new Map(),

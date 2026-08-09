@@ -3,7 +3,7 @@
  */
 
 import type { ReactElement } from "react";
-import AttachmentEdge from "../../../../../../../ui/canvas/composites/AttachmentEdge/AttachmentEdge";
+import AttachmentEdge from "../../../../../../../Ui/canvas/composites/AttachmentEdge/AttachmentEdge";
 
 type NoteAttachmentEdgeProps = {
   readonly edgePath: string;

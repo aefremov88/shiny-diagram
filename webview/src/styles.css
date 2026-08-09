@@ -1,6 +1,6 @@
 @import "@xyflow/react/dist/style.css";
-@import "./ui/chrome/tokens.css";
-@import "./ui/canvas/tokens.css";
+@import "./Ui/chrome/tokens.css";
+@import "./Ui/canvas/tokens.css";
 
 /* --- Base/default styles --- */
 

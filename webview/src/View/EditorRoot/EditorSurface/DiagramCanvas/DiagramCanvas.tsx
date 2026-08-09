@@ -22,8 +22,9 @@ import { useInteractions } from "./useInteractions";
 import { useStateReconciliation } from "./useStateReconciliation";
 import ReactFlowCanvasAdapter from "./ReactFlowCanvasAdapter/ReactFlowCanvasAdapter";
 import ReactFlowProviderAdapter from "./ReactFlowProviderAdapter/ReactFlowProviderAdapter";
-import EmptyStateMessage from "../../../../ui/canvas/primitives/EmptyStateMessage/EmptyStateMessage";
-import CanvasViewportFrame from "../../../../ui/canvas/templates/CanvasViewportFrame/CanvasViewportFrame";
+import EmptyStateMessage from "../../../../Ui/canvas/primitives/EmptyStateMessage/EmptyStateMessage";
+import CanvasViewportFrame from "../../../../Ui/canvas/templates/CanvasViewportFrame/CanvasViewportFrame";
+import type { ExportPngResult } from "../../../../shared/exportPng";
 
 type DiagramCanvasProps = {
   readonly view: DiagramView;
@@ -32,6 +33,8 @@ type DiagramCanvasProps = {
   readonly nodePlacementState: NodePlacementState;
   readonly noteAttachState: NoteAttachState;
   readonly namespaceGestureState: NamespaceGestureState;
+  readonly exportRequest: number;
+  readonly onExportComplete: (result: ExportPngResult) => void;
   readonly onClassSelect: (classId: ClassId, additive: boolean) => void;
   readonly onClassMoved: (classId: ClassId) => void;
   readonly onNoteSelect: (noteId: NoteId) => void;
@@ -70,6 +73,8 @@ export default function DiagramCanvas({
   nodePlacementState,
   noteAttachState,
   namespaceGestureState,
+  exportRequest,
+  onExportComplete,
   onClassSelect,
   onClassMoved,
   onNoteSelect,
@@ -130,6 +135,8 @@ export default function DiagramCanvas({
           nodePlacementState={nodePlacementState}
           noteAttachState={noteAttachState}
           namespaceGestureState={namespaceGestureState}
+          exportRequest={exportRequest}
+          onExportComplete={onExportComplete}
           classBoxPlacementState={classBoxPlacementState}
           noteBoxPlacementState={noteBoxPlacementState}
           onClassBoxPlacementChange={onClassBoxPlacementChange}

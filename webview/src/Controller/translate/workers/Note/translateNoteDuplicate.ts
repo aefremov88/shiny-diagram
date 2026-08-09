@@ -8,7 +8,7 @@ import type { NoteId } from "../../../../shared/ids";
 import type { DiagramGraph } from "../../../model/diagramGraph";
 import { composeNoteId } from "../../../model/noteIdentity";
 import type { ProvenanceIndex } from "../../../model/provenanceIndex";
-import { anchorExactStatement, asSameKind } from "../../anchors/statementAnchors";
+import { anchorAfterExactStatement, asSameKind } from "../../anchors/statementAnchors";
 import { insertNotePair } from "../../placement/notePairPlacement";
 import type { TranslateContext } from "../../translateContext";
 import type { StatementAnchor, WriteIntent } from "../../writeIntent";
@@ -55,7 +55,7 @@ function offsetSpatial(spatial: SpatialAttachment): SpatialAttachment {
 }
 
 function requireExactAnchor(provenance: ProvenanceIndex, noteId: NoteId): StatementAnchor {
-  const anchor = asSameKind(anchorExactStatement(provenance, { kind: "note", noteId }));
+  const anchor = asSameKind(anchorAfterExactStatement(provenance, { kind: "note", noteId }));
   if (!anchor) throw new Error(`Missing provenance for note ${noteId} duplicate anchor`);
   return anchor;
 }

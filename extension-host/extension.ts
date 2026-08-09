@@ -30,6 +30,9 @@ export function activate(context: vscode.ExtensionContext): void {
       });
     }
   );
+  const exportPngCommand = vscode.commands.registerCommand("shiny.exportPng", () => {
+    provider.requestPngExport();
+  });
 
-  context.subscriptions.push(providerRegistration, openDiagramCommand);
+  context.subscriptions.push(providerRegistration, openDiagramCommand, exportPngCommand);
 }

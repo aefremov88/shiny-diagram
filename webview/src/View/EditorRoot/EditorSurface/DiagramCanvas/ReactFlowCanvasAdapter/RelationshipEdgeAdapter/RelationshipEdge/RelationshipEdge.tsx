@@ -13,11 +13,11 @@ import {
 } from "../../../../../../config/editorUiConfig";
 import type { RelationshipView } from "../../../../../../views/schema";
 import { endpointGlyphs } from "../../RelationshipMarker/icons";
-import EditableEdgeText from "../../../../../../../ui/canvas/composites/EditableEdgeText/EditableEdgeText";
-import EdgeEndpointHandle from "../../../../../../../ui/canvas/primitives/EdgeEndpointHandle/EdgeEndpointHandle";
-import EdgeEndpointMarker from "../../../../../../../ui/canvas/primitives/EdgeEndpointMarker/EdgeEndpointMarker";
-import EdgeHitPath from "../../../../../../../ui/canvas/primitives/EdgeHitPath/EdgeHitPath";
-import EdgePath from "../../../../../../../ui/canvas/primitives/EdgePath/EdgePath";
+import EditableEdgeText from "../../../../../../../Ui/canvas/composites/EditableEdgeText/EditableEdgeText";
+import EdgeEndpointHandle from "../../../../../../../Ui/canvas/primitives/EdgeEndpointHandle/EdgeEndpointHandle";
+import EdgeEndpointMarker from "../../../../../../../Ui/canvas/primitives/EdgeEndpointMarker/EdgeEndpointMarker";
+import EdgeHitPath from "../../../../../../../Ui/canvas/primitives/EdgeHitPath/EdgeHitPath";
+import EdgePath from "../../../../../../../Ui/canvas/primitives/EdgePath/EdgePath";
 import type { EditTarget } from "./state";
 import { useInteractions } from "./useInteractions";
 

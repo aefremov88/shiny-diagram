@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { format, resolveConfig } from "prettier";
 
 export const name = "ui-catalog";
-export const outputPath = "webview/src/ui/UI-CATALOG.md";
+export const outputPath = "webview/src/Ui/UI-CATALOG.md";
 
 const modulePath = "scripts/planes/ui-catalog.mjs";
 const fragmentPath = fileURLToPath(new URL("./fragments/ui-catalog-preamble.md", import.meta.url));
@@ -30,7 +30,7 @@ export async function generate({ repoRoot }) {
 }
 
 export async function collectComponents({ repoRoot }) {
-  const uiRoot = path.join(repoRoot, "webview", "src", "ui");
+  const uiRoot = path.join(repoRoot, "webview", "src", "Ui");
   const components = [];
 
   for (const wing of wings) {
@@ -60,7 +60,7 @@ export async function collectComponents({ repoRoot }) {
           name: componentName,
           wing,
           tier,
-          filePath: `webview/src/ui/${relativeSourcePath}`,
+          filePath: `webview/src/Ui/${relativeSourcePath}`,
           sourcePath: `./${relativeSourcePath}`,
           annotation,
           documentation,

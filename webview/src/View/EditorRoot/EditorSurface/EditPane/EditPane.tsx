@@ -20,8 +20,8 @@ import {
   EDIT_PANE_WIDTH,
 } from "../../../config/editorUiConfig";
 import { CLASS_STYLE_CONSTANTS, resolveStyleProperties } from "../../../config/styleConstants";
-import PaneFrame from "../../../../ui/chrome/templates/PaneFrame/PaneFrame";
-import PaneCollapseTab from "../../../../ui/chrome/primitives/PaneCollapseTab/PaneCollapseTab";
+import PaneFrame from "../../../../Ui/chrome/templates/PaneFrame/PaneFrame";
+import PaneCollapseTab from "../../../../Ui/chrome/primitives/PaneCollapseTab/PaneCollapseTab";
 
 type EditPaneProps = {
   readonly view: Pick<DiagramView, "classes" | "relationships" | "notes" | "styles" | "namespaces">;

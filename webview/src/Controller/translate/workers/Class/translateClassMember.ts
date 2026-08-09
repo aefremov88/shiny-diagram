@@ -12,7 +12,7 @@ import { spellIdentity } from "../../../model/identitySpelling";
 import { toSourceMemberText } from "../../../model/memberText";
 import {
   anchorBlockOpening,
-  anchorExactStatement,
+  anchorAfterExactStatement,
   asSameKind,
 } from "../../anchors/statementAnchors";
 import { rewriteBlocklessClassWithFirstChild } from "../../placement/classBlockEnsure";
@@ -340,7 +340,7 @@ function requireSameKindAnchor(
   provenance: ProvenanceIndex,
   statement: StatementRef
 ): StatementAnchor {
-  const anchor = asSameKind(anchorExactStatement(provenance, statement));
+  const anchor = asSameKind(anchorAfterExactStatement(provenance, statement));
   if (!anchor) throw new Error(`Missing provenance for member anchor ${statement.kind}`);
   return anchor;
 }

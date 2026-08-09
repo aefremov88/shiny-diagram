@@ -12,7 +12,8 @@ export type SyntaxErrorDetail = {
 export type DocumentStatus =
   | { readonly status: "ready" }
   | { readonly status: "missingAnnotations"; readonly missingClassIds: readonly string[] }
+  | { readonly status: "unsupportedDiagramType"; readonly diagramType: string }
   | { readonly status: "invalidSyntax"; readonly errors: readonly SyntaxErrorDetail[] };
 
-export const defaultWebViewMode: WebViewMode = "mermaid";
+export const defaultWebViewMode: WebViewMode = "shiny";
 export const defaultDocumentStatus: DocumentStatus = { status: "invalidSyntax", errors: [] };

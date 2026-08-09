@@ -13,7 +13,7 @@ namespace Domain {
 `);
 
     expect(result.status).not.toBe("invalidSyntax");
-    if (result.status === "invalidSyntax") return;
+    if (result.status === "invalidSyntax" || result.status === "unsupportedDiagramType") return;
 
     expect(result.graph.styleOccurrences).toEqual([
       {
@@ -59,7 +59,7 @@ classDef default fill:pink
 class User
 `);
     expect(result.status).not.toBe("invalidSyntax");
-    if (result.status === "invalidSyntax") return;
+    if (result.status === "invalidSyntax" || result.status === "unsupportedDiagramType") return;
 
     expect(result.graph.styleDefinitions.size).toBe(0);
     expect(result.graph.styleOccurrences).toEqual([]);

@@ -9,7 +9,7 @@ const previousNoteId = toNoteId("note:previous");
 const spatial = { position: { x: 10.4, y: 20.6 }, size: { width: 100, height: 80 } };
 
 describe("translateNoteSpatialSet", () => {
-  it("inserts a missing annotation immediately before its note", () => {
+  it("anchors a missing annotation directly above its note", () => {
     expect(
       translateNoteSpatialSet(
         { type: "note.spatial.set", noteId, spatial },
@@ -21,14 +21,14 @@ describe("translateNoteSpatialSet", () => {
         kind: "insertStatement",
         payload: "%% @note: x=10 y=21 w=100 h=80",
         anchor: {
-          kind: "afterSameKind",
-          statement: { kind: "note", noteId: previousNoteId },
+          kind: "aboveStatement",
+          statement: { kind: "note", noteId },
         },
       },
     ]);
   });
 
-  it("uses the diagram opening when the note is the first statement", () => {
+  it("anchors above the note when it is the first statement", () => {
     expect(
       translateNoteSpatialSet(
         { type: "note.spatial.set", noteId, spatial },
@@ -37,7 +37,7 @@ describe("translateNoteSpatialSet", () => {
       )[0]
     ).toMatchObject({
       kind: "insertStatement",
-      anchor: { kind: "atBlockOpening", block: { kind: "diagram" } },
+      anchor: { kind: "aboveStatement", statement: { kind: "note", noteId } },
     });
   });
 
@@ -57,7 +57,13 @@ function provenance(hasAnnotation: boolean, hasPreviousNote: boolean): Provenanc
   const previous = { self: span(1, 0, 1, 15), fields: { text: span(1, 6, 1, 14) } };
   const coord = span(1, 0, 1, 1);
   return {
-    diagram: { self: span(0, 0, 2, 13), header: span(0, 0, 0, 12), body: span(0, 12, 2, 13) },
+    diagram: {
+      self: span(0, 0, 2, 13),
+      header: span(0, 0, 0, 12),
+      body: span(0, 12, 2, 13),
+      direction: null,
+      configDirectives: [],
+    },
     notes: new Map([
       ...(hasPreviousNote ? ([[previousNoteId, previous]] as const) : []),
       [noteId, target],

@@ -8,18 +8,23 @@ import type { EditorDispatch } from "../commands/editorCommands";
 import { CommandDispatchProvider } from "../contexts";
 import EditorSurface from "./EditorSurface/EditorSurface";
 import { toMissingAnnotationsGenerateTransaction } from "./transactions";
-import ViewportFrame from "../../ui/chrome/templates/ViewportFrame/ViewportFrame";
+import ViewportFrame from "../../Ui/chrome/templates/ViewportFrame/ViewportFrame";
+import type { ExportPngResult } from "../../shared/exportPng";
 
 type EditorRootProps = {
   readonly view: EditorViewModel;
   readonly onTransactionDispatch: EditorDispatch;
   readonly generateRequest: number;
+  readonly exportRequest: number;
+  readonly onExportComplete: (result: ExportPngResult) => void;
 };
 
 export default function EditorRoot({
   view,
   onTransactionDispatch,
   generateRequest,
+  exportRequest,
+  onExportComplete,
 }: EditorRootProps): ReactElement {
   // State creation: local record of the latest handled generation request
   const handledGenerateRequest = useRef(generateRequest);
@@ -29,9 +34,8 @@ export default function EditorRoot({
     if (view.status !== "missingAnnotations") return;
     if (generateRequest <= handledGenerateRequest.current) return;
     handledGenerateRequest.current = generateRequest;
-    onTransactionDispatch(
-      toMissingAnnotationsGenerateTransaction(view.missingClassIds, view.diagram.classes)
-    );
+    const transaction = toMissingAnnotationsGenerateTransaction(view.diagram, view.missingClasses);
+    if (transaction.length > 0) onTransactionDispatch(transaction);
   }, [generateRequest, onTransactionDispatch, view]);
 
   // Child component routing
@@ -40,7 +44,11 @@ export default function EditorRoot({
   return (
     <CommandDispatchProvider onTransactionDispatch={onTransactionDispatch}>
       <ViewportFrame>
-        <EditorSurface view={view.diagram} />
+        <EditorSurface
+          view={view.diagram}
+          exportRequest={exportRequest}
+          onExportComplete={onExportComplete}
+        />
       </ViewportFrame>
     </CommandDispatchProvider>
   );

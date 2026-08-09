@@ -10,12 +10,12 @@ import type { Point, Rect } from "../../../../../../../shared/geometry";
 import type { NamespaceView } from "../../../../../../views/schema";
 import type { EditingState } from "../../../../../../state/editorStates";
 import type { TransactionResult } from "../../../../../../commands/editorCommands";
-import BoxInteractionOverlay from "../../../../../../../ui/canvas/composites/BoxInteractionOverlay/BoxInteractionOverlay";
-import type { ResizeHandle } from "../../../../../../../ui/canvas/composites/BoxInteractionOverlay/BoxInteractionOverlay";
-import InlineCommitTextField from "../../../../../../../ui/canvas/composites/InlineCommitTextField/InlineCommitTextField";
-import InlineValidationPopup from "../../../../../../../ui/canvas/primitives/InlineValidationPopup/InlineValidationPopup";
-import HullHeaderFrame from "../../../../../../../ui/canvas/templates/HullHeaderFrame/HullHeaderFrame";
-import HullSurfaceFrame from "../../../../../../../ui/canvas/templates/HullSurfaceFrame/HullSurfaceFrame";
+import BoxInteractionOverlay from "../../../../../../../Ui/canvas/composites/BoxInteractionOverlay/BoxInteractionOverlay";
+import type { ResizeHandle } from "../../../../../../../Ui/canvas/composites/BoxInteractionOverlay/BoxInteractionOverlay";
+import InlineCommitTextField from "../../../../../../../Ui/canvas/composites/InlineCommitTextField/InlineCommitTextField";
+import InlineValidationPopup from "../../../../../../../Ui/canvas/primitives/InlineValidationPopup/InlineValidationPopup";
+import HullHeaderFrame from "../../../../../../../Ui/canvas/templates/HullHeaderFrame/HullHeaderFrame";
+import HullSurfaceFrame from "../../../../../../../Ui/canvas/templates/HullSurfaceFrame/HullSurfaceFrame";
 import {
   INLINE_VALIDATION_POPUP_Z_INDEX,
   NODE_ABOVE_CONTENT_Z_INDEX,

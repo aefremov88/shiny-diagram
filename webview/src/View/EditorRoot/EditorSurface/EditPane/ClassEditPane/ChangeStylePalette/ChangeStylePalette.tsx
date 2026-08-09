@@ -11,8 +11,8 @@ import {
 } from "../../../../../../shared/style";
 import type { ClassView } from "../../../../../views/schema";
 import { CLASS_STYLE_CONSTANTS } from "../../../../../config/styleConstants";
-import type { ColorSelectPresetCatalog } from "../../../../../../ui/chrome/composites/ColorSelect/ColorSelect";
-import FieldGrid from "../../../../../../ui/chrome/templates/FieldGrid/FieldGrid";
+import type { ColorSelectPresetCatalog } from "../../../../../../Ui/chrome/composites/ColorSelect/ColorSelect";
+import FieldGrid from "../../../../../../Ui/chrome/templates/FieldGrid/FieldGrid";
 import StylePropertyControl from "./StylePropertyControl/StylePropertyControl";
 import { useInteractions } from "./useInteractions";
 

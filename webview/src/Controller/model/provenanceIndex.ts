@@ -24,8 +24,7 @@
  * Records do not store indentation. Resolution derives indentation from the
  * referenced source line.
  *
- * Not yet produced: diagram-config provenance and maybe some element decorator
- * properties are missing
+ * Not yet produced: some element decorator properties are missing.
  */
 
 import type {
@@ -51,6 +50,8 @@ export type DiagramRecord = {
   readonly self: SourceSpan;
   readonly header: SourceSpan; // `classDiagram`
   readonly body: SourceSpan;
+  readonly direction: SourceSpan | null;
+  readonly configDirectives: readonly SourceSpan[];
 };
 
 // ============================================================================

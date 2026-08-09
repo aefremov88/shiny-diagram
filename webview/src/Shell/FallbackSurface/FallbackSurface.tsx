@@ -4,6 +4,10 @@
 
 import type { ReactElement } from "react";
 import type { DocumentStatus } from "../state";
+import {
+  SHINY_SUPPORTED_DIAGRAM_TYPES,
+  toUnsupportedDiagramTypeMessage,
+} from "../../shared/diagramTypes";
 import styles from "./FallbackSurface.module.css";
 
 type FallbackSurfaceProps = {
@@ -11,6 +15,24 @@ type FallbackSurfaceProps = {
 };
 
 export default function FallbackSurface({ documentStatus }: FallbackSurfaceProps): ReactElement {
+  if (documentStatus.status === "unsupportedDiagramType") {
+    return (
+      <section className={styles.surface} aria-label="Unsupported diagram type">
+        <div className={styles.unsupportedPanel}>
+          <p className={styles.unsupportedMessage}>
+            {toUnsupportedDiagramTypeMessage(documentStatus.diagramType)}
+          </p>
+          <p className={styles.supportedHeading}>Shiny supports:</p>
+          <ul className={styles.supportedList}>
+            {SHINY_SUPPORTED_DIAGRAM_TYPES.map(({ declaration, label }) => (
+              <li key={declaration}>{label}</li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    );
+  }
+
   if (documentStatus.status === "missingAnnotations") {
     return (
       <section

@@ -27,6 +27,13 @@ import type {
 
 export function resolveStatementRef(ref: StatementRef, provenance: ProvenanceIndex): SourceSpan {
   switch (ref.kind) {
+    case "direction":
+      return requireRecord(provenance.diagram.direction, "diagram direction");
+    case "configDirective":
+      return requireRecord(
+        provenance.diagram.configDirectives[ref.index],
+        `config directive ${ref.index}`
+      );
     case "class":
       return requireRecord(provenance.classes.get(ref.classId), `class ${ref.classId}`).self;
     case "relationship":

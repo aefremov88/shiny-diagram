@@ -13,7 +13,7 @@ import type { NamespaceRenamePair } from "../../namespaceRenameCascade";
 import type { TranslateContext } from "../../translateContext";
 import {
   anchorAfterKindList,
-  anchorBeforeKindList,
+  anchorAfterPredecessorOf,
   anchorBlockOpening,
   asDifferentKind,
   asSameKind,
@@ -284,9 +284,9 @@ function toNamespaceDeleteAnchor(
   const before = requireSpan(namespaceRecord?.self);
 
   return (
-    asSameKind(anchorBeforeKindList(graph, provenance, parentBlock, before, [sameKind])) ??
+    asSameKind(anchorAfterPredecessorOf(graph, provenance, parentBlock, before, [sameKind])) ??
     asDifferentKind(
-      anchorBeforeKindList(graph, provenance, parentBlock, before, STATEMENT_KINDS)
+      anchorAfterPredecessorOf(graph, provenance, parentBlock, before, STATEMENT_KINDS)
     ) ??
     anchorBlockOpening(parentBlock)
   );

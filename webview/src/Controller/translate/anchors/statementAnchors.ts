@@ -6,9 +6,9 @@
  *    sibling to anchor after, or `null` when none exists.
  * 2. Labelers — take a located ref and tag it for the blank-line policy,
  *    yielding a `StatementAnchor | null`: `asSameKind` (no blank line before) and
- *    `asDifferentKind` (blank line before). Only `anchorBlockOpening` skips the split
- *    and returns a finished * `StatementAnchor` directly: the terminal first-child fallback,
- *    genuinely label-free.
+ *    `asDifferentKind` (blank line before). `anchorAboveStatement` and
+ *    `anchorBlockOpening` skip the split and return finished `StatementAnchor`s
+ *    directly because their placement policies are label-free.
  */
 
 import type { DiagramGraph } from "../../model/diagramGraph";
@@ -25,6 +25,8 @@ export type StatementKind = StatementRef["kind"];
 
 /** Every statement kind, e.g. for the "after the latest statement of any kind" fallback tier. */
 export const STATEMENT_KINDS: readonly StatementKind[] = [
+  "direction",
+  "configDirective",
   "class",
   "namespace",
   "blockMember",
@@ -87,8 +89,12 @@ export function anchorAfterKindListExcluding(
 /**
  * The latest explicit statement of any listed kind inside `container` whose
  * source span starts before `before`, or `null`.
+ *
+ * Use this when inserting at the position of a predecessor that the same
+ * transaction deletes. Binding writes with a living target use
+ * `anchorAboveStatement` instead.
  */
-export function anchorBeforeKindList(
+export function anchorAfterPredecessorOf(
   graph: DiagramGraph,
   provenance: ProvenanceIndex,
   container: BlockRef,
@@ -116,11 +122,25 @@ export function anchorBeforeKindList(
  * implicit statement is not an anchorable sibling). Returns a raw ref — the
  * caller labels it same- or different-kind.
  */
-export function anchorExactStatement(
+export function anchorAfterExactStatement(
   provenance: ProvenanceIndex,
   statement: StatementRef
 ): StatementRef | null {
   return hasStatementRecord(provenance, statement) ? statement : null;
+}
+
+/**
+ * A binding write with a living target: insert directly above the explicit
+ * target statement. Returns `null` when the target has no provenance record.
+ *
+ * Unlike `anchorAfterPredecessorOf`, this preserves adjacency across unmodeled
+ * lines such as blanks and comments.
+ */
+export function anchorAboveStatement(
+  provenance: ProvenanceIndex,
+  statement: StatementRef
+): StatementAnchor | null {
+  return hasStatementRecord(provenance, statement) ? { kind: "aboveStatement", statement } : null;
 }
 
 /** The terminal fallback: the first-child position under a container's opening. */
@@ -148,6 +168,9 @@ export function asDifferentKind(ref: StatementRef | null): StatementAnchor | nul
 
 function blockOf(graph: DiagramGraph, ref: StatementRef): BlockRef {
   switch (ref.kind) {
+    case "direction":
+    case "configDirective":
+      return { kind: "diagram" };
     case "class":
       return namespaceBlock(graph.classes.get(ref.classId)?.parentNamespaceId ?? null);
     case "namespace":
@@ -197,6 +220,10 @@ function sameBlock(left: BlockRef, right: BlockRef): boolean {
 function sameStatement(left: StatementRef, right: StatementRef): boolean {
   if (left.kind !== right.kind) return false;
   switch (left.kind) {
+    case "direction":
+      return true;
+    case "configDirective":
+      return left.index === (right as Extract<StatementRef, { kind: "configDirective" }>).index;
     case "class":
       return left.classId === (right as Extract<StatementRef, { kind: "class" }>).classId;
     case "namespace":
@@ -252,6 +279,15 @@ function anchorCandidatesOfKind(
   provenance: ProvenanceIndex
 ): AnchorCandidate[] {
   switch (kind) {
+    case "direction":
+      return provenance.diagram.direction
+        ? [{ ref: { kind: "direction" }, location: provenance.diagram.direction }]
+        : [];
+    case "configDirective":
+      return provenance.diagram.configDirectives.map((location, index) => ({
+        ref: { kind: "configDirective", index },
+        location,
+      }));
     case "class":
       return candidatesFrom(provenance.classes, (classId) => ({ kind, classId }));
     case "namespace":
@@ -304,6 +340,10 @@ function candidatesFrom<Id>(
 
 function hasStatementRecord(provenance: ProvenanceIndex, statement: StatementRef): boolean {
   switch (statement.kind) {
+    case "direction":
+      return provenance.diagram.direction !== null;
+    case "configDirective":
+      return statement.index >= 0 && statement.index < provenance.diagram.configDirectives.length;
     case "class":
       return provenance.classes.has(statement.classId);
     case "namespace":

@@ -475,6 +475,8 @@ function provenanceWith(
       self: span(0, 0, 10, 0),
       header: span(0, 0, 0, 12),
       body: span(1, 0, 10, 0),
+      direction: null,
+      configDirectives: [],
     },
     classes: new Map(input.classes ?? []),
     namespaces: new Map(input.namespaces ?? []),

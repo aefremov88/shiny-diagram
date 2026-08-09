@@ -8,10 +8,10 @@ import type { RelationshipId } from "../../../../../../shared/ids";
 import type { RelationshipEndpointKind, RelationshipLineKind } from "../../../../../../shared/uml";
 import type { RelationshipView } from "../../../../../views/schema";
 import { CHROME_MENU_ABOVE_CONTROL_Z_INDEX } from "../../../../../config/editorUiConfig";
-import Button from "../../../../../../ui/chrome/primitives/Button/Button";
-import Dropdown from "../../../../../../ui/chrome/composites/Dropdown/Dropdown";
-import FieldGrid from "../../../../../../ui/chrome/templates/FieldGrid/FieldGrid";
-import ControlGroup from "../../../../../../ui/chrome/templates/ControlGroup/ControlGroup";
+import Button from "../../../../../../Ui/chrome/primitives/Button/Button";
+import Dropdown from "../../../../../../Ui/chrome/composites/Dropdown/Dropdown";
+import FieldGrid from "../../../../../../Ui/chrome/templates/FieldGrid/FieldGrid";
+import ControlGroup from "../../../../../../Ui/chrome/templates/ControlGroup/ControlGroup";
 import { useInteractions } from "./useInteractions";
 
 const endpointKinds: readonly RelationshipEndpointKind[] = [

@@ -4,3 +4,4 @@
  */
 
 export { deriveDiagramView } from "./deriveDiagramView";
+export { deriveUnpositionedClassViews } from "./workers/deriveUnpositionedClassViews";

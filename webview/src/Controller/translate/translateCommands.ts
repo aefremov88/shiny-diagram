@@ -216,7 +216,7 @@ function translateCommand(
     case "note.duplicate":
       return translateNoteDuplicate(command, graph, provenance, context);
     case "namespace.create":
-      return translateNamespaceCreate(command, provenance, sourceText, context);
+      return translateNamespaceCreate(command, graph, provenance, sourceText, context);
     case "namespace.delete":
       return translateNamespaceDelete(command, graph, provenance, sourceText);
     case "namespace.name.set":

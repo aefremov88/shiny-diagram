@@ -3,6 +3,115 @@ import { toAttributeId, toClassId, toMethodId, toNamespaceId } from "../../share
 import { composeNoteId } from "../model/noteIdentity";
 import { parseDiagram } from "./parseDiagram";
 
+describe("parseDiagram unsupported diagram types", () => {
+  it.each([
+    ["sequenceDiagram", "sequenceDiagram"],
+    ["flowchart LR", "flowchart"],
+    ["erDiagram", "erDiagram"],
+    ["stateDiagram-v2", "stateDiagram-v2"],
+    ["pie title Pets", "pie"],
+  ])("returns unsupportedDiagramType for %s", (declaration, expectedType) => {
+    const result = parseDiagram(`${declaration}
+this syntax is not validated by Shiny
+`);
+
+    expect(result).toEqual({
+      status: "unsupportedDiagramType",
+      diagramType: expectedType,
+    });
+  });
+
+  it("detects the declaration after frontmatter, comments, blanks, and init directives", () => {
+    const result = parseDiagram(`---
+title: Checkout
+---
+
+%% explanatory comment
+%%{init: {"theme": "dark"}}%%
+sequenceDiagram
+Alice->>Bob: Hello
+`);
+
+    expect(result).toEqual({
+      status: "unsupportedDiagramType",
+      diagramType: "sequenceDiagram",
+    });
+  });
+
+  it.each(["classDiagram", "classDiagram-v2"])(
+    "keeps %s on the class-diagram parse path",
+    (declaration) => {
+      expect(
+        parseDiagram(`${declaration}
+class A
+`).status
+      ).toBe("missingAnnotations");
+    }
+  );
+
+  it.each(["notADiagram", "SequenceDiagram"])(
+    "keeps an unrecognized declaration on the invalidSyntax path",
+    (declaration) => {
+      expect(parseDiagram(declaration).status).toBe("invalidSyntax");
+    }
+  );
+});
+
+describe("parseDiagram direction provenance", () => {
+  it("records the direction line span", () => {
+    const result = parseDiagram(`classDiagram
+  direction LR
+`);
+
+    expect(result.status).not.toBe("invalidSyntax");
+    if (result.status === "invalidSyntax" || result.status === "unsupportedDiagramType") return;
+    expect(result.provenance.diagram.direction).toEqual({
+      start: { line: 1, character: 0 },
+      end: { line: 1, character: 14 },
+    });
+  });
+
+  it("records null when direction is absent", () => {
+    const result = parseDiagram(`classDiagram
+`);
+
+    expect(result.status).not.toBe("invalidSyntax");
+    if (result.status === "invalidSyntax" || result.status === "unsupportedDiagramType") return;
+    expect(result.provenance.diagram.direction).toBeNull();
+  });
+});
+
+describe("parseDiagram config-directive provenance", () => {
+  it("records directive spans in source order", () => {
+    const result = parseDiagram(`classDiagram
+%%{init: {"class": {"hideEmptyMembersBox": true}}}%%
+  %%{init: {"class": {"hierarchicalNamespaces": false}}}%%
+`);
+
+    expect(result.status).not.toBe("invalidSyntax");
+    if (result.status === "invalidSyntax" || result.status === "unsupportedDiagramType") return;
+    expect(result.provenance.diagram.configDirectives).toEqual([
+      {
+        start: { line: 1, character: 0 },
+        end: { line: 1, character: 52 },
+      },
+      {
+        start: { line: 2, character: 0 },
+        end: { line: 2, character: 58 },
+      },
+    ]);
+  });
+
+  it("records an empty array when directives are absent", () => {
+    const result = parseDiagram(`classDiagram
+`);
+
+    expect(result.status).not.toBe("invalidSyntax");
+    if (result.status === "invalidSyntax" || result.status === "unsupportedDiagramType") return;
+    expect(result.provenance.diagram.configDirectives).toEqual([]);
+  });
+});
+
 describe("parseDiagram member text blocks", () => {
   it("parses permissive valid members into display text and classifier flags", () => {
     const result = parseDiagram(`classDiagram
@@ -129,6 +238,47 @@ direction LR
 `);
 
     expect(result.status).toBe("ready");
+  });
+
+  it.each(["TB", "BT", "LR", "RL"] as const)("parses diagram direction %s", (direction) => {
+    const result = parseDiagram(`classDiagram
+direction ${direction}
+class User
+%% @spatial:User x=10 y=20 w=220 h=160
+`);
+
+    expect(result.status).toBe("ready");
+    if (result.status !== "ready") return;
+    expect(result.graph.diagram.direction).toBe(direction);
+  });
+
+  it("uses null when diagram direction is absent", () => {
+    const result = parseDiagram(`classDiagram
+class User
+%% @spatial:User x=10 y=20 w=220 h=160
+`);
+
+    expect(result.status).toBe("ready");
+    if (result.status !== "ready") return;
+    expect(result.graph.diagram.direction).toBeNull();
+  });
+
+  it("preserves class members when applying a named style with space syntax", () => {
+    const result = parseDiagram(`classDiagram
+class FileAttachment {
+  +string mimeType
+  +string checksum
+}
+classDef attachmentStyle fill:#fff
+class FileAttachment attachmentStyle
+`);
+
+    expect(result.status).toBe("missingAnnotations");
+    if (result.status !== "missingAnnotations") return;
+    expect(result.graph.classes.get(toClassId("FileAttachment"))?.attributes).toHaveLength(2);
+    expect([...result.graph.styleApplications.values()][0]).toMatchObject({
+      targetId: toClassId("FileAttachment"),
+    });
   });
 
   it("returns one diagnostic for each unrecognized statement", () => {

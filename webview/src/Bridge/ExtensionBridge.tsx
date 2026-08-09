@@ -7,6 +7,8 @@ import type { ReactElement } from "react";
 import type { SourceEdit as ControllerSourceEdit } from "../Controller/model/sourceEdit";
 import type {
   ApplyEditsMessage,
+  ExportPngErrorMessage,
+  ExportPngMessage,
   HistoryMessage,
   SourceEdit as ProtocolSourceEdit,
 } from "./protocol";
@@ -28,6 +30,7 @@ function toProtocolEdit(edit: ControllerSourceEdit): ProtocolSourceEdit {
  */
 export default function ExtensionBridge(): ReactElement {
   const [documentSnapshot, setDocumentSnapshot] = useState(readInitialData);
+  const [exportCommandRequest, setExportCommandRequest] = useState(0);
 
   useEffect(() => {
     function handleMessage(event: MessageEvent<unknown>): void {
@@ -35,6 +38,8 @@ export default function ExtensionBridge(): ReactElement {
       const msg = event.data;
       if (msg.type === "sourceUpdate") {
         setDocumentSnapshot({ sourceText: msg.sourceText, documentName: msg.documentName });
+      } else {
+        setExportCommandRequest((request) => request + 1);
       }
     }
     window.addEventListener("message", handleMessage);
@@ -52,12 +57,32 @@ export default function ExtensionBridge(): ReactElement {
     vscode.postMessage(message);
   }, []);
 
+  const handleExportPng = useCallback((requestId: number, base64: string) => {
+    const message: ExportPngMessage = { type: "exportPng", requestId, base64 };
+    vscode.postMessage(message);
+  }, []);
+  const handleExportPngError = useCallback(
+    (requestId: number, stage: string, errorMessage: string) => {
+      const message: ExportPngErrorMessage = {
+        type: "exportPngError",
+        requestId,
+        stage,
+        message: errorMessage,
+      };
+      vscode.postMessage(message);
+    },
+    []
+  );
+
   return (
     <WebViewShell
       sourceText={documentSnapshot.sourceText}
       documentName={documentSnapshot.documentName}
       onApplyEdits={handleApplyEdits}
       onHistory={handleHistory}
+      onExportPng={handleExportPng}
+      onExportPngError={handleExportPngError}
+      exportCommandRequest={exportCommandRequest}
     />
   );
 }

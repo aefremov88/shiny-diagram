@@ -5,7 +5,7 @@
 
 import type { ReactElement } from "react";
 import type { GlyphDescriptor } from "../../../../../shared/glyph";
-import ToggleButton from "../../../../../ui/chrome/primitives/ToggleButton/ToggleButton";
+import ToggleButton from "../../../../../Ui/chrome/primitives/ToggleButton/ToggleButton";
 import { classGlyph, namespaceGlyph, noteGlyph } from "./icons";
 
 type NodePlacementToolsProps = {

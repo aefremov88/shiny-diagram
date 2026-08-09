@@ -3,7 +3,7 @@
  * @render Header and active document rendering branch.
  */
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import type { SourceEdit } from "../Controller/model/sourceEdit";
 import ShinyController from "../Controller/ShinyController";
@@ -17,12 +17,16 @@ import {
   type WebViewMode,
 } from "./state";
 import styles from "./WebViewShell.module.css";
+import type { ExportPngResult } from "../shared/exportPng";
 
 type WebViewShellProps = {
   sourceText: string;
   documentName: string;
   onApplyEdits: (edits: SourceEdit[]) => void;
   onHistory: (action: "undo" | "redo") => void;
+  onExportPng: (requestId: number, base64: string) => void;
+  onExportPngError: (requestId: number, stage: string, message: string) => void;
+  exportCommandRequest: number;
 };
 
 /**
@@ -33,11 +37,17 @@ export default function WebViewShell({
   documentName,
   onApplyEdits,
   onHistory,
+  onExportPng,
+  onExportPngError,
+  exportCommandRequest,
 }: WebViewShellProps): ReactElement {
   // State creation: local product mode and document status
   const [mode, setMode] = useState<WebViewMode>(defaultWebViewMode);
   const [documentStatus, setDocumentStatus] = useState<DocumentStatus>(defaultDocumentStatus);
   const [generateRequest, setGenerateRequest] = useState(0);
+  const [exportRequest, setExportRequest] = useState(0);
+  const [isExporting, setExporting] = useState(false);
+  const handledExportCommandRequest = useRef(exportCommandRequest);
 
   // Event handler props derivation
   const onStatusChange = useCallback((status: DocumentStatus) => {
@@ -46,6 +56,28 @@ export default function WebViewShell({
   const onGenerate = useCallback(() => {
     setGenerateRequest((request) => request + 1);
   }, []);
+  const onExport = useCallback(() => {
+    if (mode !== "shiny" || documentStatus.status !== "ready" || isExporting) return;
+    setExporting(true);
+    setExportRequest((request) => request + 1);
+  }, [documentStatus.status, isExporting, mode]);
+  const onExportComplete = useCallback(
+    (result: ExportPngResult) => {
+      setExporting(false);
+      if (result.status === "success") {
+        onExportPng(result.requestId, result.base64);
+      } else {
+        onExportPngError(result.requestId, result.stage, result.message);
+      }
+    },
+    [onExportPng, onExportPngError]
+  );
+
+  useEffect(() => {
+    if (exportCommandRequest <= handledExportCommandRequest.current) return;
+    handledExportCommandRequest.current = exportCommandRequest;
+    onExport();
+  }, [exportCommandRequest, onExport]);
 
   // Child component routing
   const documentSurface =
@@ -64,6 +96,8 @@ export default function WebViewShell({
         onModeChange={setMode}
         onHistory={onHistory}
         onGenerate={onGenerate}
+        onExport={onExport}
+        isExporting={isExporting}
       />
       {documentSurface}
       <ShinyController
@@ -71,6 +105,8 @@ export default function WebViewShell({
         onApplyEdits={onApplyEdits}
         onStatusChange={onStatusChange}
         generateRequest={generateRequest}
+        exportRequest={exportRequest}
+        onExportComplete={onExportComplete}
         visible={mode === "shiny" || documentStatus.status !== "ready"}
       />
     </main>

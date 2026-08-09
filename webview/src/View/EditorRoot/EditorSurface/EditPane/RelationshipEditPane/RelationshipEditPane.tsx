@@ -11,7 +11,7 @@ import EdgeActions from "./EdgeActions/EdgeActions";
 import EdgeShapeControls from "./EdgeShapeControls/EdgeShapeControls";
 import LabelControls from "./LabelControls/LabelControls";
 import MultiplicityControls from "./MultiplicityControls/MultiplicityControls";
-import PaneSection from "../../../../../ui/chrome/templates/PaneSection/PaneSection";
+import PaneSection from "../../../../../Ui/chrome/templates/PaneSection/PaneSection";
 
 type RelationshipEditPaneProps = {
   readonly view: RelationshipView;

@@ -1,0 +1,42 @@
+# Everything is excluded except what the extension needs at runtime:
+# out/ (compiled code), package.json, README, CHANGELOG, LICENSE.
+# Those are included automatically or via the negations below.
+
+.vscode/**
+.vscode-test/**
+.githooks/**
+.github/**
+
+# Sources — shipped compiled in out/
+extension-host/**
+webview/**
+scripts/**
+
+# Docs and examples
+docs/**
+examples/**
+COLLABORATORS.md
+
+# Config files
+.gitignore
+.prettierignore
+.prettierrc
+eslint.config.mjs
+tsconfig.json
+tsconfig.webview.json
+vite.config.ts
+vitest.extension.config.ts
+
+# Build noise inside out/
+out/**/*.map
+out/**/*.test.js
+out/**/*.test.js.map
+
+# Media: exclude by default; the icon (when added) must be re-included
+media/**
+
+# Dependencies: webview deps are bundled by vite into out/webview; the
+# extension host needs nothing from node_modules at runtime.
+node_modules/**
+**/node_modules/**
+**/.vite/**

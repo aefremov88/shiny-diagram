@@ -1,0 +1,119 @@
+/**
+ * @render Shared icon toggle button styling.
+ */
+
+.labeledTileButton,
+.glyphTileButton {
+  display: inline-grid;
+  align-items: center;
+  justify-content: center;
+  border: var(--shiny-chrome-control-border-width) var(--shiny-chrome-control-border-style)
+    var(--shiny-chrome-layout-border);
+  border-radius: var(--shiny-chrome-button-radius);
+  color: var(--shiny-chrome-text-muted);
+  background: var(--shiny-pane-bg);
+  box-shadow: var(--shiny-chrome-tile-elevation-rest);
+  font: inherit;
+  font-size: var(--shiny-chrome-font-size-control);
+  font-weight: var(--shiny-chrome-font-weight-emphasis);
+  cursor: var(--shiny-chrome-cursor-action);
+}
+
+.labeledTileButton:hover:not(:disabled),
+.glyphTileButton:hover:not(:disabled) {
+  border-color: var(--shiny-chrome-accent-outline);
+  color: var(--shiny-chrome-text);
+  background: var(--shiny-chrome-surface);
+  box-shadow: var(--shiny-chrome-tile-elevation-hover);
+}
+
+.labeledTileButton:focus-visible,
+.glyphTileButton:focus-visible {
+  outline: var(--shiny-chrome-focus-outline-width) var(--shiny-chrome-focus-outline-style)
+    var(--shiny-chrome-accent-outline);
+  outline-offset: 2px;
+}
+
+.labeledTileButton:disabled,
+.glyphTileButton:disabled {
+  color: var(--shiny-chrome-text-muted);
+  cursor: var(--shiny-chrome-cursor-unavailable);
+  opacity: 0.58;
+}
+
+.labeledTileButton[aria-pressed="true"]:not(:disabled),
+.glyphTileButton[aria-pressed="true"]:not(:disabled) {
+  border-color: var(--shiny-chrome-accent-outline);
+  color: var(--shiny-chrome-text);
+  background: var(--shiny-chrome-surface);
+  box-shadow: var(--shiny-chrome-tile-elevation-pressed);
+}
+
+.labeledTileButton {
+  grid-template-rows: 32px auto;
+  gap: 4px;
+  width: 100%;
+  min-height: 72px;
+  padding: 9px 6px 8px;
+  text-align: center;
+  border-radius: var(--shiny-tile-radius);
+}
+
+.glyphTileButton {
+  justify-self: center;
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0;
+  border-radius: var(--shiny-tile-radius);
+}
+
+.icon {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  min-width: 0;
+  color: inherit;
+}
+
+.labeledTileButton .icon {
+  justify-self: center;
+  align-self: center;
+  width: 36px;
+  height: 30px;
+}
+
+.glyphTileButton .icon {
+  width: 24px;
+  height: 18px;
+}
+
+.icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.glyph {
+  stroke-width: var(--shiny-chrome-tool-glyph-stroke-width);
+}
+
+.glyph path {
+  vector-effect: non-scaling-stroke;
+}
+
+.dashedGlyphPath {
+  stroke-dasharray: var(--shiny-chrome-glyph-dash);
+}
+
+.label {
+  min-width: 0;
+  overflow: hidden;
+  color: inherit;
+  text-align: center;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: normal;
+}

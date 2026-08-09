@@ -5,7 +5,7 @@
 import { useCallback, useLayoutEffect, useMemo, useRef } from "react";
 import type { ReactElement } from "react";
 import { parseDiagram } from "./parse";
-import { deriveDiagramView } from "./deriveViews";
+import { deriveDiagramView, deriveUnpositionedClassViews } from "./deriveViews";
 import { resolveIntents } from "./resolve";
 import { translateCommands, validateTransaction } from "./translate";
 import type { DiagramGraph } from "./model/diagramGraph";
@@ -15,18 +15,22 @@ import type { EditorDiagnostic } from "./parse";
 import { EditorView } from "../View/EditorRoot";
 import type { EditorDispatch } from "../View/commands";
 import type { DiagramView, EditorViewModel } from "../View/views";
+import type { ExportPngResult } from "../shared/exportPng";
 
 type ShinyControllerProps = {
   sourceText: string;
   onApplyEdits: (edits: SourceEdit[]) => void;
   onStatusChange: (status: ShinyDocumentStatus) => void;
   generateRequest: number;
+  exportRequest: number;
+  onExportComplete: (result: ExportPngResult) => void;
   visible: boolean;
 };
 
 export type ShinyDocumentStatus =
   | { readonly status: "ready" }
   | { readonly status: "missingAnnotations"; readonly missingClassIds: readonly string[] }
+  | { readonly status: "unsupportedDiagramType"; readonly diagramType: string }
   | {
       readonly status: "invalidSyntax";
       readonly errors: readonly {
@@ -55,6 +59,8 @@ export default function ShinyController({
   onApplyEdits,
   onStatusChange,
   generateRequest,
+  exportRequest,
+  onExportComplete,
   visible,
 }: ShinyControllerProps): ReactElement {
   const parseResult = useMemo(() => parseDiagram(sourceText), [sourceText]);
@@ -63,8 +69,14 @@ export default function ShinyController({
     onStatusChange(toDocumentStatus(parseResult));
   }, [onStatusChange, parseResult]);
 
-  const graph = parseResult.status !== "invalidSyntax" ? parseResult.graph : null;
-  const provenance = parseResult.status !== "invalidSyntax" ? parseResult.provenance : null;
+  const graph =
+    parseResult.status === "ready" || parseResult.status === "missingAnnotations"
+      ? parseResult.graph
+      : null;
+  const provenance =
+    parseResult.status === "ready" || parseResult.status === "missingAnnotations"
+      ? parseResult.provenance
+      : null;
 
   const diagramView: DiagramView | null = useMemo(() => {
     if (!graph) return null;
@@ -72,6 +84,12 @@ export default function ShinyController({
   }, [graph]);
 
   const editorViewModel: EditorViewModel = useMemo(() => {
+    if (parseResult.status === "unsupportedDiagramType") {
+      return {
+        status: "unsupportedDiagramType",
+        diagramType: parseResult.diagramType,
+      };
+    }
     if (parseResult.status === "invalidSyntax") {
       return {
         status: "invalidSyntax",
@@ -83,6 +101,7 @@ export default function ShinyController({
     }
 
     const diagram = diagramView ?? {
+      direction: null,
       classes: [],
       namespaces: [],
       relationships: [],
@@ -92,7 +111,7 @@ export default function ShinyController({
     if (parseResult.status === "missingAnnotations") {
       return {
         status: "missingAnnotations",
-        missingClassIds: parseResult.missingIds,
+        missingClasses: deriveUnpositionedClassViews(parseResult.graph),
         diagram,
       };
     }
@@ -158,6 +177,8 @@ export default function ShinyController({
       view={editorViewModel}
       onTransactionDispatch={dispatch}
       generateRequest={generateRequest}
+      exportRequest={exportRequest}
+      onExportComplete={onExportComplete}
     />
   ) : (
     <></>
@@ -166,6 +187,11 @@ export default function ShinyController({
 
 function toDocumentStatus(parseResult: ReturnType<typeof parseDiagram>): ShinyDocumentStatus {
   switch (parseResult.status) {
+    case "unsupportedDiagramType":
+      return {
+        status: "unsupportedDiagramType",
+        diagramType: parseResult.diagramType,
+      };
     case "ready":
       return { status: "ready" };
     case "missingAnnotations":

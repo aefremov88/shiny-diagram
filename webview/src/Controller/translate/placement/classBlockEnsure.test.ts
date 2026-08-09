@@ -35,7 +35,13 @@ function toProvenance(): ProvenanceIndex {
   const classId = toClassId("User");
   const empty = { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } };
   return {
-    diagram: { self: empty, header: empty, body: empty },
+    diagram: {
+      self: empty,
+      header: empty,
+      body: empty,
+      direction: null,
+      configDirectives: [],
+    },
     classes: new Map([
       [
         classId,

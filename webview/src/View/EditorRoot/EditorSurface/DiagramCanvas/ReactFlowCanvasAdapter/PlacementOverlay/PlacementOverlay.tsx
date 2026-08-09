@@ -9,7 +9,7 @@ import type { ReactElement } from "react";
 import type { NodePlacementState } from "../../../../../state/editorStates";
 import type { TransactionResult } from "../../../../../commands/editorCommands";
 import { PLACEMENT_OVERLAY_Z_INDEX } from "../../../../../config/editorUiConfig";
-import RectDrawOverlay from "../../../../../../ui/canvas/composites/RectDrawOverlay/RectDrawOverlay";
+import RectDrawOverlay from "../../../../../../Ui/canvas/composites/RectDrawOverlay/RectDrawOverlay";
 import { toInitialDraftRect, toInitialOrigin } from "./state";
 import { useInteractions } from "./useInteractions";
 

@@ -7,16 +7,16 @@ import type { ReactElement, Ref } from "react";
 import { useState } from "react";
 import type { ClassId } from "../../../../../../../../shared/ids";
 import type { MemberClassifier } from "../../../../../../../../shared/uml";
-import EditableTextList from "../../../../../../../../ui/canvas/composites/EditableTextList/EditableTextList";
+import EditableTextList from "../../../../../../../../Ui/canvas/composites/EditableTextList/EditableTextList";
 import type {
   EditableTextListRow,
   TextEmphasis,
-} from "../../../../../../../../ui/canvas/composites/EditableTextList/EditableTextList";
+} from "../../../../../../../../Ui/canvas/composites/EditableTextList/EditableTextList";
 import type { EditingState } from "../../../../../../../state/editorStates";
 import type { ClassMemberView, ClassView } from "../../../../../../../views/schema";
-import InlineValidationPopup from "../../../../../../../../ui/canvas/primitives/InlineValidationPopup/InlineValidationPopup";
-import BoxBodyFrame from "../../../../../../../../ui/canvas/templates/BoxBodyFrame/BoxBodyFrame";
-import CompartmentStack from "../../../../../../../../ui/canvas/templates/CompartmentStack/CompartmentStack";
+import InlineValidationPopup from "../../../../../../../../Ui/canvas/primitives/InlineValidationPopup/InlineValidationPopup";
+import BoxBodyFrame from "../../../../../../../../Ui/canvas/templates/BoxBodyFrame/BoxBodyFrame";
+import CompartmentStack from "../../../../../../../../Ui/canvas/templates/CompartmentStack/CompartmentStack";
 import {
   INLINE_VALIDATION_POPUP_Z_INDEX,
   NODE_ABOVE_CONTENT_Z_INDEX,

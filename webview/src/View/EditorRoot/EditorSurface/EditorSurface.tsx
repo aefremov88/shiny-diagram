@@ -14,7 +14,7 @@ import type {
 } from "../../state/editorStates";
 import type { DiagramView } from "../../views/schema";
 import { TOOL_PANE_WIDTH } from "../../config/editorUiConfig";
-import WorkspaceFrame from "../../../ui/chrome/templates/WorkspaceFrame/WorkspaceFrame";
+import WorkspaceFrame from "../../../Ui/chrome/templates/WorkspaceFrame/WorkspaceFrame";
 import ClassDiagram from "./DiagramCanvas/DiagramCanvas";
 import EditPane from "./EditPane/EditPane";
 import ToolPane from "./ToolPane/ToolPane";
@@ -27,12 +27,19 @@ import {
 } from "./state";
 import { useInteractions } from "./useInteractions";
 import { useStateReconciliation } from "./useStateReconciliation";
+import type { ExportPngResult } from "../../../shared/exportPng";
 
 type EditorSurfaceProps = {
   readonly view: DiagramView;
+  readonly exportRequest: number;
+  readonly onExportComplete: (result: ExportPngResult) => void;
 };
 
-export default function EditorSurface({ view }: EditorSurfaceProps): ReactElement {
+export default function EditorSurface({
+  view,
+  exportRequest,
+  onExportComplete,
+}: EditorSurfaceProps): ReactElement {
   // State creation: ledger states - selected editor entities and active node placement kind
   const [selectionState, setSelectionState] = useState<SelectionState>(() =>
     toInitialSelectionState()
@@ -143,6 +150,8 @@ export default function EditorSurface({ view }: EditorSurfaceProps): ReactElemen
       content={
         <ClassDiagram
           view={view}
+          exportRequest={exportRequest}
+          onExportComplete={onExportComplete}
           selectionState={selectionState}
           editingState={editingState}
           nodePlacementState={nodePlacementState}

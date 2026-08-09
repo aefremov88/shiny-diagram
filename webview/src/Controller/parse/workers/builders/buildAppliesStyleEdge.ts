@@ -23,7 +23,9 @@ export function buildAppliesStyleEdge(
 ): ParsedStyleApplicationEdge | null {
   if (token.type !== "styleApplication") return null;
 
-  const match = new RegExp(`^\\s*class\\s+(${IDENTITY_PATTERN}):::(\\w+)`).exec(token.raw);
+  const match =
+    new RegExp(`^\\s*class\\s+(${IDENTITY_PATTERN}):::(\\w+)\\s*$`).exec(token.raw) ??
+    new RegExp(`^\\s*class\\s+(${IDENTITY_PATTERN})\\s+(\\w+)\\s*$`).exec(token.raw);
   if (!match) return null;
 
   const targetId = toClassId(readIdentity(match[1]));

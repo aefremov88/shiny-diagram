@@ -7,8 +7,8 @@ import { useEffect, type ReactElement } from "react";
 import type { RelationshipSeed } from "../../../../../state/editorStates";
 import type { RelationshipView } from "../../../../../views/schema";
 import { shouldIgnoreKeyboardShortcutEvent } from "../../../../../utils/keyboardEvents";
-import Button from "../../../../../../ui/chrome/primitives/Button/Button";
-import ControlGroup from "../../../../../../ui/chrome/templates/ControlGroup/ControlGroup";
+import Button from "../../../../../../Ui/chrome/primitives/Button/Button";
+import ControlGroup from "../../../../../../Ui/chrome/templates/ControlGroup/ControlGroup";
 import { useInteractions } from "./useInteractions";
 
 type EdgeActionsProps = {

@@ -8,7 +8,7 @@ import { toStyleDefId } from "../../../../../../shared/ids";
 import type { StyleProperties } from "../../../../../../shared/style";
 import type { ClassView, DeclaredStyleView } from "../../../../../views/schema";
 import { CHROME_MENU_ABOVE_CONTROL_Z_INDEX } from "../../../../../config/editorUiConfig";
-import Dropdown from "../../../../../../ui/chrome/composites/Dropdown/Dropdown";
+import Dropdown from "../../../../../../Ui/chrome/composites/Dropdown/Dropdown";
 import { useInteractions } from "./useInteractions";
 
 type NamedStyleSelectorProps = {

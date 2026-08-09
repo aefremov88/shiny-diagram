@@ -205,7 +205,13 @@ function reparentProvenance(): ProvenanceIndex {
   const parentId = toNamespaceId("A");
   const childId = toNamespaceId("A.B");
   return {
-    diagram: { self: span(0, 0, 7, 0), header: span(0, 0, 0, 12), body: span(1, 0, 7, 0) },
+    diagram: {
+      self: span(0, 0, 7, 0),
+      header: span(0, 0, 0, 12),
+      body: span(1, 0, 7, 0),
+      direction: null,
+      configDirectives: [],
+    },
     classes: new Map([[classId, classRecord(4, 4, 11)]]),
     namespaces: new Map([
       [parentId, namespaceRecord(2, 0, 6, 1, 10, 11)],
@@ -231,7 +237,13 @@ function multiMoveProvenance(): ProvenanceIndex {
   const parentId = toNamespaceId("A");
   const childId = toNamespaceId("A.B");
   return {
-    diagram: { self: span(0, 0, 9, 0), header: span(0, 0, 0, 12), body: span(1, 0, 9, 0) },
+    diagram: {
+      self: span(0, 0, 9, 0),
+      header: span(0, 0, 0, 12),
+      body: span(1, 0, 9, 0),
+      direction: null,
+      configDirectives: [],
+    },
     classes: new Map([
       [classXId, classRecord(6, 4, 11)],
       [classYId, classRecord(4, 2, 9)],

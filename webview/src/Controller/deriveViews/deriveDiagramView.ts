@@ -15,6 +15,7 @@ import { deriveNoteViews } from "./workers/deriveNoteViews";
  */
 export function deriveDiagramView(model: DiagramGraph): DiagramView {
   return {
+    direction: model.diagram.direction,
     classes: deriveClassBoxViews(model),
     namespaces: deriveNamespaceBoxViews(model),
     relationships: deriveRelationshipViews(model),

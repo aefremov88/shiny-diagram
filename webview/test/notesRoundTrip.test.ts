@@ -100,6 +100,87 @@ describe("note command round trips", () => {
     });
   });
 
+  it("inserts missing spatial directly above a note after a blank line", () => {
+    const source = `classDiagram
+note "Previous"
+
+note "Target"
+`;
+    const result = dispatch(source, [missingSpatialCommand(composeNoteId(1))]);
+
+    expect(result.source).toBe(`classDiagram
+note "Previous"
+
+%% @note: x=10 y=21 w=100 h=80
+note "Target"
+`);
+  });
+
+  it("inserts missing spatial directly above a note after a comment", () => {
+    const source = `classDiagram
+note "Previous"
+%% explanatory comment
+note "Target"
+`;
+    const result = dispatch(source, [missingSpatialCommand(composeNoteId(1))]);
+
+    expect(result.source).toBe(`classDiagram
+note "Previous"
+%% explanatory comment
+%% @note: x=10 y=21 w=100 h=80
+note "Target"
+`);
+  });
+
+  it("inserts missing spatial directly above the first note statement", () => {
+    const source = `classDiagram
+note "Target"
+`;
+    const result = dispatch(source, [missingSpatialCommand(composeNoteId(0))]);
+
+    expect(result.source).toBe(`classDiagram
+%% @note: x=10 y=21 w=100 h=80
+note "Target"
+`);
+  });
+
+  it("copies missing-spatial indentation from the target note", () => {
+    const source = `classDiagram
+note "Previous"
+    note "Target"
+`;
+    const result = dispatch(source, [missingSpatialCommand(composeNoteId(1))]);
+
+    expect(result.source).toBe(`classDiagram
+note "Previous"
+    %% @note: x=10 y=21 w=100 h=80
+    note "Target"
+`);
+  });
+
+  it("binds generated spatial after reparse and preserves every other line", () => {
+    const source = `classDiagram
+class User
+%% @spatial:User x=10 y=20 w=220 h=160
+note "Previous"
+
+note "Target"
+`;
+    const result = dispatch(source, [missingSpatialCommand(composeNoteId(1))]);
+    const reparsed = parseReady(result.source);
+
+    expect(reparsed.graph.notes.get(composeNoteId(1))?.spatial).toEqual({
+      position: { x: 10, y: 21 },
+      size: { width: 100, height: 80 },
+    });
+    expect(
+      result.source
+        .split("\n")
+        .filter((line) => !line.startsWith("%% @note:"))
+        .join("\n")
+    ).toBe(source);
+  });
+
   it("attaches and detaches without changing the annotation line", () => {
     const attached = dispatch(baseSource(), [
       {
@@ -168,6 +249,14 @@ function parseReady(source: string) {
 
 function noteAnnotationLine(source: string): string {
   return source.split("\n").find((line) => line.includes("@note:")) ?? "";
+}
+
+function missingSpatialCommand(noteId: ReturnType<typeof composeNoteId>) {
+  return {
+    type: "note.spatial.set" as const,
+    noteId,
+    spatial: { position: { x: 10.4, y: 20.6 }, size: { width: 100, height: 80 } },
+  };
 }
 
 function applyEdits(source: string, edits: readonly SourceEdit[]): string {

@@ -3,9 +3,9 @@
  */
 
 import type { ReactElement } from "react";
-import Button from "../../ui/chrome/primitives/Button/Button";
-import SegmentedControl from "../../ui/chrome/primitives/SegmentedControl/SegmentedControl";
-import StatusDot from "../../ui/chrome/primitives/StatusDot/StatusDot";
+import Button from "../../Ui/chrome/primitives/Button/Button";
+import SegmentedControl from "../../Ui/chrome/primitives/SegmentedControl/SegmentedControl";
+import StatusDot from "../../Ui/chrome/primitives/StatusDot/StatusDot";
 import type { DocumentStatus, WebViewMode } from "../state";
 import { redoGlyph, undoGlyph } from "./icons";
 import styles from "./WebViewHeader.module.css";
@@ -17,6 +17,8 @@ type WebViewHeaderProps = {
   onModeChange: (mode: WebViewMode) => void;
   onHistory: (action: "undo" | "redo") => void;
   onGenerate: () => void;
+  onExport: () => void;
+  isExporting: boolean;
 };
 
 /**
@@ -29,6 +31,8 @@ export default function WebViewHeader({
   onModeChange,
   onHistory,
   onGenerate,
+  onExport,
+  isExporting,
 }: WebViewHeaderProps): ReactElement {
   // UI props derivation
   const status = toStatusDotProps(documentStatus);
@@ -44,6 +48,16 @@ export default function WebViewHeader({
         {documentStatus.status === "missingAnnotations" ? (
           <Button label="Generate" onClick={onGenerate} />
         ) : null}
+        <Button
+          label={isExporting ? "Exporting…" : "Export PNG"}
+          disabled={mode !== "shiny" || documentStatus.status !== "ready" || isExporting}
+          title={
+            mode !== "shiny" || documentStatus.status !== "ready"
+              ? "Export available when the diagram renders"
+              : undefined
+          }
+          onClick={onExport}
+        />
       </div>
       <div className={styles.rightGroup}>
         <div className={styles.historyGroup}>
@@ -65,8 +79,8 @@ export default function WebViewHeader({
         <span className={styles.divider} aria-hidden="true" />
         <SegmentedControl
           options={[
-            { value: "mermaid", label: "Mermaid" },
             { value: "shiny", label: "Shiny" },
+            { value: "mermaid", label: "Mermaid" },
           ]}
           value={mode}
           onChange={onModeChange}
@@ -92,6 +106,8 @@ function toStatusDotProps(status: DocumentStatus): StatusDotProps {
         variant: "attention",
         title: toMissingAnnotationsTitle(status.missingClassIds),
       };
+    case "unsupportedDiagramType":
+      return { variant: "attention", title: "Unsupported diagram type" };
     case "invalidSyntax":
       return { variant: "error", title: "Cannot parse document" };
   }

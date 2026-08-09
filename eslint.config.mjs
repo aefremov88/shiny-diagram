@@ -34,7 +34,7 @@ export default [
   },
   {
     files: ["webview/src/**/*.tsx"],
-    ignores: ["webview/src/ui/**/*.tsx"],
+    ignores: ["webview/src/Ui/**/*.tsx"],
     rules: {
       "no-restricted-syntax": [
         "error",

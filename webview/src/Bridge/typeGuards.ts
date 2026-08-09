@@ -8,10 +8,9 @@ import type { HostToWebviewMessage } from "./protocol";
  * Narrows unknown postMessage payloads to host-to-webview messages.
  */
 export function isHostMessage(data: unknown): data is HostToWebviewMessage {
+  if (typeof data !== "object" || data === null || !("type" in data)) return false;
+  if ((data as { type: unknown }).type === "exportPngRequest") return true;
   return (
-    typeof data === "object" &&
-    data !== null &&
-    "type" in data &&
     (data as { type: unknown }).type === "sourceUpdate" &&
     "sourceText" in data &&
     typeof data.sourceText === "string" &&

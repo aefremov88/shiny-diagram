@@ -8,11 +8,11 @@ import { useLayoutEffect, useRef, useState } from "react";
 import ReactFlowConnectionHandlesAdapter from "./ReactFlowConnectionHandlesAdapter/ReactFlowConnectionHandlesAdapter";
 import MemberTable from "./MemberTable/MemberTable";
 import { useInteractions } from "./useInteractions";
-import BoxInteractionOverlay from "../../../../../../../ui/canvas/composites/BoxInteractionOverlay/BoxInteractionOverlay";
-import type { ResizeHandle } from "../../../../../../../ui/canvas/composites/BoxInteractionOverlay/BoxInteractionOverlay";
-import InlineCommitTextField from "../../../../../../../ui/canvas/composites/InlineCommitTextField/InlineCommitTextField";
-import BoxHeaderFrame from "../../../../../../../ui/canvas/templates/BoxHeaderFrame/BoxHeaderFrame";
-import StyledBoxSurfaceFrame from "../../../../../../../ui/canvas/templates/StyledBoxSurfaceFrame/StyledBoxSurfaceFrame";
+import BoxInteractionOverlay from "../../../../../../../Ui/canvas/composites/BoxInteractionOverlay/BoxInteractionOverlay";
+import type { ResizeHandle } from "../../../../../../../Ui/canvas/composites/BoxInteractionOverlay/BoxInteractionOverlay";
+import InlineCommitTextField from "../../../../../../../Ui/canvas/composites/InlineCommitTextField/InlineCommitTextField";
+import BoxHeaderFrame from "../../../../../../../Ui/canvas/templates/BoxHeaderFrame/BoxHeaderFrame";
+import StyledBoxSurfaceFrame from "../../../../../../../Ui/canvas/templates/StyledBoxSurfaceFrame/StyledBoxSurfaceFrame";
 import type { Point, Rect } from "../../../../../../../shared/geometry";
 import type { ClassId } from "../../../../../../../shared/ids";
 import type { EditingState } from "../../../../../../state/editorStates";
@@ -24,7 +24,7 @@ import {
   NODE_ABOVE_CONTENT_Z_INDEX,
   NODE_BEHIND_CONTENT_Z_INDEX,
 } from "../../../../../../config/editorUiConfig";
-import InlineValidationPopup from "../../../../../../../ui/canvas/primitives/InlineValidationPopup/InlineValidationPopup";
+import InlineValidationPopup from "../../../../../../../Ui/canvas/primitives/InlineValidationPopup/InlineValidationPopup";
 import { STYLE_PROPERTIES } from "../../../../../../../shared/style";
 
 type ClassBoxProps = {

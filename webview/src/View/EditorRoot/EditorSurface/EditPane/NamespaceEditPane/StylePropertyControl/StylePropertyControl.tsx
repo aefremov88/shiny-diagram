@@ -7,9 +7,9 @@ import type { ReactElement } from "react";
 import type { StylePropertyName } from "../../../../../../shared/style";
 import { DASH_PRESETS, WIDTH_PRESETS } from "../../../../../config/stylePresets";
 import { CHROME_SELECTOR_POPUP_ABOVE_CONTROL_Z_INDEX } from "../../../../../config/editorUiConfig";
-import ColorSelect from "../../../../../../ui/chrome/composites/ColorSelect/ColorSelect";
-import type { ColorSelectPresetCatalog } from "../../../../../../ui/chrome/composites/ColorSelect/ColorSelect";
-import StrokeSelect from "../../../../../../ui/chrome/composites/StrokeSelect/StrokeSelect";
+import ColorSelect from "../../../../../../Ui/chrome/composites/ColorSelect/ColorSelect";
+import type { ColorSelectPresetCatalog } from "../../../../../../Ui/chrome/composites/ColorSelect/ColorSelect";
+import StrokeSelect from "../../../../../../Ui/chrome/composites/StrokeSelect/StrokeSelect";
 
 type StylePropertyControlProps = {
   readonly property: StylePropertyName;

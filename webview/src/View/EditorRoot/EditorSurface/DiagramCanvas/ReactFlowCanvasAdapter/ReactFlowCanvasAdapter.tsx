@@ -14,7 +14,9 @@ import {
   useReactFlow,
   type XYPosition,
 } from "@xyflow/react";
+import { captureReactFlowCanvas, pngDataUrlToBase64 } from "./captureCanvas";
 import type { Point, Rect } from "../../../../../shared/geometry";
+import type { ExportPngResult } from "../../../../../shared/exportPng";
 import type { ClassId, NamespaceId, NoteId, RelationshipId } from "../../../../../shared/ids";
 import type { TransactionResult } from "../../../../commands/editorCommands";
 import {
@@ -61,8 +63,8 @@ import {
   toRelationshipEdgeDescriptors,
 } from "./frameworkAdapters";
 import { useInteractions } from "./useInteractions";
-import CanvasGridFrame from "../../../../../ui/canvas/templates/CanvasGridFrame/CanvasGridFrame";
-import DraftRect from "../../../../../ui/canvas/primitives/DraftRect/DraftRect";
+import CanvasGridFrame from "../../../../../Ui/canvas/templates/CanvasGridFrame/CanvasGridFrame";
+import DraftRect from "../../../../../Ui/canvas/primitives/DraftRect/DraftRect";
 import type {
   ClassResizePointerState,
   NamespaceResizePointerState,
@@ -94,6 +96,8 @@ type ReactFlowCanvasAdapterProps = {
   readonly nodePlacementState: NodePlacementState;
   readonly noteAttachState: NoteAttachState;
   readonly namespaceGestureState: NamespaceGestureState;
+  readonly exportRequest: number;
+  readonly onExportComplete: (result: ExportPngResult) => void;
   readonly classBoxPlacementState: ClassBoxPlacementState;
   readonly noteBoxPlacementState: NoteBoxPlacementState;
   readonly onClassBoxPlacementChange: (changes: readonly ClassBoxPlacementChange[]) => void;
@@ -140,6 +144,8 @@ export default function ReactFlowCanvasAdapter({
   nodePlacementState,
   noteAttachState,
   namespaceGestureState,
+  exportRequest,
+  onExportComplete,
   classBoxPlacementState,
   noteBoxPlacementState,
   onClassBoxPlacementChange,
@@ -167,7 +173,7 @@ export default function ReactFlowCanvasAdapter({
   onTextBlockEditCancel,
 }: ReactFlowCanvasAdapterProps): ReactElement {
   // Framework prop and event adaptation
-  const { flowToScreenPosition, screenToFlowPosition } = useReactFlow();
+  const { flowToScreenPosition, getNodes, screenToFlowPosition } = useReactFlow();
 
   // State creation: adapter-local state - transient React Flow gesture snapshots
   const [noteAttachCursor, setNoteAttachCursor] = useState<Point | null>(null);
@@ -177,6 +183,7 @@ export default function ReactFlowCanvasAdapter({
     Rect
   > | null>(null);
   const [isSurfaceResizeActive, setSurfaceResizeActive] = useState(false);
+  const [isExportCaptureActive, setExportCaptureActive] = useState(false);
   const [classContentHeightById, setClassContentHeightById] = useState<
     ReadonlyMap<ClassId, number>
   >(new Map());
@@ -192,12 +199,19 @@ export default function ReactFlowCanvasAdapter({
   const classResizePointerStateRef = useRef<ClassResizePointerState | null>(null);
   const noteResizePointerStateRef = useRef<NoteResizePointerState | null>(null);
   const reconnectSeedRef = useRef<RelationshipSeed | null>(null);
+  const canvasRootRef = useRef<HTMLDivElement | null>(null);
+  const handledExportRequestRef = useRef(exportRequest);
+  const pendingExportRef = useRef(false);
   const reconnectPointerRef = useRef<XYPosition | null>(null);
   const isPlacementActive = nodePlacementState !== null;
   const isNamespaceGestureActive = namespaceGestureState.kind !== "none";
   const relationshipPlacementState =
     nodePlacementState?.kind === "relationship" ? nodePlacementState : null;
   const isRelationshipPlacementActive = relationshipPlacementState !== null;
+  const renderedSelectionState = useMemo<SelectionState>(
+    () => (isExportCaptureActive ? { kind: "none" } : selectionState),
+    [isExportCaptureActive, selectionState]
+  );
   const classIds = useMemo(
     () => new Set(view.classes.map((classView) => classView.classId)),
     [view.classes]
@@ -382,12 +396,89 @@ export default function ReactFlowCanvasAdapter({
     onCanvasGestureCancel,
   ]);
 
+  useEffect(() => {
+    if (exportRequest <= handledExportRequestRef.current) return;
+    handledExportRequestRef.current = exportRequest;
+    pendingExportRef.current = true;
+    setExportCaptureActive(true);
+  }, [exportRequest]);
+
+  useEffect(() => {
+    if (!isExportCaptureActive || !pendingExportRef.current) return;
+    const canvasFrame = canvasRootRef.current;
+    const viewport = canvasFrame?.querySelector<HTMLElement>(".react-flow__viewport");
+    if (!viewport || !canvasFrame) {
+      pendingExportRef.current = false;
+      setExportCaptureActive(false);
+      onExportComplete({
+        status: "error",
+        requestId: handledExportRequestRef.current,
+        stage: "dom-target",
+        message: "The active React Flow viewport or canvas frame was not found.",
+      });
+      return;
+    }
+
+    let cancelled = false;
+    const expectedEdgeCount =
+      view.relationships.length +
+      view.notes.filter((note) => note.attachedToClassId !== null).length;
+    void waitForRenderedEdges(canvasFrame, expectedEdgeCount)
+      .then(() => {
+        if (cancelled) return;
+        const backgroundColor = getComputedStyle(canvasFrame).backgroundColor;
+        void captureReactFlowCanvas(viewport, getNodes(), backgroundColor)
+          .then((pngDataUrl) => {
+            if (!cancelled) {
+              onExportComplete({
+                status: "success",
+                requestId: handledExportRequestRef.current,
+                base64: pngDataUrlToBase64(pngDataUrl),
+              });
+            }
+          })
+          .catch((error: unknown) => {
+            if (!cancelled) {
+              onExportComplete({
+                status: "error",
+                requestId: handledExportRequestRef.current,
+                stage: "canvas-capture",
+                message: error instanceof Error ? error.message : String(error),
+              });
+            }
+          })
+          .finally(() => {
+            if (!cancelled) {
+              pendingExportRef.current = false;
+              setExportCaptureActive(false);
+            }
+          });
+      })
+      .catch((error: unknown) => {
+        if (!cancelled) {
+          onExportComplete({
+            status: "error",
+            requestId: handledExportRequestRef.current,
+            stage: "edge-reconciliation",
+            message: error instanceof Error ? error.message : String(error),
+          });
+          pendingExportRef.current = false;
+          setExportCaptureActive(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [getNodes, isExportCaptureActive, onExportComplete, view.notes, view.relationships.length]);
+
   const rfNodes = useMemo(() => {
-    const selectedClassIds = selectionState.kind === "classes" ? selectionState.classIds : [];
+    const selectedClassIds =
+      renderedSelectionState.kind === "classes" ? renderedSelectionState.classIds : [];
     const namespaceNodes = toNamespaceNodeDescriptors(
       view.namespaces,
       renderedNamespaceGeometry,
-      selectionState,
+      renderedSelectionState,
       onNamespaceSelect,
       onNamespaceResizeHandlePress,
       editingState,
@@ -410,7 +501,7 @@ export default function ReactFlowCanvasAdapter({
     );
     const noteNodes = toNoteBoxNodeDescriptors(
       view.notes,
-      selectionState,
+      renderedSelectionState,
       editingState,
       renderedNoteBoxPlacementState,
       onNoteSelect,
@@ -423,7 +514,7 @@ export default function ReactFlowCanvasAdapter({
     return [...namespaceNodes, ...classNodes, ...noteNodes];
   }, [
     view,
-    selectionState,
+    renderedSelectionState,
     renderedClassBoxPlacementState,
     renderedNamespaceGeometry,
     renderedNoteBoxPlacementState,
@@ -447,7 +538,7 @@ export default function ReactFlowCanvasAdapter({
       ...toRelationshipEdgeDescriptors(
         view.classes,
         view.relationships,
-        selectionState,
+        renderedSelectionState,
         renderedClassBoxPlacementState,
         isRelationshipPlacementActive,
         onRelationshipSelect
@@ -464,7 +555,7 @@ export default function ReactFlowCanvasAdapter({
       view.classes,
       view.relationships,
       view.notes,
-      selectionState,
+      renderedSelectionState,
       renderedClassBoxPlacementState,
       renderedNoteBoxPlacementState,
       noteAttachState,
@@ -503,7 +594,7 @@ export default function ReactFlowCanvasAdapter({
   }, [relationshipPlacementState]);
 
   return (
-    <CanvasGridFrame placementCursor={isRelationshipPlacementActive}>
+    <CanvasGridFrame frameRef={canvasRootRef} placementCursor={isRelationshipPlacementActive}>
       <ReactFlow<
         ClassBoxNodeDescriptor | NamespaceNodeDescriptor | NoteBoxNodeDescriptor,
         RelationshipEdgeDescriptor | NoteAttachmentEdgeDescriptor
@@ -569,6 +660,29 @@ export default function ReactFlowCanvasAdapter({
       ) : null}
     </CanvasGridFrame>
   );
+}
+
+async function waitForRenderedEdges(
+  canvasFrame: HTMLElement,
+  expectedEdgeCount: number
+): Promise<void> {
+  if (expectedEdgeCount === 0) {
+    await nextAnimationFrame();
+    return;
+  }
+  for (let attempt = 0; attempt < 8; attempt += 1) {
+    await nextAnimationFrame();
+    const renderedCount = canvasFrame.querySelectorAll(".react-flow__edge").length;
+    if (renderedCount >= expectedEdgeCount) return;
+  }
+  const renderedCount = canvasFrame.querySelectorAll(".react-flow__edge").length;
+  throw new Error(
+    `React Flow rendered ${renderedCount} of ${expectedEdgeCount} expected edges after 8 frames.`
+  );
+}
+
+function nextAnimationFrame(): Promise<void> {
+  return new Promise((resolve) => requestAnimationFrame(() => resolve()));
 }
 
 // Private helpers

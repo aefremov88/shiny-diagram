@@ -10,8 +10,8 @@ import {
   CHROME_MENU_ABOVE_CONTROL_Z_INDEX,
   CHROME_VALIDATION_ABOVE_CONTROL_Z_INDEX,
 } from "../../../../../config/editorUiConfig";
-import CommitComboBox from "../../../../../../ui/chrome/composites/CommitComboBox/CommitComboBox";
-import FieldGrid from "../../../../../../ui/chrome/templates/FieldGrid/FieldGrid";
+import CommitComboBox from "../../../../../../Ui/chrome/composites/CommitComboBox/CommitComboBox";
+import FieldGrid from "../../../../../../Ui/chrome/templates/FieldGrid/FieldGrid";
 import { toRelationshipMultiplicitySetTransaction } from "./transactions";
 
 const multiplicityPresets = ["1", "0..1", "*", "0..*", "1..*"] as const;

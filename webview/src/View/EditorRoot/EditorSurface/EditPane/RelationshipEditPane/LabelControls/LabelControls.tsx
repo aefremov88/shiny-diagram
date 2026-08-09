@@ -7,7 +7,7 @@ import type { ReactElement } from "react";
 import type { RelationshipView } from "../../../../../views/schema";
 import { useDispatchTransaction } from "../../../../../contexts";
 import { CHROME_VALIDATION_ABOVE_CONTROL_Z_INDEX } from "../../../../../config/editorUiConfig";
-import CommitClearableTextField from "../../../../../../ui/chrome/composites/CommitClearableTextField/CommitClearableTextField";
+import CommitClearableTextField from "../../../../../../Ui/chrome/composites/CommitClearableTextField/CommitClearableTextField";
 import { toRelationshipLabelSetTransaction } from "./transactions";
 
 type LabelControlsProps = {

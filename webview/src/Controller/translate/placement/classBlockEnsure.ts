@@ -6,7 +6,7 @@ import type { ProvenanceIndex, SourceSpan } from "../../model/provenanceIndex";
 import type { SourcePosition } from "../../model/sourceEdit";
 import {
   STATEMENT_KINDS,
-  anchorBeforeKindList,
+  anchorAfterPredecessorOf,
   anchorBlockOpening,
   asDifferentKind,
   asSameKind,
@@ -24,7 +24,7 @@ export function rewriteBlocklessClassWithFirstChild(
   if (!record) throw new Error(`Missing provenance for class ${classId}`);
   if (record.body) throw new Error(`Class ${classId} already has a body`);
   const block = classContainer(classId, graph);
-  const previous = anchorBeforeKindList(graph, provenance, block, record.self, STATEMENT_KINDS);
+  const previous = anchorAfterPredecessorOf(graph, provenance, block, record.self, STATEMENT_KINDS);
   const declaration = sliceSpan(sourceText, record.self).trim();
   const childLines = childPayload.split("\n").map((line) => `  ${line}`);
   return [

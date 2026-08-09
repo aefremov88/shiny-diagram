@@ -12,7 +12,7 @@ const sourceRoot = path.join(repoRoot, "webview", "src");
 const sourcePrefix = "webview/src";
 const WEBVIEW_PROTOCOL_FILE = "Bridge/protocol.ts";
 const HOST_PROTOCOL_FILE = "extension-host/protocol.ts";
-const UI_ROOT = "ui";
+const UI_ROOT = "Ui";
 
 const PROTOCOL_FILES = [
   {
@@ -434,27 +434,27 @@ function resolveProjectCSSDependency(importerFile, specifier) {
 }
 
 function uiComponent(file) {
-  const match = /^ui\/(chrome|canvas)\/(primitives|composites|templates)\/([^/]+)\//.exec(file);
+  const match = /^Ui\/(chrome|canvas)\/(primitives|composites|templates)\/([^/]+)\//.exec(file);
   if (!match) return null;
   return {
     wing: match[1],
     tier: match[2],
     name: match[3],
-    root: `ui/${match[1]}/${match[2]}/${match[3]}`,
+    root: `Ui/${match[1]}/${match[2]}/${match[3]}`,
   };
 }
 
 function uiLocation(file) {
-  if (file === "ui/core" || isUnder(file, "ui/core")) {
+  if (file === "Ui/core" || isUnder(file, "Ui/core")) {
     return { wing: "core", tier: "core" };
   }
 
-  const match = /^ui\/(chrome|canvas)\/(primitives|composites|templates)(?:\/|$)/.exec(file);
+  const match = /^Ui\/(chrome|canvas)\/(primitives|composites|templates)(?:\/|$)/.exec(file);
   return match ? { wing: match[1], tier: match[2] } : null;
 }
 
 function uiBrandbookWing(file) {
-  const match = /^ui\/(chrome|canvas)\/tokens\.(?:css|ts)$/.exec(file);
+  const match = /^Ui\/(chrome|canvas)\/tokens\.(?:css|ts)$/.exec(file);
   return match?.[1] ?? null;
 }
 
@@ -533,7 +533,7 @@ function permittedDependencyRule(file, dependency, target) {
     if (isUnder(target, "Shell") || isUnder(target, "shared")) {
       return true;
     }
-    if (isUnder(target, "ui/chrome")) return true;
+    if (isUnder(target, "Ui/chrome")) return true;
     if (isUnder(target, "mermaidRenderer")) return true;
     if (target === "Controller/ShinyController.tsx") return true;
     if (target === "Controller/model/sourceEdit.ts" && dependency.isTypeOnly) {
@@ -617,8 +617,8 @@ function permittedDependencyRule(file, dependency, target) {
   if (isUnder(file, "View")) {
     return isUnder(target, "View") ||
       isUnder(target, "shared") ||
-      isUnder(target, "ui/chrome") ||
-      isUnder(target, "ui/canvas")
+      isUnder(target, "Ui/chrome") ||
+      isUnder(target, "Ui/canvas")
       ? true
       : "Shiny View modules may depend only on Shiny View modules, ui/chrome, ui/canvas, or shared";
   }
@@ -668,7 +668,7 @@ function checkUILibraryLayerConsumption(file, dependency, target) {
     return;
   }
 
-  if (isUnder(target, "ui/core")) {
+  if (isUnder(target, "Ui/core")) {
     reportDependency(
       file,
       dependency,
@@ -678,9 +678,9 @@ function checkUILibraryLayerConsumption(file, dependency, target) {
   }
 
   if (isUnder(file, "View")) {
-    if (isUnder(target, "ui/chrome") || isUnder(target, "ui/canvas")) return;
+    if (isUnder(target, "Ui/chrome") || isUnder(target, "Ui/canvas")) return;
   } else if (isUnder(file, "Shell")) {
-    if (isUnder(target, "ui/chrome")) return;
+    if (isUnder(target, "Ui/chrome")) return;
     reportDependency(
       file,
       dependency,
@@ -723,7 +723,7 @@ function checkUILibraryPublicSurface(file, dependency, target) {
     return;
   }
 
-  if (!isUnder(file, UI_ROOT) && !isUnder(target, "ui/core")) {
+  if (!isUnder(file, UI_ROOT) && !isUnder(target, "Ui/core")) {
     reportDependency(
       file,
       dependency,
@@ -1044,7 +1044,7 @@ function checkBrandTokenUsage() {
       const token = match[0];
       const after = source.slice((match.index ?? 0) + token.length);
       const isDefinition = /^\s*:/.test(after);
-      const isBrandbook = /^ui\/(?:chrome|canvas)\/tokens\.css$/.test(file);
+      const isBrandbook = /^Ui\/(?:chrome|canvas)\/tokens\.css$/.test(file);
       if (isDefinition && isBrandbook) {
         const entries = definitions.get(token) ?? [];
         entries.push({ file, source, index: match.index ?? 0 });
@@ -1077,7 +1077,7 @@ function checkTokenConsumption() {
     const source = readFileSync(absoluteFile, "utf8");
 
     for (const match of source.matchAll(/--vscode-/g)) {
-      const isWingCSSBrandbook = /^ui\/(?:chrome|canvas)\/tokens\.css$/.test(file);
+      const isWingCSSBrandbook = /^Ui\/(?:chrome|canvas)\/tokens\.css$/.test(file);
       if (isWingCSSBrandbook || isUnder(file, "mermaidRenderer")) continue;
       const location = toLineColumn(source, match.index ?? 0);
       report({
@@ -1109,11 +1109,11 @@ function checkTokenConsumption() {
     }
 
     const consumerWing =
-      isUnder(file, "ui/chrome") ||
+      isUnder(file, "Ui/chrome") ||
       (absoluteFile.endsWith(".css") && isUnder(file, "Shell")) ||
       file === "styles.css"
         ? "chrome"
-        : isUnder(file, "ui/canvas")
+        : isUnder(file, "Ui/canvas")
           ? "canvas"
           : null;
     if (!consumerWing) continue;

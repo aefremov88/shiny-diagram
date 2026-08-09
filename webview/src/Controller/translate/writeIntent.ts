@@ -48,6 +48,8 @@ import type { SourceSpan } from "../model/sourceEdit";
 
 /** A whole statement (delete target / insert anchor). No selector — it is the unit. */
 export type StatementRef =
+  | { readonly kind: "direction" }
+  | { readonly kind: "configDirective"; readonly index: number }
   | { readonly kind: "class"; readonly classId: ClassId }
   | { readonly kind: "namespace"; readonly namespaceId: NamespaceId }
   | { readonly kind: "blockMember"; readonly memberId: AttributeId | MethodId }
@@ -144,6 +146,7 @@ export type ValueRef =
 export type StatementAnchor =
   | { readonly kind: "afterSameKind"; readonly statement: StatementRef } // sibling, same kind
   | { readonly kind: "afterDifferentKind"; readonly statement: StatementRef } // sibling, other kind
+  | { readonly kind: "aboveStatement"; readonly statement: StatementRef } // binding write, adjacent above target
   | { readonly kind: "atBlockOpening"; readonly block: BlockRef }; // first child of a block
 
 /** A property list a first entry inserts into. */

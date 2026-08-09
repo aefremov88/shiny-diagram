@@ -50,6 +50,34 @@
   font-size: var(--shiny-chrome-font-size-detail);
 }
 
+.unsupportedPanel {
+  max-width: 720px;
+  padding: 12px 14px;
+  border: var(--shiny-chrome-control-border-width) var(--shiny-chrome-control-border-style)
+    var(--shiny-chrome-status-attention);
+  border-radius: var(--shiny-chrome-button-radius);
+  background: var(--shiny-chrome-surface);
+}
+
+.unsupportedMessage {
+  margin: 0;
+  color: var(--shiny-chrome-text);
+  font-size: var(--shiny-chrome-font-size-primary);
+}
+
+.supportedHeading {
+  margin: 12px 0 0;
+  color: var(--shiny-chrome-text);
+  font-size: var(--shiny-chrome-font-size-primary);
+}
+
+.supportedList {
+  margin: 6px 0 0;
+  padding-left: 24px;
+  color: var(--shiny-chrome-text);
+  font-size: var(--shiny-chrome-font-size-primary);
+}
+
 .errorLog {
   display: grid;
   gap: 10px;

@@ -6,26 +6,19 @@ import type { DiagramGraph } from "../../model/diagramGraph";
 import type { RelationshipView } from "../../../View/views";
 
 /**
- * Derives relationship views whose endpoints both have spatial data.
+ * Derives all relationship views. Rendering is gated to ready diagrams, where
+ * every class has spatial data; Generate also needs relationships beforehand.
  */
 export function deriveRelationshipViews(model: DiagramGraph): RelationshipView[] {
-  return [...model.relationships.values()].flatMap((rel) => {
-    const source = model.classes.get(rel.source.classId);
-    const target = model.classes.get(rel.target.classId);
-    if (!source?.spatial || !target?.spatial) return [];
-
-    return [
-      {
-        relationshipId: rel.id,
-        sourceClassId: rel.source.classId,
-        targetClassId: rel.target.classId,
-        sourceEndpointKind: rel.source.endpointKind,
-        targetEndpointKind: rel.target.endpointKind,
-        lineKind: rel.lineKind,
-        sourceMultiplicity: rel.source.multiplicity ?? undefined,
-        targetMultiplicity: rel.target.multiplicity ?? undefined,
-        label: rel.label ?? undefined,
-      },
-    ];
-  });
+  return [...model.relationships.values()].map((rel) => ({
+    relationshipId: rel.id,
+    sourceClassId: rel.source.classId,
+    targetClassId: rel.target.classId,
+    sourceEndpointKind: rel.source.endpointKind,
+    targetEndpointKind: rel.target.endpointKind,
+    lineKind: rel.lineKind,
+    sourceMultiplicity: rel.source.multiplicity ?? undefined,
+    targetMultiplicity: rel.target.multiplicity ?? undefined,
+    label: rel.label ?? undefined,
+  }));
 }

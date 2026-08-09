@@ -71,7 +71,13 @@ function emptyGraph(): DiagramGraph {
 
 function emptyProvenance(): ProvenanceIndex {
   return {
-    diagram: { self: span(), header: span(), body: span() },
+    diagram: {
+      self: span(),
+      header: span(),
+      body: span(),
+      direction: null,
+      configDirectives: [],
+    },
     classes: new Map(),
     namespaces: new Map(),
     namespaceStyles: new Map(),

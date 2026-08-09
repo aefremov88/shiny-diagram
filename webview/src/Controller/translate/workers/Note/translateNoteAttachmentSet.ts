@@ -9,7 +9,7 @@ import type { ProvenanceIndex } from "../../../model/provenanceIndex";
 import type { SourceSpan } from "../../../model/sourceEdit";
 import {
   anchorBlockOpening,
-  anchorExactStatement,
+  anchorAfterExactStatement,
   asSameKind,
   type StatementKind,
 } from "../../anchors/statementAnchors";
@@ -52,7 +52,7 @@ export function translateNoteAttachmentSet(
 
 function toReplacementAnchor(noteId: NoteId, provenance: ProvenanceIndex): StatementAnchor {
   const annotationAnchor = asSameKind(
-    anchorExactStatement(provenance, { kind: "noteAnnotation", noteId })
+    anchorAfterExactStatement(provenance, { kind: "noteAnnotation", noteId })
   );
   if (annotationAnchor) return annotationAnchor;
 

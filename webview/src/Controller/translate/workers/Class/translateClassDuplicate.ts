@@ -8,7 +8,7 @@ import type { ClassId, StyleDefId } from "../../../../shared/ids";
 import type { StylePropertyName } from "../../../../shared/style";
 import type { TranslateContext } from "../../translateContext";
 import type { StatementAnchor, StatementRef, WriteIntent } from "../../writeIntent";
-import { anchorExactStatement, asSameKind } from "../../anchors/statementAnchors";
+import { anchorAfterExactStatement, asSameKind } from "../../anchors/statementAnchors";
 import { composeSpatialAnnotation } from "../../syntax/spatialSyntax";
 import { composeStyleEntry } from "../../syntax/styleSyntax";
 import { spellIdentity } from "../../../model/identitySpelling";
@@ -113,7 +113,7 @@ export function translateClassDuplicate(
 }
 
 function requireExactAnchor(provenance: ProvenanceIndex, statement: StatementRef): StatementAnchor {
-  const ref = anchorExactStatement(provenance, statement);
+  const ref = anchorAfterExactStatement(provenance, statement);
   if (ref === null) {
     throw new Error(`Missing provenance for ${statement.kind} duplicate anchor`);
   }

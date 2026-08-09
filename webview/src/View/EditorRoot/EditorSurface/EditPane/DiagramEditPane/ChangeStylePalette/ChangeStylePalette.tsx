@@ -7,9 +7,9 @@ import type { ReactElement } from "react";
 import { STYLE_PROPERTIES, type StylePropertyName } from "../../../../../../shared/style";
 import type { DeclaredStyleView } from "../../../../../views/schema";
 import { CLASS_STYLE_CONSTANTS } from "../../../../../config/styleConstants";
-import FieldGrid from "../../../../../../ui/chrome/templates/FieldGrid/FieldGrid";
+import FieldGrid from "../../../../../../Ui/chrome/templates/FieldGrid/FieldGrid";
 import StylePropertyControl from "./StylePropertyControl/StylePropertyControl";
-import type { ColorSelectPresetCatalog } from "../../../../../../ui/chrome/composites/ColorSelect/ColorSelect";
+import type { ColorSelectPresetCatalog } from "../../../../../../Ui/chrome/composites/ColorSelect/ColorSelect";
 
 type ChangeStylePaletteProps = {
   readonly view: DeclaredStyleView["properties"];

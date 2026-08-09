@@ -5,7 +5,7 @@
 import type { ReactElement } from "react";
 import type { RelationshipSeed } from "../../../../../../state/editorStates";
 import { endpointGlyphs } from "../../RelationshipMarker/icons";
-import GhostEdge from "../../../../../../../ui/canvas/composites/GhostEdge/GhostEdge";
+import GhostEdge from "../../../../../../../Ui/canvas/composites/GhostEdge/GhostEdge";
 
 type RelationshipGhostLineProps = {
   readonly seed: RelationshipSeed;

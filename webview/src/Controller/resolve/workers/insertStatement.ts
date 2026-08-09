@@ -17,15 +17,17 @@ export function resolveInsertStatement(
   sourceText: string,
   eol: string
 ): SourceEdit {
-  const { position, indent, blankBefore } = resolveStatementAnchor(
-    intent.anchor,
-    provenance,
-    sourceText
-  );
-  const lines = intent.payload.split("\n").map((line) => (line === "" ? line : `${indent}${line}`));
+  const resolved = resolveStatementAnchor(intent.anchor, provenance, sourceText);
+  const lines = intent.payload
+    .split("\n")
+    .map((line) => (line === "" ? line : `${resolved.indent}${line}`));
+  const replacementText =
+    resolved.side === "above"
+      ? `${lines.join(eol)}${eol}`
+      : `${resolved.blankBefore ? eol : ""}${eol}${lines.join(eol)}`;
   return {
-    start: position,
-    end: position,
-    replacementText: `${blankBefore ? eol : ""}${eol}${lines.join(eol)}`,
+    start: resolved.position,
+    end: resolved.position,
+    replacementText,
   };
 }

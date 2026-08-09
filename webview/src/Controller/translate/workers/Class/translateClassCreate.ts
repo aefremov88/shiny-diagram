@@ -45,6 +45,11 @@ export function translateClassCreate(
   const declarationAnchor: StatementAnchor =
     asSameKind(anchorAfterKindList(graph, provenance, declarationScope, ["class"])) ??
     asDifferentKind(anchorAfterKindList(graph, provenance, declarationScope, ["namespace"])) ??
+    (declarationScope.kind === "diagram"
+      ? asDifferentKind(
+          anchorAfterKindList(graph, provenance, declarationScope, ["direction", "configDirective"])
+        )
+      : null) ??
     anchorBlockOpening(declarationScope);
   const insertDeclarationIntent: WriteIntent = {
     kind: "insertStatement",

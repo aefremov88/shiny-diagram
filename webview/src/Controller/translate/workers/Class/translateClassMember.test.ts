@@ -233,7 +233,13 @@ function graphWithAttributes(attributes: readonly ClassMember[]): DiagramGraph {
 function provenance(): ProvenanceIndex {
   const empty = span(0, 0, 0);
   return {
-    diagram: { self: empty, header: empty, body: empty },
+    diagram: {
+      self: empty,
+      header: empty,
+      body: empty,
+      direction: null,
+      configDirectives: [],
+    },
     classes: new Map([
       [
         classId,

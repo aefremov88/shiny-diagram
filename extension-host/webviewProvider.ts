@@ -6,6 +6,8 @@ import * as vscode from "vscode";
 import { DiagramSession } from "./diagramSession";
 
 export class DiagramEditorProvider implements vscode.CustomTextEditorProvider {
+  private readonly sessions = new Set<DiagramSession>();
+
   constructor(private readonly context: vscode.ExtensionContext) {}
 
   /** Resolves one diagram view backed by the supplied text document. */
@@ -17,7 +19,16 @@ export class DiagramEditorProvider implements vscode.CustomTextEditorProvider {
     panel.webview.html = getWebviewHtml(this.context, panel.webview, document);
 
     const session = new DiagramSession(document, panel);
-    panel.onDidDispose(() => session.dispose());
+    this.sessions.add(session);
+    panel.onDidDispose(() => {
+      session.dispose();
+      this.sessions.delete(session);
+    });
+  }
+
+  requestPngExport(): void {
+    const activeSession = [...this.sessions].find((session) => session.isActive);
+    activeSession?.requestPngExport();
   }
 }
 

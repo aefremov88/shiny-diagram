@@ -12,10 +12,10 @@ import {
   CHROME_MENU_ABOVE_CONTROL_Z_INDEX,
   CHROME_VALIDATION_ABOVE_CONTROL_Z_INDEX,
 } from "../../../../../config/editorUiConfig";
-import CommitClearableTextField from "../../../../../../ui/chrome/composites/CommitClearableTextField/CommitClearableTextField";
-import CommitComboBox from "../../../../../../ui/chrome/composites/CommitComboBox/CommitComboBox";
-import CommitTextField from "../../../../../../ui/chrome/composites/CommitTextField/CommitTextField";
-import FieldGrid from "../../../../../../ui/chrome/templates/FieldGrid/FieldGrid";
+import CommitClearableTextField from "../../../../../../Ui/chrome/composites/CommitClearableTextField/CommitClearableTextField";
+import CommitComboBox from "../../../../../../Ui/chrome/composites/CommitComboBox/CommitComboBox";
+import CommitTextField from "../../../../../../Ui/chrome/composites/CommitTextField/CommitTextField";
+import FieldGrid from "../../../../../../Ui/chrome/templates/FieldGrid/FieldGrid";
 
 type HeaderTextControlsProps = {
   readonly view: ClassView;

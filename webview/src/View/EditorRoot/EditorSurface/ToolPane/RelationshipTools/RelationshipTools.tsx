@@ -7,7 +7,7 @@ import type { ReactElement } from "react";
 import type { GlyphDescriptor } from "../../../../../shared/glyph";
 import type { RelationshipType } from "../../../../../shared/uml";
 import type { NodePlacementState, RelationshipSeed } from "../../../../state/editorStates";
-import ToggleButton from "../../../../../ui/chrome/primitives/ToggleButton/ToggleButton";
+import ToggleButton from "../../../../../Ui/chrome/primitives/ToggleButton/ToggleButton";
 import {
   aggregationGlyph,
   associationGlyph,

@@ -4,10 +4,15 @@
 
 import type { EditorCommandOf } from "../../../../View/commands";
 import type { NamespaceId } from "../../../../shared/ids";
+import type { DiagramGraph } from "../../../model/diagramGraph";
 import type { ProvenanceIndex } from "../../../model/provenanceIndex";
 import { spellIdentity } from "../../../model/identitySpelling";
 import type { StatementRef, WriteIntent } from "../../writeIntent";
-import { anchorBlockOpening } from "../../anchors/statementAnchors";
+import {
+  anchorAfterKindList,
+  anchorBlockOpening,
+  asDifferentKind,
+} from "../../anchors/statementAnchors";
 import { movedStatementPayload } from "../../placement/moveStatementSlice";
 import type { TranslateContext } from "../../translateContext";
 
@@ -22,6 +27,7 @@ import type { TranslateContext } from "../../translateContext";
  */
 export function translateNamespaceCreate(
   command: EditorCommandOf<"namespace.create">,
+  graph: DiagramGraph,
   provenance: ProvenanceIndex,
   sourceText: string,
   context: TranslateContext
@@ -34,7 +40,13 @@ export function translateNamespaceCreate(
   const insertIntent: WriteIntent = {
     kind: "insertStatement",
     payload: composeNamespaceBlock(namespaceId, memberStatements, provenance, sourceText),
-    anchor: anchorBlockOpening({ kind: "diagram" }),
+    anchor:
+      asDifferentKind(
+        anchorAfterKindList(graph, provenance, { kind: "diagram" }, [
+          "direction",
+          "configDirective",
+        ])
+      ) ?? anchorBlockOpening({ kind: "diagram" }),
   };
 
   return [...deleteIntents, insertIntent];

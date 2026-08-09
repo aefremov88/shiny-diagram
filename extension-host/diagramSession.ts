@@ -5,6 +5,7 @@
 import * as vscode from "vscode";
 import * as path from "node:path";
 import type { HostToWebviewMessage, SourceEdit, WebviewToHostMessage } from "./protocol";
+import { writeExportedPng } from "./exportPng";
 
 const DEBOUNCE_MS = 500;
 
@@ -59,9 +60,28 @@ export class DiagramSession {
       void this.onApplyEdits(msg.edits);
       return;
     }
+    if (msg.type === "exportPng") {
+      void this.onExportPng(msg.requestId, msg.base64);
+      return;
+    }
+    if (msg.type === "exportPngError") {
+      void vscode.window.showErrorMessage(
+        `Shiny PNG export #${msg.requestId} failed at ${msg.stage}: ${msg.message}`
+      );
+      return;
+    }
 
     if (this.document.isClosed) return;
     void vscode.commands.executeCommand(msg.type === "history.undo" ? "undo" : "redo");
+  }
+
+  requestPngExport(): void {
+    const message: HostToWebviewMessage = { type: "exportPngRequest" };
+    void this.panel.webview.postMessage(message);
+  }
+
+  get isActive(): boolean {
+    return this.panel.active;
   }
 
   /**
@@ -86,6 +106,23 @@ export class DiagramSession {
 
     await vscode.workspace.applyEdit(workspaceEdit);
     this.pushSourceUpdate();
+  }
+
+  private async onExportPng(requestId: number, base64: string): Promise<void> {
+    try {
+      const bytes = Buffer.from(base64, "base64");
+      if (!bytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))) {
+        throw new Error("Webview payload does not have a valid PNG signature.");
+      }
+      const targetUri = await writeExportedPng(this.document.uri, base64);
+      vscode.window.setStatusBarMessage(
+        `Shiny export #${requestId} wrote ${targetUri.fsPath}`,
+        4000
+      );
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown export error";
+      void vscode.window.showErrorMessage(`Shiny could not export PNG: ${message}`);
+    }
   }
 
   private onDocumentChange(event: vscode.TextDocumentChangeEvent): void {

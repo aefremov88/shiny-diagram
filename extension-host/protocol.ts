@@ -11,8 +11,12 @@ export type SourceUpdateMessage = {
   readonly documentName: string;
 };
 
+export type ExportPngRequestMessage = {
+  readonly type: "exportPngRequest";
+};
+
 /** Union of all messages the extension host sends to the webview. */
-export type HostToWebviewMessage = SourceUpdateMessage;
+export type HostToWebviewMessage = SourceUpdateMessage | ExportPngRequestMessage;
 
 export type SourcePosition = {
   readonly line: number;
@@ -41,5 +45,22 @@ export type HistoryMessage = {
   readonly type: "history.undo" | "history.redo";
 };
 
+export type ExportPngMessage = {
+  readonly type: "exportPng";
+  readonly requestId: number;
+  readonly base64: string;
+};
+
+export type ExportPngErrorMessage = {
+  readonly type: "exportPngError";
+  readonly requestId: number;
+  readonly stage: string;
+  readonly message: string;
+};
+
 /** Union of all messages the webview sends to the extension host. */
-export type WebviewToHostMessage = ApplyEditsMessage | HistoryMessage;
+export type WebviewToHostMessage =
+  | ApplyEditsMessage
+  | HistoryMessage
+  | ExportPngMessage
+  | ExportPngErrorMessage;

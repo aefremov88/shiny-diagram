@@ -5,8 +5,8 @@
 import type { ReactElement } from "react";
 import type { Point } from "../../../../../../shared/geometry";
 import { NOTE_ATTACH_GHOST_Z_INDEX } from "../../../../../config/editorUiConfig";
-import EdgeGhostLine from "../../../../../../ui/canvas/primitives/EdgeGhostLine/EdgeGhostLine";
-import CanvasOverlayFrame from "../../../../../../ui/canvas/templates/CanvasOverlayFrame/CanvasOverlayFrame";
+import EdgeGhostLine from "../../../../../../Ui/canvas/primitives/EdgeGhostLine/EdgeGhostLine";
+import CanvasOverlayFrame from "../../../../../../Ui/canvas/templates/CanvasOverlayFrame/CanvasOverlayFrame";
 
 type NoteAttachGhostLineProps = {
   readonly sourcePoint: Point;

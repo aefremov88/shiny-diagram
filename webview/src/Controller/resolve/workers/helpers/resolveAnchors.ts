@@ -26,11 +26,18 @@ import {
 import { getLine, getLineIndent } from "./textUtils";
 
 /** A resolved statement insertion: where the new line goes, and the indent to prefix each line with. */
-export type ResolvedStatementAnchor = {
-  readonly position: SourcePosition;
-  readonly indent: string;
-  readonly blankBefore: boolean;
-};
+export type ResolvedStatementAnchor =
+  | {
+      readonly side: "after";
+      readonly position: SourcePosition;
+      readonly indent: string;
+      readonly blankBefore: boolean;
+    }
+  | {
+      readonly side: "above";
+      readonly position: SourcePosition;
+      readonly indent: string;
+    };
 
 /** A resolved entry insertion: where the entry goes, and the separator to prefix it with. */
 export type ResolvedEntryAnchor = {
@@ -46,14 +53,25 @@ export function resolveStatementAnchor(
   if (anchor.kind === "afterSameKind" || anchor.kind === "afterDifferentKind") {
     const location = resolveStatementRef(anchor.statement, provenance);
     return {
+      side: "after",
       position: location.end,
       indent: getLineIndent(sourceText, location.start.line),
       blankBefore: anchor.kind === "afterDifferentKind",
     };
   }
 
+  if (anchor.kind === "aboveStatement") {
+    const location = resolveStatementRef(anchor.statement, provenance);
+    return {
+      side: "above",
+      position: location.start,
+      indent: getLineIndent(sourceText, location.start.line),
+    };
+  }
+
   const header = resolveBlockRef(anchor.block, provenance).header;
   return {
+    side: "after",
     position: header.end,
     indent: `${getLineIndent(sourceText, header.start.line)}${deriveIndentStep(
       anchor.block,

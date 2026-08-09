@@ -11,13 +11,21 @@ import { attachNoteAnnotations } from "./workers/noteAnnotations";
 import { attachSpatial, parseSpatialAnnotations } from "./workers/spatialAnnotations";
 import { tokenize, type ParseToken } from "./workers/tokenizer";
 import { validateTextBlocks } from "./workers/validateTextBlocks";
+import { UNSUPPORTED_MERMAID_DIAGRAM_TYPES } from "../../shared/diagramTypes";
 
 /**
  * Parses Mermaid class-diagram source into a Controller model and parse status.
  */
 export function parseDiagram(source: string): ParseResult {
   try {
-    if (!hasClassDiagramHeader(source)) {
+    const diagramType = detectDiagramType(source);
+    if (diagramType?.kind === "unsupported") {
+      return {
+        status: "unsupportedDiagramType",
+        diagramType: diagramType.declaration,
+      };
+    }
+    if (diagramType?.kind !== "class") {
       const firstSourceLine = toFirstSourceLine(source);
       return {
         status: "invalidSyntax",
@@ -146,6 +154,7 @@ function collectInvalidClassBodyDiagnosticsInto(
 function isInvalidClassBodyStatement(token: ParseToken): boolean {
   switch (token.type) {
     case "diagramHeader":
+    case "direction":
     case "classDeclaration":
     case "relationship":
     case "styleDef":
@@ -154,6 +163,7 @@ function isInvalidClassBodyStatement(token: ParseToken): boolean {
     case "spatialAnnotation":
     case "noteAnnotation":
     case "namespaceStyleAnnotation":
+    case "configDirective":
     case "noteStatement":
     case "namespace":
     case "knownIgnored":
@@ -236,17 +246,37 @@ function collectUnrecognizedDiagnosticsInto(
   }
 }
 
-function hasClassDiagramHeader(source: string): boolean {
+type DetectedDiagramType =
+  | { readonly kind: "class"; readonly declaration: string }
+  | { readonly kind: "unsupported"; readonly declaration: string };
+
+function detectDiagramType(source: string): DetectedDiagramType | null {
+  const unsupportedTypes = new Set<string>(UNSUPPORTED_MERMAID_DIAGRAM_TYPES);
+  let inFrontmatter = false;
+
   for (const line of source.split("\n")) {
     const trimmed = line.trim();
-    if (trimmed === "" || trimmed.startsWith("%%")) continue;
-    return (
-      trimmed === "classDiagram" ||
-      trimmed === "classDiagram-v2" ||
-      trimmed.startsWith("classDiagram ")
-    );
+    if (trimmed === "") continue;
+    if (inFrontmatter) {
+      if (trimmed === "---") inFrontmatter = false;
+      continue;
+    }
+    if (trimmed === "---") {
+      inFrontmatter = true;
+      continue;
+    }
+    if (trimmed.startsWith("%%")) continue;
+
+    const declaration = trimmed.split(/\s/, 1)[0] ?? "";
+    if (declaration === "classDiagram" || declaration === "classDiagram-v2") {
+      return { kind: "class", declaration };
+    }
+    if (unsupportedTypes.has(declaration)) {
+      return { kind: "unsupported", declaration };
+    }
+    return null;
   }
-  return false;
+  return null;
 }
 
 function toFirstSourceLine(source: string): { readonly line: number; readonly fragment: string } {

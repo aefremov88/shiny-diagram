@@ -1,5 +1,35 @@
 classDiagram
-direction LR
+
+direction TB
+
+  namespace NewNamespace {
+    class Attachment {
+      <<abstract>>
+      +UUID id
+      +string fileName
+      +int sizeBytes
+      +downloadUrl() string
+    }
+    class ImageAttachment {
+      +int width
+      +int height
+      +string thumbnailUrl
+    }
+    class FileAttachment {
+      +string mimeType
+      +string checksum
+    }
+  }
+
+    class Presence {
+      <<enumeration>>
+      Online
+      Away
+      Offline
+    }
+
+
+
 
 class ConversationThread {
   <<interface>>
@@ -16,12 +46,6 @@ class DirectThread {
   +isBlocked() boolean
 }
 
-class GroupThread {
-  +string title
-  +UserContact owner
-  +rename(title: string) void
-  +transferOwnership(userId: UUID) void
-}
 
 class UserContact {
   +UUID id
@@ -40,24 +64,8 @@ class TextMessage {
   +delete() void
 }
 
-class Attachment {
-  <<abstract>>
-  +UUID id
-  +string fileName
-  +int sizeBytes
-  +downloadUrl() string
-}
 
-class ImageAttachment {
-  +int width
-  +int height
-  +string thumbnailUrl
-}
 
-class FileAttachment {
-  +string mimeType
-  +string checksum
-}
 
 class MessageStatus {
   <<enumeration>>
@@ -68,12 +76,6 @@ class MessageStatus {
   Failed
 }
 
-class Presence {
-  <<enumeration>>
-  Online
-  Away
-  Offline
-}
 
 class ThreadRepository {
   +findById(id: UUID) ConversationThread
@@ -85,6 +87,13 @@ class NotificationService {
   +notifyMention(message: TextMessage) void
   +notifyNewMessage(thread: ConversationThread) void
 }
+    class GroupThread {
+      +string title
+      +UserContact owner
+      +rename(title: string) void
+      +transferOwnership(userId: UUID) void
+    }
+    class NewClass
 
 ConversationThread <|.. DirectThread
 ConversationThread <|.. GroupThread
@@ -102,10 +111,14 @@ UserContact --> Presence : presence
 ThreadRepository ..> ConversationThread : persists
 NotificationService ..> TextMessage : observes
 NotificationService ..> ConversationThread : notifies
-%% @note: x=174 y=-180 w=180 h=96
 
-note for ConversationThread "Central aggregate for a chat thread"
+%% @note: x=1058 y=329 w=180 h=64
+note "Central aggregate for a chat thread"
+%% @note: x=1207 y=468 w=180 h=64
 note for TextMessage "Good resize test: fields, methods, and edges"
+
+
+%% @note: x=660 y=264 w=180 h=64
 note for NotificationService "Dependency-only service for edge rendering"
 
 classDef pine fill:#779c8c,stroke:#275340,color:#ffffff
@@ -120,21 +133,39 @@ class ThreadRepository serviceStyle
 class NotificationService serviceStyle
 class MessageStatus enumStyle
 class Presence enumStyle
+
 class Attachment attachmentStyle
 class ImageAttachment attachmentStyle
 class FileAttachment attachmentStyle
+class NewClass:::serviceStyle
 
-%% @spatial:ConversationThread x=40 y=40 w=200 h=150
-%% @spatial:DirectThread x=280 y=40 w=200 h=150
-%% @spatial:GroupThread x=520 y=40 w=200 h=150
-%% @spatial:UserContact x=760 y=40 w=200 h=150
-%% @spatial:TextMessage x=1000 y=40 w=200 h=150
-%% @spatial:Attachment x=1240 y=40 w=200 h=150
-%% @spatial:ImageAttachment x=1480 y=40 w=200 h=150
-%% @spatial:FileAttachment x=1720 y=40 w=200 h=150
-%% @spatial:MessageStatus x=1960 y=40 w=200 h=150
-%% @spatial:Presence x=2200 y=40 w=200 h=150
-%% @spatial:ThreadRepository x=2440 y=40 w=200 h=150
-%% @spatial:NotificationService x=2680 y=40 w=200 h=150
+%% @spatial:ConversationThread x=1117 y=540 w=408 h=229
+%% @spatial:TextMessage x=1068 y=889 w=264 h=223
+%% @spatial:NotificationService x=540 y=385 w=420 h=131
+%% @spatial:UserContact x=603 y=861 w=224 h=200
+%% @spatial:Attachment x=912 y=1307 w=240 h=183
+%% @spatial:DirectThread x=1617 y=566 w=232 h=131
+%% @spatial:FileAttachment x=940 y=1530 w=184 h=131
+%% @spatial:GroupThread x=448 y=1307 w=368 h=177
+%% @spatial:ImageAttachment x=924 y=1718 w=216 h=154
+%% @spatial:MessageStatus x=670 y=600 w=160 h=200
+%% @spatial:Presence x=301 y=904 w=160 h=160
+%% @spatial:ThreadRepository x=124 y=677 w=376 h=154
+%% @spatial:NewClass x=183 y=363 w=290.6662995594713 h=207.07599118942733
+
+%% @style:NewNamespace fill=#7fb3d5
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

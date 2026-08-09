@@ -8,11 +8,11 @@ import type { ReactElement } from "react";
 import type { Point, Rect } from "../../../../../../../shared/geometry";
 import type { NoteId } from "../../../../../../../shared/ids";
 import type { EditingState } from "../../../../../../state/editorStates";
-import BoxInteractionOverlay from "../../../../../../../ui/canvas/composites/BoxInteractionOverlay/BoxInteractionOverlay";
-import type { ResizeHandle } from "../../../../../../../ui/canvas/composites/BoxInteractionOverlay/BoxInteractionOverlay";
-import InlineCommitTextArea from "../../../../../../../ui/canvas/composites/InlineCommitTextArea/InlineCommitTextArea";
-import StickyNoteSurfaceFrame from "../../../../../../../ui/canvas/templates/StickyNoteSurfaceFrame/StickyNoteSurfaceFrame";
-import InlineValidationPopup from "../../../../../../../ui/canvas/primitives/InlineValidationPopup/InlineValidationPopup";
+import BoxInteractionOverlay from "../../../../../../../Ui/canvas/composites/BoxInteractionOverlay/BoxInteractionOverlay";
+import type { ResizeHandle } from "../../../../../../../Ui/canvas/composites/BoxInteractionOverlay/BoxInteractionOverlay";
+import InlineCommitTextArea from "../../../../../../../Ui/canvas/composites/InlineCommitTextArea/InlineCommitTextArea";
+import StickyNoteSurfaceFrame from "../../../../../../../Ui/canvas/templates/StickyNoteSurfaceFrame/StickyNoteSurfaceFrame";
+import InlineValidationPopup from "../../../../../../../Ui/canvas/primitives/InlineValidationPopup/InlineValidationPopup";
 import type { NoteView } from "../../../../../../views/schema";
 import {
   INLINE_VALIDATION_POPUP_Z_INDEX,

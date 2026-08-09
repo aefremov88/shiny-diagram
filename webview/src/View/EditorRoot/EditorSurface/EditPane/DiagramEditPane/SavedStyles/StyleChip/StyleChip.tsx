@@ -6,7 +6,7 @@
 import type { ReactElement } from "react";
 import type { StyleDefId } from "../../../../../../../shared/ids";
 import type { DeclaredStyleView } from "../../../../../../views/schema";
-import SwatchToggle from "../../../../../../../ui/chrome/composites/SwatchToggle/SwatchToggle";
+import SwatchToggle from "../../../../../../../Ui/chrome/composites/SwatchToggle/SwatchToggle";
 import {
   CLASS_STYLE_CONSTANTS,
   resolveStyleProperties,

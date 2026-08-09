@@ -1,0 +1,34 @@
+/**
+ * @render Pressable styled-box swatch.
+ */
+
+.toggle {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  padding: 6px;
+  border: var(--shiny-chrome-control-border-width) var(--shiny-chrome-control-border-style)
+    transparent;
+  border-radius: var(--shiny-chrome-toggle-radius);
+  color: var(--shiny-chrome-text);
+  background: var(--shiny-chrome-surface);
+  cursor: var(--shiny-chrome-cursor-action);
+}
+
+.toggle[aria-pressed="true"]:not(:disabled) {
+  background: var(--shiny-chrome-surface);
+  box-shadow:
+    0 0 0 2px var(--shiny-chrome-accent-outline),
+    var(--shiny-chrome-tile-elevation-pressed);
+}
+
+.toggle:focus-visible {
+  outline: var(--shiny-chrome-compact-focus-outline-width) var(--shiny-chrome-focus-outline-style)
+    var(--shiny-chrome-accent-outline);
+  outline-offset: 1px;
+}
+
+.toggle:disabled {
+  opacity: 0.55;
+  cursor: var(--shiny-chrome-cursor-unavailable);
+}

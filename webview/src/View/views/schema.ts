@@ -19,6 +19,7 @@
 import type { StyleProperties } from "../../shared/style";
 import type { Rect } from "../../shared/geometry";
 import type {
+  DiagramDirection,
   MemberClassifier,
   MemberKind,
   RelationshipEndpointKind,
@@ -60,6 +61,8 @@ export type ClassView = {
   readonly style?: StyleProperties;
   readonly appliedStyleId?: StyleDefId;
 };
+
+export type UnpositionedClassView = Omit<ClassView, "bounds">;
 
 export type NamespaceView = {
   readonly namespaceId: NamespaceId;
@@ -112,6 +115,7 @@ export type NoteView = {
 /* ── Diagram tree ────────────────────────────────────────────────────────── */
 
 export type DiagramView = {
+  readonly direction: DiagramDirection | null;
   readonly classes: readonly ClassView[];
   readonly namespaces: readonly NamespaceView[];
   readonly relationships: readonly RelationshipView[];
@@ -123,12 +127,16 @@ export type DiagramView = {
 
 export type EditorViewModel =
   | {
+      readonly status: "unsupportedDiagramType";
+      readonly diagramType: string;
+    }
+  | {
       readonly status: "invalidSyntax";
       readonly errors: readonly string[];
     }
   | {
       readonly status: "missingAnnotations";
-      readonly missingClassIds: readonly ClassId[];
+      readonly missingClasses: readonly UnpositionedClassView[];
       readonly diagram: DiagramView;
     }
   | {
