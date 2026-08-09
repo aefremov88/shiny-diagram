@@ -1,9 +1,22 @@
 {
-  "name": "shiny-poc",
-  "displayName": "Shiny PoC",
-  "description": "Proof of concept for source-backed visual editing of Mermaid diagrams.",
+  "name": "shiny-diagram",
+  "displayName": "Shiny Diagram",
+  "description": "Visual editor for Mermaid class diagrams with write-back to source. Built for AI-human co-creation.",
   "version": "0.0.1",
-  "private": true,
+  "license": "MIT",
+  "publisher": "PLACEHOLDER",
+  "// TODO": "Replace publisher with the real Visual Studio Marketplace publisher ID.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anton-efremov/shiny-diagram"
+  },
+  "keywords": [
+    "mermaid",
+    "diagram",
+    "class diagram",
+    "uml",
+    "visual editor"
+  ],
   "engines": {
     "vscode": "^1.90.0"
   },
