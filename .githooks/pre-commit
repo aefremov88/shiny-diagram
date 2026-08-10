@@ -1,3 +1,26 @@
-#!/bin/sh
+#!/usr/bin/env node
 
-npm run format:check && npm run lint
+const { existsSync } = require("node:fs");
+const { spawnSync } = require("node:child_process");
+
+const git = spawnSync("git", ["diff", "--cached", "--name-only", "--diff-filter=ACMR", "-z"], {
+  encoding: "utf8",
+});
+if (git.status !== 0) process.exit(git.status ?? 1);
+
+const prettier = require.resolve("prettier/bin/prettier.cjs");
+const staged = git.stdout.split("\0").filter(Boolean).filter(existsSync);
+const checked = staged.filter((file) => {
+  const info = spawnSync(process.execPath, [prettier, "--file-info", file], {
+    encoding: "utf8",
+  });
+  if (info.status !== 0) process.exit(info.status ?? 1);
+  return !JSON.parse(info.stdout).ignored;
+});
+
+if (checked.length === 0) process.exit(0);
+
+const result = spawnSync(process.execPath, [prettier, "--check", "--ignore-unknown", ...checked], {
+  stdio: "inherit",
+});
+process.exit(result.status ?? 1);

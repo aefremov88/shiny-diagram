@@ -72,8 +72,8 @@
     "format:check": "prettier --check .",
     "lint": "eslint extension-host webview/src",
     "planes": "node scripts/update-planes.mjs",
-    "test": "vitest run && vitest run --config vitest.extension.config.ts",
-    "check": "npm run format:check && npm run lint && npm run typecheck && npm run check:boundaries && npm run check:planes",
+    "test": "node scripts/check-test-coverage.mjs && vitest run && vitest run --config vitest.extension.config.ts",
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm run check:boundaries && npm run check:planes && npm run test",
     "prepare": "git config core.hooksPath .githooks"
   },
   "devDependencies": {

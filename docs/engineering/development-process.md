@@ -1,10 +1,10 @@
 # Development Process
 
-> **Implementation state:** Aspirational — describes the target process; repo changes to match it are pending
+> **Implementation state:** Current
 > 
 > **Document state:** Maintained
 > 
-> **Last reviewed:** 2026-08-09
+> **Last reviewed:** 2026-08-10
 > 
 > **Scope:** The three development loops, and the checks
 

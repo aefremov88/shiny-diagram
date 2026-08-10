@@ -1,6 +1,4 @@
 out/
 node_modules/
-docs/
-COLLABORATORS.md
 migration/
-webview/src/Controller/translate/WRITEBACK-CATALOG.md
+**/*.md

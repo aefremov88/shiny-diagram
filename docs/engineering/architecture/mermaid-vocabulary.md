@@ -2,7 +2,7 @@
 
 > **Implementation state:** Current  
 > **Document state:** Maintained
-> **Last reviewed:** 2026-08-10  
+> **Last reviewed:** 2026-07-14  
 > **Scope:** The closed vocabulary for provenance and write-back, rooted in the structure of the Mermaid class-diagram language and the Shiny annotation dialect it carries in comments, and the definition of invalid language. Documents and annotations that speak about source use these terms; no improvised names.
 
 ## 1. Ontology
@@ -45,7 +45,9 @@ A token's category is its function in place; the same glyph may serve different 
 
 | Statement                            | Example                              | Written in                   |
 | ------------------------------------ | ------------------------------------ | ---------------------------- |
+| config directive statement           | `%%{init: { "theme": "dark" }}%%`    | file root, before the diagram statement |
 | diagram statement                    | `classDiagram`                       | file root                    |
+| direction statement                  | `direction LR`                       | diagram body                 |
 | class declaration statement          | `class User { ... }`                 | diagram body, namespace body |
 | namespace declaration statement      | `namespace Domain { ... }`           | diagram body, namespace body |
 | block member statement               | `+name`                              | class body                   |
@@ -159,6 +161,18 @@ First-level composition of every statement, in the categories defined at chapter
 | --- | --- | --- |
 | **coordinate entry** | as in the spatial annotation statement | `x=0` |
 
+**direction statement** — `direction LR`
+
+| Component | Composition | Span |
+| --- | --- | --- |
+| **direction value** | selective operator: `TB` `BT` `LR` `RL` | `LR` |
+
+**config directive statement** — `%%{init: { "theme": "dark" }}%%`
+
+| Component | Composition | Span |
+| --- | --- | --- |
+| **directive body** | literal enclosed in `%%{ }%%` | `init: { "theme": "dark" }` |
+
 **note statement** — `note for User "text"`
 
 | Component | Composition | Span |
@@ -178,7 +192,7 @@ What lies outside the language of chapters 2–3, and how Shiny handles it. Two 
 | unknown statement | a line in a statement position that matches no statement of 2.1 | `sequenceDiagram`, `hello world` | problem view |
 | misplaced statement | a statement of 2.1 outside its "Written in" scope | a relationship statement inside a namespace body; a block member statement outside a class body | problem view |
 | malformed statement | a known statement kind with broken composition (chapter 3) | `class User {` with no closing `}`; `User "1 --> Order` with an unclosed multiplicity clause | problem view |
-| lollipop interface statement | valid Mermaid, excluded from Shiny by decision | `Service ()-- Client` | problem view |
+| lollipop interface statement | valid Mermaid, excluded from Shiny by decision | `Service ()-- Client` | ignored |
 | default style definition | valid Mermaid, excluded from Shiny by decision | `classDef default fill:#f00` | ignored |
 
 Rules:

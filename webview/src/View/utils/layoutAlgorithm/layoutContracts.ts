@@ -38,3 +38,11 @@ export type LayoutInput = {
 export type SpatialAssignment =
   | { readonly kind: "class"; readonly classId: ClassId; readonly bounds: Rect }
   | { readonly kind: "note"; readonly noteId: NoteId; readonly bounds: Rect };
+
+/** Regression promises shared by the full and incremental layout algorithms. */
+export const LAYOUT_CONTRACTS = {
+  nonOverlapping: "placed elements do not overlap",
+  namespaceContainment: "classes remain contained by their namespace hull",
+  preservePositioned: "incremental layout does not move positioned elements",
+  placeMissingOnly: "incremental layout assigns every and only unpositioned element",
+} as const;
