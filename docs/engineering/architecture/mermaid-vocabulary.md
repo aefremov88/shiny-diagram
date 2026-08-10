@@ -2,8 +2,8 @@
 
 > **Implementation state:** Current  
 > **Document state:** Maintained
-> **Last reviewed:** 2026-07-14  
-> **Scope:** The closed vocabulary for provenance and write-back, rooted in the structure of the Mermaid class-diagram language and the Shiny annotation dialect it carries in comments. Documents and annotations that speak about source use these terms; no improvised names.
+> **Last reviewed:** 2026-08-10  
+> **Scope:** The closed vocabulary for provenance and write-back, rooted in the structure of the Mermaid class-diagram language and the Shiny annotation dialect it carries in comments, and the definition of invalid language. Documents and annotations that speak about source use these terms; no improvised names.
 
 ## 1. Ontology
 
@@ -166,11 +166,31 @@ First-level composition of every statement, in the categories defined at chapter
 | **note target** | identifier, after the fixed operator `for` | `for User` |
 | **note text** | clause: a literal enclosed in `" "` | `"text"` |
 
-## 4. Shiny model
+## 4. Invalid language
+
+What lies outside the language of chapters 2–3, and how Shiny handles it. Two handling kinds:
+
+- **problem view** — the file opens in the problem view and is never rewritten;
+- **ignored** — the statement is preserved in source but takes no part in the diagram.
+
+| Entry | Definition | Example | Handling |
+| --- | --- | --- | --- |
+| unknown statement | a line in a statement position that matches no statement of 2.1 | `sequenceDiagram`, `hello world` | problem view |
+| misplaced statement | a statement of 2.1 outside its "Written in" scope | a relationship statement inside a namespace body; a block member statement outside a class body | problem view |
+| malformed statement | a known statement kind with broken composition (chapter 3) | `class User {` with no closing `}`; `User "1 --> Order` with an unclosed multiplicity clause | problem view |
+| lollipop interface statement | valid Mermaid, excluded from Shiny by decision | `Service ()-- Client` | problem view |
+| default style definition | valid Mermaid, excluded from Shiny by decision | `classDef default fill:#f00` | ignored |
+
+Rules:
+
+- The namespace body admits only class and namespace declaration statements; anything else there is a misplaced statement.
+- A new quirk found in use — a strange but legal Mermaid form with no entry here — is first decided and written into this chapter; only then it is covered by tests. Undecided quirks are not part of the language definition.
+
+## 5. Shiny model
 
 How the ontology surfaces in Shiny's pipeline; details in [Write-Back Pipeline](./write-back-pipeline.md).
 
-### 4.1 Provenance
+### 5.1 Provenance
 
 Provenance is the syntactic index built at parse: for every statement it records where the statement and its components are written.
 
@@ -178,7 +198,7 @@ Provenance is the syntactic index built at parse: for every statement it records
 - An element without a record is **implicitly bound** (1.3) — it exists in the diagram but owns no statement, so it cannot be edited or anchored to in place.
 - Member records are kept separately by written form — block or short.
 
-### 4.2 Write-back
+### 5.2 Write-back
 
 A single write addresses exactly one unit; the unit dictates the legal operations:
 

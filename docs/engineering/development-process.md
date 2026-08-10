@@ -1,56 +1,144 @@
-# Playbook
+# Development Process
 
-> **Implementation state:** Current
+> **Implementation state:** Aspirational — describes the target process; repo changes to match it are pending
+> 
 > **Document state:** Maintained
-> **Last reviewed:** 2026-06-19
-> **Scope:** A description of build and check pipeline
+> 
+> **Last reviewed:** 2026-08-09
+> 
+> **Scope:** The three development loops, and the checks
 
-## Prerequisites
+## 1. Workflows
 
-- Node.js 20+
-- VS Code 1.90+
+Three nested loops. The commit loop runs inside the pull request loop; the pull request loop runs inside the release loop.
 
-## Setup
+### 1.1 Commit loop
 
-```bash
-npm install
-```
+- **Unit of work:** one commit - few hours of work
+- **Steps:**
+    1. Execute a work
+    2. In case of significant changes (specified by the brief) by the agent, agent runs holistic check suite with `npm run check`
+    3. Commit and push. Always done by the user. Message format: one line, starts with `feat`, `fix`, `refactor`, `docs`, `chore`, `test`, `style`
+- **Automation:** triggered by `git commit`, defined in `.githooks/pre-commit`
+	- `npm run format:check` on staged files
 
-## Build
+### 1.2 Pull request loop
 
-```bash
-npm run build
-```
+- **Unit of work:** sprint deliverable - few days of **planned work** in development phase or one-few **issues** in maintenance phase
+- **Steps:**
+    1. Branch from up-to-date `main`.
+        - `git checkout main`
+        - `git pull`
+        - `git checkout -b feat/<topic>` (or `fix/`, `refactor/`, `docs/`)
+    2. Run commit loops until the work item is done
+    3. Open a PR to `main`. 
+	    - If the PR resolves an issue, reference it in the description and provide title `fixes #N`; the issue closes on merge.
+        - If PR closes a chunk of a planned work, provide title `feat: <description>` (`fix:` / `refactor:` / `docs:` / `chore:`)
+    4. Review the diff
+    5. Squash-merge, then delete the branch. The squash message mirrors PR title
+- **Automation:** triggered by opening or updating a PR, defined in `.github/workflows/ci.yml` 
+	- `npm run check`
+	- `npm run build` — compiles the extension host and bundles the webview into `out/`; serves here as a compile check
 
-Compiles two independent outputs:
+### 1.3 Release loop
 
-- **Extension host** (`tsc -p ./`) — TypeScript to CommonJS, output to `out/`
-- **Webview** (`vite build`) — React/TypeScript bundle, output to `out/webview/`
+- **Unit of work:** one version.
+- **Steps:**
+    1. Run pull request loops until the version's scope is delivered
+    2. Run one pull request loop (`chore: release vX.Y.Z`) for the release commit: 
+	    - bump `version` in `package.json`: fixes bump patch, features bump minor
+	    - add a dated entry to `CHANGELOG.md` above the previous one
+    3. Tag the release commit on up-to-date `main`
+        - `git checkout main`
+		- `git pull`
+		- `git tag vX.Y.Z`
+		- `git push origin vX.Y.Z`
+    4. Install the packaged `.vsix` locally and smoke-test the main journeys (the F5 debug host runs from source, so packaging mistakes appear only here; package contents are controlled by `.vscodeignore` and differ from source) 
+        - `npx @vscode/vsce package`
+    5. Draft a GitHub Release from the tag: 
+	    - title `vX.Y.Z`
+	    - notes mirror the changelog entry
+	    - attach the `.vsix`
+- **Automation:** triggered by pushing a `v*` tag, defined in `.github/workflows/release.yml`.
+    - `npm run build`
+    - `npx @vscode/vsce package`
+    - `npx @vscode/vsce publish --pre-release`
 
-When a build fails, the error output identifies which half failed.
+## 2. Checks
 
-## Run
+Checks verify the code and change nothing. Some have a paired rewrite command that fixes what the check found; rewrite commands run only when a check fails, so they have no schedule of their own.
 
-Open the repo in VS Code and press `F5`. This launches an Extension Development Host with Shiny loaded.
+### 2.1 Formatting
 
-To verify a change:
+- **Does:** enforces one mechanical code style, so diffs contain only real changes. Covers code files only; markdown is excluded — documentation follows its own conventions and is not machine-checked.
+- **Scope:** per file.
+- **Check:** `npm run format:check`.
+- **Rewrite:** `npm run format`.
+- **Files:** `.prettierrc`, `.prettierignore`.
+- **Runs:**
+  - on every commit, staged files only (hook)
+  - gate of agent iteration (as part of `npm run check`)
+  - on every PR (as part of `npm run check`)
 
-1. Open any `.mmd` file in the Extension Development Host
-2. Trigger `Shiny: Open Diagram` via the command palette or the icon in the editor title bar
-3. The Shiny panel opens beside the source file
+### 2.2 Linting
 
-## Pre-commit gate
+- **Does:** enforces code-quality rules on `extension-host/` and `webview/src/`.
+- **Scope:** per file.
+- **Check:** `npm run lint`.
+- **Files:** `eslint.config.mjs`.
+- **Runs:**
+  - gate of agent iteration (as part of `npm run check`)
+  - on every PR (as part of `npm run check`)
 
-```bash
-npm run check
-```
+### 2.3 Type checking
 
-Runs format check, lint, typecheck, and Webview architecture-boundary validation in sequence. All four must pass before committing. The boundary step runs `scripts/check-webview-boundaries.mjs` through `npm run check:boundaries`.
+- **Does:** verifies type correctness of both parts of the code — extension host and webview — including regression test files.
+- **Scope:** whole repo — a change in one file can break types in another.
+- **Check:** `npm run typecheck`.
+- **Files:** `tsconfig.json`, `tsconfig.webview.json`.
+- **Runs:**
+  - gate of agent iteration (as part of `npm run check`)
+  - on every PR (as part of `npm run check`)
 
-## Fixing formatting
+### 2.4 Boundary constraints
 
-```bash
-npm run format
-```
+- **Does:** verifies the Webview module boundaries defined in `docs/engineering/architecture/architectural-standards.md` — which layers may import which, and the protocol-file contract between webview and extension host.
+- **Scope:** whole repo — the import graph is global.
+- **Check:** `npm run check:boundaries`.
+- **Files:** `scripts/check-webview-boundaries.mjs`.
+- **Runs:**
+  - gate of agent iteration (as part of `npm run check`)
+  - on every PR (as part of `npm run check`)
 
-Rewrites all files to match Prettier config. Commit formatting fixes separately from functional changes.
+### 2.5 Planes
+
+- **Does:** verifies the generated management planes stay in sync with the code, and that their annotation contracts hold. The planes:
+  - **UI catalog** (`webview/src/Ui/UI-CATALOG.md`) — collects the component inventory: primitives, composites, and templates, with their annotations. Sources: `webview/src/Ui/{chrome,canvas}/` component folders.
+  - **Write-back catalog** (`webview/src/Controller/translate/WRITEBACK-CATALOG.md`) — collects the editor commands and their write options. Sources: `webview/src/Controller/translate/` and `webview/src/View/commands/editorCommands.ts`.
+- **Scope:** whole repo — planes are assembled from all contributing sources at once. A stale plane found late is fixed lazily by regenerating.
+- **Check:** `npm run check:planes`.
+- **Rewrite:** `npm run planes`.
+- **Files:** `scripts/check-planes.mjs`, `scripts/update-planes.mjs`, `scripts/planes/`.
+- **Runs:**
+  - gate of agent iteration (as part of `npm run check`)
+  - on every PR (as part of `npm run check`)
+
+### 2.6 Regression tests
+
+- **Does:** runs the regression test suites. The suites, their structure, and their coverage rules are defined in `docs/engineering/testing-framework.md`.
+- **Scope:** whole repo.
+- **Check:** `npm run test`.
+- **Files:** see the testing framework doc.
+- **Runs:**
+  - gate of agent iteration (as part of `npm run check`)
+  - on every PR (as part of `npm run check`)
+
+### 2.7 Holistic check suite
+
+- **Does:** runs every check in this chapter, in one command. The single gate for agent iterations and for the PR.
+- **Scope:** whole repo.
+- **Check:** `npm run check`.
+- **Files:** the `check` script in `package.json`.
+- **Runs:**
+  - gate of agent iteration
+  - on every PR
