@@ -61,6 +61,7 @@ import {
 } from "./transactions";
 import type { TransactionResult } from "../../../../commands/editorCommands";
 import type { DiagramView } from "../../../../views/schema";
+import { logAction } from "../../../../../shared/logging";
 
 type ReactFlowCanvasAdapterCallbacks = {
   readonly onClassBoxPlacementChange: (changes: readonly ClassBoxPlacementChange[]) => void;
@@ -457,6 +458,12 @@ export function useInteractions({
           view,
           classBoxPlacementState
         );
+        logAction("drag-end", node.data.view.namespaceId, {
+          x: finalRect.x,
+          y: finalRect.y,
+          w: finalRect.w,
+          h: finalRect.h,
+        });
         if (transaction.length > 0) {
           dispatchTransaction(transaction);
         }
@@ -473,6 +480,12 @@ export function useInteractions({
           w: node.width ?? node.data.view.bounds.w,
           h: node.height ?? node.data.view.bounds.h,
         };
+        logAction("drag-end", node.data.view.classId, {
+          x: finalRect.x,
+          y: finalRect.y,
+          w: finalRect.w,
+          h: finalRect.h,
+        });
         dispatchTransaction(
           toClassDropTransaction(
             node.data.view.classId,
@@ -502,6 +515,12 @@ export function useInteractions({
       });
       callbacks.onDragComplete(finalPositions, finalNotePositions);
       if (node.type === "noteBox") {
+        logAction("drag-end", node.data.view.noteId, {
+          x: node.position.x,
+          y: node.position.y,
+          w: node.width ?? null,
+          h: node.height ?? null,
+        });
         callbacks.onNoteMoved(node.data.view.noteId);
       }
     },
@@ -889,6 +908,7 @@ export function useInteractions({
           )
         );
         callbacks.onClassBoxPlacementChange([{ classId: classResizeState.classId, ...rect }]);
+        logAction("resize-end", classResizeState.classId, rect);
         dispatchTransaction(toClassResizeTransaction(classResizeState.classId, rect));
         suppressPaneClickRef.current = true;
         window.setTimeout(() => {
@@ -917,6 +937,7 @@ export function useInteractions({
           )
         );
         callbacks.onNoteBoxPlacementChange([{ noteId: noteResizeState.noteId, ...rect }]);
+        logAction("resize-end", noteResizeState.noteId, rect);
         onNoteResizeEnd({ noteId: noteResizeState.noteId, ...rect });
         suppressPaneClickRef.current = true;
         window.setTimeout(() => {
@@ -936,6 +957,7 @@ export function useInteractions({
           [...namespaceGeometry.pendingNamespaceIds],
           view
         );
+        logAction("resize-end", resizeState.namespaceId, namespaceGestureState.rect);
         const result = transaction.length > 0 ? dispatchTransaction(transaction) : null;
         callbacks.onNamespaceResizeCommitted(result);
         suppressPaneClickRef.current = true;
@@ -963,7 +985,7 @@ export function useInteractions({
       classResizePointerStateRef,
       dispatchTransaction,
       namespaceGeometry,
-      namespaceGestureState.kind,
+      namespaceGestureState,
       namespaceResizePointerStateRef,
       namespaceStartPointRef,
       noteResizePointerStateRef,

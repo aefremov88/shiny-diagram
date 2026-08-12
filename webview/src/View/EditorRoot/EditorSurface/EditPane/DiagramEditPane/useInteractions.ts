@@ -13,6 +13,7 @@ import {
   toStyleDeleteTransaction,
   toStylePropertySetTransaction,
 } from "./transactions";
+import { logAction } from "../../../../../shared/logging";
 
 type UseInteractionsInput = {
   readonly styles: readonly DeclaredStyleView[];
@@ -40,6 +41,7 @@ export function useInteractions({
 
   // Event handler props derivation
   const onCreate = useCallback(() => {
+    logAction("create", "style-definition");
     const result = dispatchTransaction(toStyleCreateTransaction(styles));
     onStyleCreateCommitted(result);
   }, [dispatchTransaction, onStyleCreateCommitted, styles]);
@@ -50,12 +52,14 @@ export function useInteractions({
 
   const onDelete = useCallback(() => {
     if (!selectedStyle) return;
+    logAction("delete", selectedStyle.styleDefId);
     dispatchTransaction(toStyleDeleteTransaction(selectedStyle));
   }, [dispatchTransaction, selectedStyle]);
 
   const onNamedStylePropertyChange = useCallback(
     (property: StylePropertyName, value: string | null) => {
       if (!selectedStyle) return;
+      logAction("style-property-set", selectedStyle.styleDefId, { property, value });
       dispatchTransaction(toStylePropertySetTransaction(selectedStyle, property, value));
     },
     [dispatchTransaction, selectedStyle]

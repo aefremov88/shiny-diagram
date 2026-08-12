@@ -22,6 +22,7 @@ import {
   toRelationshipCreateTransaction,
   toRelationshipReconnectTransaction,
 } from "./transactions";
+import { logAction } from "../../../shared/logging";
 
 type Interactions = {
   readonly onClassPlacementStart: () => void;
@@ -153,6 +154,7 @@ export function useInteractions({
     (classId: ClassId, additive: boolean) => {
       if (nodePlacementState?.kind === "relationship") return;
       if (noteAttachState.kind === "attaching") {
+        logAction("attachment-set", noteAttachState.noteId, { classId });
         dispatchTransaction(toNoteAttachmentSetTransaction(noteAttachState.noteId, classId));
         setNoteAttachState({ kind: "none" });
         setSelectionState({ kind: "note", noteId: noteAttachState.noteId });
@@ -261,6 +263,7 @@ export function useInteractions({
       if (nodePlacementState?.kind !== "relationship") return;
       if (!classIds.includes(sourceClassId) || !classIds.includes(targetClassId)) return;
       // Implementing interaction through command transaction
+      logAction("create", "relationship", { sourceClassId, targetClassId });
       dispatchTransaction(
         toRelationshipCreateTransaction(nodePlacementState.seed, sourceClassId, targetClassId)
       );
@@ -282,6 +285,7 @@ export function useInteractions({
       if (existingClassId === newClassId) return;
 
       // Implementing interaction through command transaction
+      logAction("reconnect", relationshipId, { end, classId: newClassId });
       const outcome = dispatchTransaction(
         toRelationshipReconnectTransaction(relationshipId, end, newClassId)
       );

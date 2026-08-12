@@ -10,12 +10,19 @@ import type {
   ExportPngErrorMessage,
   ExportPngMessage,
   HistoryMessage,
+  LogMessage,
   SourceEdit as ProtocolSourceEdit,
 } from "./protocol";
 import { readInitialData } from "./initialData";
 import { isHostMessage } from "./typeGuards";
 import { vscode } from "./vscodeApi";
 import { WebViewShell } from "../Shell";
+import { setLogTransport } from "../shared/logging/transport";
+
+setLogTransport((entry) => {
+  const message: LogMessage = { type: "log", entry };
+  vscode.postMessage(message);
+});
 
 function toProtocolEdit(edit: ControllerSourceEdit): ProtocolSourceEdit {
   return {

@@ -16,6 +16,7 @@ import { EditorView } from "../View/EditorRoot";
 import type { EditorDispatch } from "../View/commands";
 import type { DiagramView, EditorViewModel } from "../View/views";
 import type { ExportPngResult } from "../shared/exportPng";
+import { logDispatch, logEdits, logFailure } from "../shared/logging";
 
 type ShinyControllerProps = {
   sourceText: string;
@@ -67,6 +68,9 @@ export default function ShinyController({
 
   useLayoutEffect(() => {
     onStatusChange(toDocumentStatus(parseResult));
+    if (parseResult.status === "invalidSyntax") {
+      logFailure("parse", parseResult.diagnostics[0]?.message ?? "Invalid syntax");
+    }
   }, [onStatusChange, parseResult]);
 
   const graph =
@@ -136,6 +140,7 @@ export default function ShinyController({
   });
 
   const dispatch: EditorDispatch = useCallback((transaction) => {
+    logDispatch(transaction);
     const { context, onApplyEdits: applyEdits } = commandExecutionInputsRef.current;
     if (!context)
       return { status: "rejected", errors: [{ message: "Invalid syntax", commandIndex: 0 }] };
@@ -154,17 +159,20 @@ export default function ShinyController({
       );
       edits = resolveIntents(translated.intents, context.provenance, context.sourceText);
     } catch (error) {
+      const message = error instanceof Error ? error.message : "Unable to translate transaction";
+      logFailure("pipeline", message);
       return {
         status: "rejected",
         errors: [
           {
-            message: error instanceof Error ? error.message : "Unable to translate transaction",
+            message,
             commandIndex: 0,
           },
         ],
       };
     }
     if (edits.length > 0) {
+      logEdits(edits);
       applyEdits(edits);
     }
     return { status: "committed", outcome: translated.outcome };

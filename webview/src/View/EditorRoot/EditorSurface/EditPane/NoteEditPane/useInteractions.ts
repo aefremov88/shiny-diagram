@@ -12,6 +12,7 @@ import {
   toNoteDetachTransaction,
   toNoteDuplicateTransaction,
 } from "./transactions";
+import { logAction } from "../../../../../shared/logging";
 
 type Interactions = {
   readonly onAttachmentToggle: () => void;
@@ -35,18 +36,22 @@ export function useInteractions({
   // Event handler props derivation
   const onAttachmentToggle = useCallback(() => {
     if (view.attachedToClassId) {
+      logAction("attachment-set", view.noteId, { classId: null });
       dispatchTransaction(toNoteDetachTransaction(view));
       return;
     }
+    logAction("attachment-start", view.noteId);
     onNoteAttachStart(view.noteId);
   }, [dispatchTransaction, onNoteAttachStart, view]);
 
   const onDuplicate = useCallback(() => {
+    logAction("duplicate", view.noteId);
     const result = dispatchTransaction(toNoteDuplicateTransaction(view));
     onNoteDuplicateCommitted(result);
   }, [dispatchTransaction, onNoteDuplicateCommitted, view]);
 
   const onDelete = useCallback(() => {
+    logAction("delete", view.noteId);
     dispatchTransaction(toNoteDeleteTransaction(view));
   }, [dispatchTransaction, view]);
 

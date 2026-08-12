@@ -8,6 +8,7 @@ import type { NoteId } from "../../../../../../../shared/ids";
 import type { EditingState } from "../../../../../../state/editorStates";
 import { useDispatchTransaction } from "../../../../../../contexts";
 import { toNoteDeleteTransaction, toNoteTextCommitTransaction } from "./transactions";
+import { logAction } from "../../../../../../../shared/logging";
 
 type Interactions = {
   readonly onNoteBoxClick: (event: MouseEvent<HTMLDivElement>) => void;
@@ -73,6 +74,7 @@ export function useInteractions({
 
   const onTextCommit = useCallback(
     (text: string) => {
+      logAction("text-set", noteId, { text });
       const result = dispatchTransaction(toNoteTextCommitTransaction(noteId, text));
       if (result.status === "rejected") {
         return result.errors.map((error) => error.message);
@@ -85,6 +87,7 @@ export function useInteractions({
 
   const onTextCancel = useCallback(() => {
     if (isNewBlankNote) {
+      logAction("delete", noteId);
       dispatchTransaction(toNoteDeleteTransaction(noteId));
     }
     onTextBlockEditCancel();

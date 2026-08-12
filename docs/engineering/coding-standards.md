@@ -53,6 +53,8 @@ Key rules:
 
 `console.warn` and `console.error` are permitted in `webview/src/` where VS Code's output channel is unavailable, but must not remain on non-error paths in committed code.
 
+Structured logging goes through `webview/src/shared/logging/`, which is the only permitted logging path. It may be called from any layer on any path; direct `console` use remains restricted as above.
+
 ---
 
 ## 2. Standards requiring judgment

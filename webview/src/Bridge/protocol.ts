@@ -47,8 +47,42 @@ export type ExportPngErrorMessage = {
   readonly message: string;
 };
 
+export type LogValue = string | number | boolean | null;
+
+export type WebviewLogEntry =
+  | {
+      readonly kind: "action";
+      readonly name: string;
+      readonly target: string;
+      readonly values: Readonly<Record<string, LogValue>>;
+    }
+  | {
+      readonly kind: "dispatch";
+      readonly commands: readonly object[];
+    }
+  | {
+      readonly kind: "edits";
+      readonly count: number;
+      readonly edits: readonly {
+        readonly kind: "insert" | "delete" | "replace";
+        readonly startLine: number;
+        readonly endLine: number;
+      }[];
+    }
+  | {
+      readonly kind: "failure";
+      readonly stage: "parse" | "problem-view" | "pipeline";
+      readonly message: string;
+    };
+
+export type LogMessage = {
+  readonly type: "log";
+  readonly entry: WebviewLogEntry;
+};
+
 export type WebviewToHostMessage =
   | ApplyEditsMessage
   | HistoryMessage
   | ExportPngMessage
-  | ExportPngErrorMessage;
+  | ExportPngErrorMessage
+  | LogMessage;

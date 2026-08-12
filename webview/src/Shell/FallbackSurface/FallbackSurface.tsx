@@ -2,6 +2,7 @@
  * @render Read-only source and formatted parse-error fallback surfaces.
  */
 
+import { useEffect } from "react";
 import type { ReactElement } from "react";
 import type { DocumentStatus } from "../state";
 import {
@@ -9,12 +10,23 @@ import {
   toUnsupportedDiagramTypeMessage,
 } from "../../shared/diagramTypes";
 import styles from "./FallbackSurface.module.css";
+import { logFailure } from "../../shared/logging";
 
 type FallbackSurfaceProps = {
   readonly documentStatus: Exclude<DocumentStatus, { readonly status: "ready" }>;
 };
 
 export default function FallbackSurface({ documentStatus }: FallbackSurfaceProps): ReactElement {
+  useEffect(() => {
+    const detail =
+      documentStatus.status === "invalidSyntax"
+        ? (documentStatus.errors[0]?.message ?? "Invalid syntax")
+        : documentStatus.status === "unsupportedDiagramType"
+          ? documentStatus.diagramType
+          : documentStatus.missingClassIds.join(",");
+    logFailure("problem-view", `${documentStatus.status} ${detail}`);
+  }, [documentStatus]);
+
   if (documentStatus.status === "unsupportedDiagramType") {
     return (
       <section className={styles.surface} aria-label="Unsupported diagram type">

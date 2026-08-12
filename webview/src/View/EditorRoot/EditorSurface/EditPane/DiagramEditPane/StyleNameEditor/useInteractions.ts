@@ -8,6 +8,7 @@ import type { TransactionResult } from "../../../../../commands/editorCommands";
 import { useDispatchTransaction } from "../../../../../contexts";
 import type { DeclaredStyleView } from "../../../../../views/schema";
 import { toStyleNameSetTransaction } from "./transactions";
+import { logAction } from "../../../../../../shared/logging";
 
 type UseInteractionsInput = {
   readonly view: DeclaredStyleView | undefined;
@@ -27,6 +28,7 @@ export function useInteractions({ view, onRenameCommitted }: UseInteractionsInpu
       if (!view) return;
       const name = toStyleName(draft);
       if (name === "" || name === view.name) return;
+      logAction("name-set", view.styleDefId, { name });
       const result = dispatchTransaction(toStyleNameSetTransaction(view, name));
       onRenameCommitted(result, view.styleDefId);
     },

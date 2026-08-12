@@ -4,11 +4,15 @@
 
 import * as vscode from "vscode";
 import { DiagramSession } from "./diagramSession";
+import type { SessionLog } from "./sessionLog";
 
 export class DiagramEditorProvider implements vscode.CustomTextEditorProvider {
   private readonly sessions = new Set<DiagramSession>();
 
-  constructor(private readonly context: vscode.ExtensionContext) {}
+  constructor(
+    private readonly context: vscode.ExtensionContext,
+    private readonly log: SessionLog
+  ) {}
 
   /** Resolves one diagram view backed by the supplied text document. */
   resolveCustomTextEditor(document: vscode.TextDocument, panel: vscode.WebviewPanel): void {
@@ -18,7 +22,7 @@ export class DiagramEditorProvider implements vscode.CustomTextEditorProvider {
     };
     panel.webview.html = getWebviewHtml(this.context, panel.webview, document);
 
-    const session = new DiagramSession(document, panel);
+    const session = new DiagramSession(document, panel, this.log);
     this.sessions.add(session);
     panel.onDidDispose(() => {
       session.dispose();

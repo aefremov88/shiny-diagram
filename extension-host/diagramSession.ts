@@ -6,19 +6,23 @@ import * as vscode from "vscode";
 import * as path from "node:path";
 import type { HostToWebviewMessage, SourceEdit, WebviewToHostMessage } from "./protocol";
 import { writeExportedPng } from "./exportPng";
+import type { SessionLog } from "./sessionLog";
 
 const DEBOUNCE_MS = 500;
 
 export class DiagramSession {
   private readonly document: vscode.TextDocument;
   private readonly panel: vscode.WebviewPanel;
+  private readonly log: SessionLog;
   private debounceTimer: ReturnType<typeof setTimeout> | undefined;
   private readonly disposables: vscode.Disposable[] = [];
   private shinyOriginatedEdit = false;
 
-  constructor(document: vscode.TextDocument, panel: vscode.WebviewPanel) {
+  constructor(document: vscode.TextDocument, panel: vscode.WebviewPanel, log: SessionLog) {
     this.document = document;
     this.panel = panel;
+    this.log = log;
+    log.logDocumentOpen(document);
 
     this.disposables.push(
       panel.webview.onDidReceiveMessage((msg: WebviewToHostMessage) => {
@@ -38,6 +42,14 @@ export class DiagramSession {
           ({ oldUri }) => oldUri.toString() === this.document.uri.toString()
         );
         if (rename) this.pushSourceUpdate(path.basename(rename.newUri.fsPath));
+      })
+    );
+
+    this.disposables.push(
+      vscode.workspace.onDidSaveTextDocument((savedDocument) => {
+        if (savedDocument.uri.toString() === this.document.uri.toString()) {
+          log.logSave(savedDocument);
+        }
       })
     );
   }
@@ -68,6 +80,10 @@ export class DiagramSession {
       void vscode.window.showErrorMessage(
         `Shiny PNG export #${msg.requestId} failed at ${msg.stage}: ${msg.message}`
       );
+      return;
+    }
+    if (msg.type === "log") {
+      this.log.logWebviewEntry(msg.entry);
       return;
     }
 

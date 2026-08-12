@@ -14,6 +14,7 @@ import type { NodePlacementState } from "../../../../../state/editorStates";
 import type { DrawOrigin } from "./state";
 import { toClassCreateTransaction, toNoteCreateTransaction } from "./transactions";
 import { toDiagramPoint } from "./frameworkAdapters";
+import { logAction } from "../../../../../../shared/logging";
 
 type Interactions = {
   readonly onPointerDown: (event: PointerEvent<HTMLDivElement>) => void;
@@ -93,12 +94,12 @@ export function useInteractions({
       if (!isMeaningfulDrag) return;
 
       // Implementing interaction through command transaction
+      const rect = normalizeRect(origin.diagram, endDiagramPoint);
+      logAction("create", nodePlacementState?.kind === "note" ? "note" : "class", rect);
       const result =
         nodePlacementState?.kind === "note"
           ? dispatchCommand(toNoteCreateTransaction(origin.diagram))
-          : dispatchCommand(
-              toClassCreateTransaction(normalizeRect(origin.diagram, endDiagramPoint))
-            );
+          : dispatchCommand(toClassCreateTransaction(rect));
       onPlacementComplete(result);
     },
     [

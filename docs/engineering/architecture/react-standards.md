@@ -159,6 +159,8 @@ A React Component has Framework adaptation responsibility when it absorbs a fore
 12. **own support files** — `state.ts`, `transactions.ts`, `useInteractions.ts`, `childProps.ts`, `useStateReconciliation.ts`, `frameworkAdapters.ts`, `icons.ts` sitting flat beside the component file
 	- a component imports **only** its own support files, **never** another component's.
 
+13. `webview/src/shared/logging` — the structured development-session logging module.
+
 ### 2.2 Forbidden import sources
 
 1. any layer above the `View` layer — `Controller`, `Shell`, `Bridge` — dependencies between layers point strictly inward
@@ -348,6 +350,9 @@ Providing a child the callback by which it requests a change. The child **must**
 	    - return type of a hook is named `Interactions`
 	    - returned handlers are named `on<Event>`, e.g. `onFillColorChange`, `onDuplicate`
     - **when:** a handler issues a Controller command or event-handler code is too large to keep the component body readable.
+4. **log completed interaction in `useInteractions()` hook**
+    - call `logAction` inside the semantic interaction handler after the interaction completes. **Location:** `useInteractions.ts`
+    - log only the interaction name, target, and final values; never intermediate drag or resize values
 
 ### 4.7 Registering keystroke listener
 

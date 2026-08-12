@@ -7,6 +7,7 @@ import type { RelationshipSeed } from "../../../../../state/editorStates";
 import type { RelationshipView } from "../../../../../views/schema";
 import { useDispatchTransaction } from "../../../../../contexts";
 import { toRelationshipDeleteTransaction } from "./transactions";
+import { logAction } from "../../../../../../shared/logging";
 
 type Interactions = {
   readonly onDelete: () => void;
@@ -21,10 +22,12 @@ export function useInteractions(
 
   // Event handler props derivation
   const onDelete = useCallback(() => {
+    logAction("delete", view.relationshipId);
     dispatchTransaction(toRelationshipDeleteTransaction(view.relationshipId));
   }, [dispatchTransaction, view.relationshipId]);
 
   const onDuplicate = useCallback(() => {
+    logAction("duplicate", view.relationshipId);
     onRelationshipDuplicate({
       sourceEndpointKind: view.sourceEndpointKind,
       lineKind: view.lineKind,

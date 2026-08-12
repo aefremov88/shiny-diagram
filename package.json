@@ -37,6 +37,10 @@
       {
         "command": "shiny.exportPng",
         "title": "Shiny: Export PNG"
+      },
+      {
+        "command": "shiny.mark",
+        "title": "Shiny: Mark"
       }
     ],
     "customEditors": [

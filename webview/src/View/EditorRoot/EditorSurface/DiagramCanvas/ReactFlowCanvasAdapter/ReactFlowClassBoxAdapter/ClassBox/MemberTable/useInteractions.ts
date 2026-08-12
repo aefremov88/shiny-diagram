@@ -13,6 +13,7 @@ import {
   toMemberMoveTransaction,
 } from "./transactions";
 import type { ClassMemberView } from "../../../../../../../views/schema";
+import { logAction } from "../../../../../../../../shared/logging";
 
 type Interactions = {
   readonly onMemberCommit: (
@@ -48,6 +49,7 @@ export function useInteractions(classId: ClassId, onTextBlockEditCancel: () => v
       text: string,
       classifier: MemberClassifier | null
     ) => {
+      logAction(`${memberKind}-set`, memberId, { text, classifier });
       const result = dispatchTransaction(
         toMemberCommitTransaction(classId, memberKind, memberId, text, classifier)
       );
@@ -60,6 +62,7 @@ export function useInteractions(classId: ClassId, onTextBlockEditCancel: () => v
 
   const onMemberDelete = useCallback(
     (memberKind: MemberKind, memberId: AttributeId | MethodId) => {
+      logAction(`${memberKind}-delete`, memberId);
       const result = dispatchTransaction(toMemberDeleteTransaction(memberKind, memberId));
       if (result.status === "rejected") return result.errors.map((error) => error.message);
       onTextBlockEditCancel();
@@ -70,6 +73,7 @@ export function useInteractions(classId: ClassId, onTextBlockEditCancel: () => v
 
   const onMemberCreate = useCallback(
     (memberKind: MemberKind, text: string, classifier: MemberClassifier | null) => {
+      logAction(`${memberKind}-create`, classId, { text, classifier });
       const result = dispatchTransaction(
         toMemberCreateTransaction(classId, memberKind, text, classifier)
       );
@@ -95,6 +99,7 @@ export function useInteractions(classId: ClassId, onTextBlockEditCancel: () => v
         dropGap
       );
       if (transaction.length === 0) return;
+      logAction(`${memberKind}-move`, draggedMemberId, { dropGap });
       dispatchTransaction(transaction);
     },
     [classId, dispatchTransaction]

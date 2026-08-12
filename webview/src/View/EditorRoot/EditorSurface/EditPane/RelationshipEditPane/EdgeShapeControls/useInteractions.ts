@@ -13,6 +13,7 @@ import {
   toSourceEndpointKindSetTransaction,
   toTargetEndpointKindSetTransaction,
 } from "./transactions";
+import { logAction } from "../../../../../../shared/logging";
 
 type Interactions = {
   readonly onSourceEndpointKindChange: (endpointKind: RelationshipEndpointKind) => void;
@@ -31,6 +32,7 @@ export function useInteractions(
   const onSourceEndpointKindChange = useCallback(
     (endpointKind: RelationshipEndpointKind) => {
       if (endpointKind === view.sourceEndpointKind) return;
+      logAction("source-endpoint-set", view.relationshipId, { endpointKind });
       dispatchTransaction(toSourceEndpointKindSetTransaction(view.relationshipId, endpointKind));
     },
     [dispatchTransaction, view.relationshipId, view.sourceEndpointKind]
@@ -39,6 +41,7 @@ export function useInteractions(
   const onLineKindChange = useCallback(
     (lineKind: RelationshipLineKind) => {
       if (lineKind === view.lineKind) return;
+      logAction("line-kind-set", view.relationshipId, { lineKind });
       dispatchTransaction(toLineKindSetTransaction(view.relationshipId, lineKind));
     },
     [dispatchTransaction, view.lineKind, view.relationshipId]
@@ -47,6 +50,7 @@ export function useInteractions(
   const onTargetEndpointKindChange = useCallback(
     (endpointKind: RelationshipEndpointKind) => {
       if (endpointKind === view.targetEndpointKind) return;
+      logAction("target-endpoint-set", view.relationshipId, { endpointKind });
       dispatchTransaction(toTargetEndpointKindSetTransaction(view.relationshipId, endpointKind));
     },
     [dispatchTransaction, view.relationshipId, view.targetEndpointKind]
@@ -55,6 +59,7 @@ export function useInteractions(
   const onReverse = useCallback(() => {
     const transaction = toRelationshipReverseTransaction(view);
     if (transaction.length === 0) return;
+    logAction("reverse", view.relationshipId);
     const outcome = dispatchTransaction(transaction);
     onRelationshipSelect(
       outcome.status === "committed"

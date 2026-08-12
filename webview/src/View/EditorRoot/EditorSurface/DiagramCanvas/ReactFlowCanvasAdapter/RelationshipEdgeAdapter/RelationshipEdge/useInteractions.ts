@@ -12,6 +12,7 @@ import {
   toRelationshipLabelSetTransaction,
   toRelationshipMultiplicitySetTransaction,
 } from "./transactions";
+import { logAction } from "../../../../../../../shared/logging";
 
 type Interactions = {
   readonly onEdgeSelect: () => void;
@@ -54,6 +55,9 @@ export function useInteractions({
     (value: string) => {
       if (editTarget === null) return;
       const trimmed = value.trim();
+      logAction(`${editTarget}-set`, view.relationshipId, {
+        value: trimmed === "" ? null : trimmed,
+      });
       // Implementing interaction through command transaction
       dispatchTransaction(
         editTarget === "label"

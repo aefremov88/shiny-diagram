@@ -15,6 +15,7 @@ import {
   toClassNameCommitTransaction,
   toClassStyleSaveTransaction,
 } from "./transactions";
+import { logAction } from "../../../../../shared/logging";
 
 type UseInteractionsInput = {
   readonly styles: readonly DeclaredStyleView[];
@@ -54,6 +55,7 @@ export function useInteractions({
   // Event handler props derivation
   const onNameCommit = useCallback(
     (classId: ClassId, name: string) => {
+      logAction("name-set", classId, { name });
       const result = dispatchTransaction(toClassNameCommitTransaction(classId, name));
       return result.status === "rejected" ? result.errors.map((error) => error.message) : [];
     },
@@ -62,6 +64,7 @@ export function useInteractions({
 
   const onAnnotationCommit = useCallback(
     (classId: ClassId, annotation: ClassAnnotation | null) => {
+      logAction("annotation-set", classId, { annotation });
       const result = dispatchTransaction(toClassAnnotationCommitTransaction(classId, annotation));
       return result.status === "rejected" ? result.errors.map((error) => error.message) : [];
     },
@@ -70,6 +73,7 @@ export function useInteractions({
 
   const onLabelCommit = useCallback(
     (classId: ClassId, label: string | null) => {
+      logAction("label-set", classId, { label });
       const result = dispatchTransaction(toClassLabelCommitTransaction(classId, label));
       return result.status === "rejected" ? result.errors.map((error) => error.message) : [];
     },
