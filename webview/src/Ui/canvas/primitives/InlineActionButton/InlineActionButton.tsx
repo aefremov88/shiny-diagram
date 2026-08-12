@@ -6,6 +6,9 @@
  * in; clicking it reports `onClick`. `surface` overrides the selected fallback
  * surface.
  *
+ * Gesture targets:
+ * - `actionButton()` — `role=button`
+ *
  * Lifecycle:
  * - `disabled` — on prevents the control from being pressed
  * - `visible` — off hides the control from pointer users while keeping it

@@ -5,6 +5,9 @@
  * `stroke`, `strokeWidth`, `lineStyle`, and `color` with neutral fallbacks.
  * Pressing it reports `onPressStart`; clicking it reports `onClick`.
  *
+ * Gesture targets:
+ * - `surface()` — `data-gesture-target=surface`
+ *
  * Used by: a namespace hull.
  */
 
@@ -44,6 +47,7 @@ export default function HullSurfaceFrame({
   return (
     <div
       className={styles.frame}
+      data-gesture-target="surface"
       style={style}
       title={title}
       onMouseDown={onPressStart}

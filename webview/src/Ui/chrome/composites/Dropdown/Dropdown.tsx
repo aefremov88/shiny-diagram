@@ -9,6 +9,10 @@
  * `onChange`. Each entry may show a text label, a preview, or both, as its options
  * entry supplies; the list paints at the supplied `stacking` plane.
  *
+ * Gesture targets:
+ * - `dropdown()` — `role=button; aria-haspopup=listbox`
+ * - `dropdown().option(name)` — `role=option; accessible-name=name`
+ *
  * Used by: named-style, relationship endpoint, and relationship-line choices.
  *
  * Lifecycle:

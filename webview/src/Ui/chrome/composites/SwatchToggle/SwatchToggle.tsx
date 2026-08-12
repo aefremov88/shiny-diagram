@@ -4,6 +4,9 @@
  * Renders `label` and the supplied box `styleValues`, exposes `pressed`, and
  * reports `onClick` when clicked.
  *
+ * Gesture targets:
+ * - `swatchToggle()` — `role=button`
+ *
  * Used by: saved-style selection.
  *
  * Lifecycle:

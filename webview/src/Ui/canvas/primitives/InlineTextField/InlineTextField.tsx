@@ -5,6 +5,9 @@
  * name, reports edits through `onChange`, and forwards focus loss and keyboard
  * input through `onBlur` and `onKeyDown`.
  *
+ * Gesture targets:
+ * - `textField()` — `role=textbox`
+ *
  * Lifecycle:
  * - `invalid` — on shows invalid outline treatment
  *

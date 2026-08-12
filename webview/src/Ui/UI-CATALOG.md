@@ -98,6 +98,10 @@ In labeled presentation, renders `label` beside `icon` when supplied. In
 icon-only presentation, renders `icon` and uses `ariaLabel` as its accessible
 name and tooltip. Clicking reports `onClick`.
 
+Gesture targets:
+
+- `button()` — `role=button`
+
 Lifecycle:
 
 - `disabled` — on shows the command as unavailable and it cannot be pressed
@@ -144,6 +148,10 @@ Uses `label` as its accessible name and tooltip. Pressing it does not steal
 focus from the field it sits in and reports the press through `onMouseDown`;
 clicking it reports `onClick`.
 
+Gesture targets:
+
+- `dismissButton()` — `role=button`
+
 Used by: field clear and cancel actions.
 
 ```ts
@@ -160,6 +168,10 @@ Collapse tab mounted against a pane edge.
 
 Clicking the tab reports `onToggle`, supplies the matching expand or collapse
 accessible instruction, and paints at the supplied `stacking` plane.
+
+Gesture targets:
+
+- `paneCollapseTab()` — `role=button`
 
 Used by: the editor's property pane.
 
@@ -181,6 +193,10 @@ type PaneCollapseTabProps = {
 Back-navigation button that keeps its place when unavailable.
 
 Renders `label` as the button content; clicking it reports `onClick`.
+
+Gesture targets:
+
+- `backLink()` — `role=button`
 
 Used by: return from a diagram style reached through a class.
 
@@ -204,6 +220,10 @@ Segmented control for one selection from a labeled option set.
 Renders `options` as a radiogroup named by `ariaLabel`, marks `value` as
 selected, supports arrow, Home, and End navigation, and reports a selected
 option through `onChange`.
+
+Gesture targets:
+
+- `segmentedControl().option(name)` — `role=radio; accessible-name=name`
 
 Used by: Mermaid/Shiny mode selection.
 
@@ -296,6 +316,10 @@ Displays `value`, reports edits through `onChange`, and forwards focus loss
 and keyboard input through `onBlur` and `onKeyDown`. `ariaLabel` supplies the
 accessible name.
 
+Gesture targets:
+
+- `textField()` — `role=textbox`
+
 Lifecycle:
 
 - `disabled` — on prevents editing and shows it as unavailable
@@ -329,6 +353,10 @@ Toggle button for a glyph, an optional label, and persistent pressed state.
 Renders `icon` when supplied, uses `title` as the tooltip and as the
 accessible name when `label` is absent, exposes `pressed`, and reports
 `onClick` when clicked.
+
+Gesture targets:
+
+- `toggleButton()` — `role=button`
 
 Lifecycle:
 
@@ -365,6 +393,10 @@ it above the anchor or below when viewport space requires. Dismissing it —
 from the keyboard, by clicking anywhere outside, or by its own dismiss control
 — reports `onDismiss`. The popup paints at the supplied `stacking` plane.
 
+Gesture targets:
+
+- `validationPopup().dismissButton()` — `role=alert > role=button; accessible-name=Dismiss`
+
 Used by: invalid class names, namespace names, style names, relationship
 labels, and multiplicities.
 
@@ -390,6 +422,11 @@ reports `onChange` and returns focus to the control. Closing it without choosing
 reports nothing: an outside press leaves focus where the click placed it,
 while keyboard dismissal returns focus to the control. The six-column grid is
 keyboard-navigable, and the popup paints at the supplied `stacking` plane.
+
+Gesture targets:
+
+- `colorSelect()` — `role=button; aria-haspopup=grid`
+- `colorSelect().option(section, name)` — `role=gridcell; accessible-name=name; data-gesture-section=section`
 
 Lifecycle:
 
@@ -499,6 +536,11 @@ control without cancelling the field draft; an outside press closes it without
 moving focus. The menu paints at `menuStacking`, and validation paints at
 `validationStacking`.
 
+Gesture targets:
+
+- `comboBox()` — `data-gesture-target=combo-box`
+- `comboBox().option(name)` — `role=option; accessible-name=name`
+
 Used by: class stereotypes and relationship endpoint multiplicities.
 
 Lifecycle:
@@ -572,6 +614,11 @@ keyboard dismissal returns focus to the control. Choosing an entry closes the li
 `onChange`. Each entry may show a text label, a preview, or both, as its options
 entry supplies; the list paints at the supplied `stacking` plane.
 
+Gesture targets:
+
+- `dropdown()` — `role=button; aria-haspopup=listbox`
+- `dropdown().option(name)` — `role=option; accessible-name=name`
+
 Used by: named-style, relationship endpoint, and relationship-line choices.
 
 Lifecycle:
@@ -632,6 +679,11 @@ it, while keyboard dismissal returns focus to the control; the row list is
 keyboard-navigable. `popupWidth` sets the popup's minimum width before viewport
 clamping, and the popup paints at the supplied `stacking` plane.
 
+Gesture targets:
+
+- `strokeSelect()` — `role=button; aria-haspopup=listbox`
+- `strokeSelect().option(section, name)` — `role=option; accessible-name=name; data-gesture-section=section`
+
 Lifecycle:
 
 - `disabled` — on means the list cannot be opened and shows the control as
@@ -663,6 +715,10 @@ Toggle button containing a styled box swatch.
 
 Renders `label` and the supplied box `styleValues`, exposes `pressed`, and
 reports `onClick` when clicked.
+
+Gesture targets:
+
+- `swatchToggle()` — `role=button`
 
 Used by: saved-style selection.
 
@@ -979,6 +1035,10 @@ Edge hit path widening pointer access without visible output.
 Follows `d` with a transparent stroke that receives pointer input across a
 wider corridor and presents an action cursor.
 
+Gesture targets:
+
+- `edgeHitPath()` — `data-gesture-target=edge-hit-path`
+
 Used by: relationship selection.
 
 ```ts
@@ -1094,6 +1154,10 @@ tooltip, defaulting to that accessible name. Pressing it does not steal focus fr
 in; clicking it reports `onClick`. `surface` overrides the selected fallback
 surface.
 
+Gesture targets:
+
+- `actionButton()` — `role=button`
+
 Lifecycle:
 
 - `disabled` — on prevents the control from being pressed
@@ -1134,6 +1198,10 @@ Displays `value` with the initial height hinted by `rows`, reports edits
 through `onChange`, and forwards focus loss and keyboard input through
 `onBlur` and `onKeyDown`.
 
+Gesture targets:
+
+- `textArea()` — `role=textbox`
+
 Lifecycle:
 
 - `invalid` — on shows invalid treatment for the row form
@@ -1172,6 +1240,10 @@ enabled, clicking asks to edit (`onEditRequest`) — the element only requests;
 opening an editor is the consumer's decision. Otherwise it attaches no
 pointer handlers and leaves cursor choice to its host.
 
+Gesture targets:
+
+- `text()` — `data-gesture-target=inline-text`
+
 Lifecycle:
 
 - `isEditEnabled` — on accepts edit requests and presents the default cursor;
@@ -1205,6 +1277,10 @@ Inline text button for a compact momentary action.
 
 Renders `label` as its content; clicking it reports `onClick`.
 
+Gesture targets:
+
+- `textButton()` — `role=button`
+
 Used by: saving a note-body edit.
 
 ```ts
@@ -1221,6 +1297,10 @@ Inline text field for controlled single-line entry.
 Displays `value` with a text-entry cursor, uses `ariaLabel` as its accessible
 name, reports edits through `onChange`, and forwards focus loss and keyboard
 input through `onBlur` and `onKeyDown`.
+
+Gesture targets:
+
+- `textField()` — `role=textbox`
 
 Lifecycle:
 
@@ -1261,6 +1341,10 @@ Renders `glyph`, uses `label` as its accessible name and tooltip, reports
 `onClick` when clicked, and uses `surface` when supplied instead of the
 base surface.
 
+Gesture targets:
+
+- `toggleButton()` — `role=button`
+
 Used by: member underline and italic controls.
 
 Lifecycle:
@@ -1286,6 +1370,10 @@ it above the anchor or below when viewport space requires at the supplied
 `stacking` plane. Dismissing it — from the keyboard, by clicking anywhere
 outside, or by its own dismiss control — reports `onDismiss`.
 
+Gesture targets:
+
+- `validationPopup().dismissButton()` — `role=alert > role=button; accessible-name=Dismiss`
+
 Used by: invalid class, namespace, note, and relationship text drafts.
 
 ```ts
@@ -1304,6 +1392,11 @@ Centers visible handles and wider edge targets around the host boundary using
 `centerOffset`, placing edge targets at `stacking` and handles one plane above.
 A press neither selects nor reaches the surface beneath; it reports the
 grabbed handle and viewport point through `onGrab`.
+
+Gesture targets:
+
+- `resizeAffordance().edge(side)` — `data-gesture-kind=edge; data-gesture-handle=side`
+- `resizeAffordance().handle(handle)` — `data-gesture-kind=handle; data-gesture-handle=handle`
 
 Used by: selected classes, notes, and namespaces.
 
@@ -1383,6 +1476,10 @@ pointer input so caret placement cannot reach the edge beneath; committing
 reports `onCommit`; abandoning or cancelling reports `onCancel`. Validation
 overlays use `validationStacking`.
 
+Gesture targets:
+
+- `edgeText()` — `data-gesture-target=edge-text`
+
 Lifecycle:
 
 - `isEditing` — off renders the text pill; on renders the editor
@@ -1427,6 +1524,10 @@ can be cancelled from the keyboard, leaving the order unchanged. Actions use
 `actionStacking`, validation uses `validationStacking`, and `surface` supplies
 an explicit action ground over the class-member fallback. Editing lifecycle
 is reported through `onEditStart` and `onEditEnd`.
+
+Gesture targets:
+
+- `editableTextList().row(index)` — `data-gesture-row=index`
 
 Used by: class attribute and operation rows.
 
@@ -1621,6 +1722,10 @@ Routes pointer phases through `onPointerDown`, `onPointerMove`, and
 dragging do not engage while drawing. When `rect` is non-null, it also renders
 the pending rectangle.
 
+Gesture targets:
+
+- `drawSurface()` — `data-gesture-target=draw-surface`
+
 Used by: class and namespace placement gestures.
 
 ```ts
@@ -1776,6 +1881,10 @@ Fills its host with `children`, uses `title` as the tooltip, applies `fill`,
 `stroke`, `strokeWidth`, `lineStyle`, and `color` with neutral fallbacks.
 Pressing it reports `onPressStart`; clicking it reports `onClick`.
 
+Gesture targets:
+
+- `surface()` — `data-gesture-target=surface`
+
 Used by: a namespace hull.
 
 ```ts
@@ -1799,6 +1908,10 @@ Sticky-note surface framing content with movable-object treatment.
 Fills its host with `children`, uses `title` as the tooltip, and reports
 `onClick` when clicked. `elementRef` exposes the surface host for
 consumer-owned measurement.
+
+Gesture targets:
+
+- `surface()` — `data-gesture-target=surface`
 
 Used by: note surfaces.
 
@@ -1825,6 +1938,10 @@ Fills its host with `children`, uses `title` as the tooltip, applies `fill`,
 `stroke`, `strokeWidth`, `lineStyle`, and `color` with base fallbacks, and
 reports `onClick` when clicked. `placementCursor` selects the placement cursor;
 `elementRef` exposes the surface host for consumer-owned measurement.
+
+Gesture targets:
+
+- `surface()` — `data-gesture-target=surface`
 
 Used by: class surfaces.
 

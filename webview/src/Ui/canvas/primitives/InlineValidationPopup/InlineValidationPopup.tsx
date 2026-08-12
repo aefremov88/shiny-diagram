@@ -6,6 +6,9 @@
  * `stacking` plane. Dismissing it — from the keyboard, by clicking anywhere
  * outside, or by its own dismiss control — reports `onDismiss`.
  *
+ * Gesture targets:
+ * - `validationPopup().dismissButton()` — `role=alert > role=button; accessible-name=Dismiss`
+ *
  * Used by: invalid class, namespace, note, and relationship text drafts.
  */
 

@@ -7,6 +7,9 @@
  * opening an editor is the consumer's decision. Otherwise it attaches no
  * pointer handlers and leaves cursor choice to its host.
  *
+ * Gesture targets:
+ * - `text()` — `data-gesture-target=inline-text`
+ *
  * Lifecycle:
  * - `isEditEnabled` — on accepts edit requests and presents the default cursor;
  *   off lets pointer interaction and cursor presentation fall through
@@ -45,6 +48,7 @@ export default function InlineTextBlock({
   return (
     <div
       className={`${styles.text} ${styles[variant]} ${isEditEnabled ? styles.editEnabled : ""}`}
+      data-gesture-target="inline-text"
       title={title}
       onClick={isEditEnabled ? onEditRequest : undefined}
       onDoubleClick={isEditEnabled ? onEditRequest : undefined}

@@ -5,6 +5,9 @@
  * `onClick` when clicked, and uses `surface` when supplied instead of the
  * base surface.
  *
+ * Gesture targets:
+ * - `toggleButton()` — `role=button`
+ *
  * Used by: member underline and italic controls.
  *
  * Lifecycle:

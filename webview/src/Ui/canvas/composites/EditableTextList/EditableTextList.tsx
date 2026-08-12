@@ -14,6 +14,9 @@
  * an explicit action ground over the class-member fallback. Editing lifecycle
  * is reported through `onEditStart` and `onEditEnd`.
  *
+ * Gesture targets:
+ * - `editableTextList().row(index)` — `data-gesture-row=index`
+ *
  * Used by: class attribute and operation rows.
  *
  * Lifecycle:
@@ -145,6 +148,7 @@ export default function EditableTextList({
                 type="button"
                 className={`${styles.rowHost} ${styles.editable} ${isDragged ? styles.dragged : ""} ${row.emphasis === "underline" ? styles.underlined : ""} ${row.emphasis === "italic" ? styles.italic : ""}`}
                 data-reorder-row="true"
+                data-gesture-row={index}
                 onPointerDown={(event) => {
                   event.preventDefault();
                   event.stopPropagation();

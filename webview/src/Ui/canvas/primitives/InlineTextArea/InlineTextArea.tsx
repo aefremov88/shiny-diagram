@@ -5,6 +5,9 @@
  * through `onChange`, and forwards focus loss and keyboard input through
  * `onBlur` and `onKeyDown`.
  *
+ * Gesture targets:
+ * - `textArea()` — `role=textbox`
+ *
  * Lifecycle:
  * - `invalid` — on shows invalid treatment for the row form
  *

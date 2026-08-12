@@ -54,6 +54,7 @@ export async function collectComponents({ repoRoot }) {
 
         const annotation = extractAnnotation(source);
         const documentation = extractDocumentation(annotation);
+        const gestureTargets = extractGestureTargets(annotation);
         const propsType = extractPropsType(source, componentName) ?? describeAbsentProps(source);
         const boundaryTypes = extractBoundaryTypes(source, componentName);
         components.push({
@@ -64,6 +65,7 @@ export async function collectComponents({ repoRoot }) {
           sourcePath: `./${relativeSourcePath}`,
           annotation,
           documentation,
+          gestureTargets,
           propsType,
           propsMemberNames: extractPropsMemberNames(propsType),
           boundaryTypes,
@@ -73,6 +75,25 @@ export async function collectComponents({ repoRoot }) {
   }
 
   return components;
+}
+
+function extractGestureTargets(annotation) {
+  if (annotation === null) return [];
+  const lines = annotation.contentLines;
+  const headingIndex = lines.indexOf("Gesture targets:");
+  if (headingIndex < 0) return [];
+  const targets = [];
+  for (const line of lines.slice(headingIndex + 1)) {
+    if (isAnnotationSectionHeading(line)) break;
+    if (line.trim().length === 0) break;
+    const match = /^- `([^`]+)` — `([^`]+)`$/.exec(line);
+    if (match !== null) targets.push({ address: match[1], query: match[2] });
+  }
+  return targets;
+}
+
+function isAnnotationSectionHeading(line) {
+  return line === "Gesture targets:" || line === "Lifecycle:" || line === "Modifiers:";
 }
 
 function extractAnnotation(source) {

@@ -13,6 +13,10 @@
  * moving focus. The menu paints at `menuStacking`, and validation paints at
  * `validationStacking`.
  *
+ * Gesture targets:
+ * - `comboBox()` — `data-gesture-target=combo-box`
+ * - `comboBox().option(name)` — `role=option; accessible-name=name`
+ *
  * Used by: class stereotypes and relationship endpoint multiplicities.
  *
  * Lifecycle:
@@ -127,6 +131,7 @@ export default function CommitComboBox({
           ref={menuButtonRef}
           type="button"
           className={styles.menuButton}
+          data-gesture-target="combo-box"
           disabled={disabled}
           aria-label={ariaLabel === undefined ? "Options" : `${ariaLabel} options`}
           aria-haspopup="listbox"

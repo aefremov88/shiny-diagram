@@ -3,6 +3,9 @@
  *
  * Renders `label` as its content; clicking it reports `onClick`.
  *
+ * Gesture targets:
+ * - `textButton()` — `role=button`
+ *
  * Used by: saving a note-body edit.
  */
 

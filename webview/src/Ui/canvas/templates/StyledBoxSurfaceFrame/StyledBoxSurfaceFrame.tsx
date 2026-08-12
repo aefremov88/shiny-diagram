@@ -6,6 +6,9 @@
  * reports `onClick` when clicked. `placementCursor` selects the placement cursor;
  * `elementRef` exposes the surface host for consumer-owned measurement.
  *
+ * Gesture targets:
+ * - `surface()` — `data-gesture-target=surface`
+ *
  * Used by: class surfaces.
  *
  * Lifecycle:
@@ -59,7 +62,14 @@ export default function StyledBoxSurfaceFrame({
     .join(" ");
 
   return (
-    <div ref={elementRef} className={className} style={style} title={title} onClick={onClick}>
+    <div
+      ref={elementRef}
+      className={className}
+      data-gesture-target="surface"
+      style={style}
+      title={title}
+      onClick={onClick}
+    >
       {children}
     </div>
   );

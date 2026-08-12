@@ -5,6 +5,9 @@
  * accessible name when `label` is absent, exposes `pressed`, and reports
  * `onClick` when clicked.
  *
+ * Gesture targets:
+ * - `toggleButton()` — `role=button`
+ *
  * Lifecycle:
  * - `pressed` — on shows the toggle selected
  * - `disabled` — on prevents the control from being pressed and shows it as

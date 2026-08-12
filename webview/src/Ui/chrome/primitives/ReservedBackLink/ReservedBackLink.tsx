@@ -3,6 +3,9 @@
  *
  * Renders `label` as the button content; clicking it reports `onClick`.
  *
+ * Gesture targets:
+ * - `backLink()` — `role=button`
+ *
  * Used by: return from a diagram style reached through a class.
  *
  * Lifecycle:

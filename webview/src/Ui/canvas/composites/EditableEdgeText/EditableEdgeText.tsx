@@ -9,6 +9,9 @@
  * reports `onCommit`; abandoning or cancelling reports `onCancel`. Validation
  * overlays use `validationStacking`.
  *
+ * Gesture targets:
+ * - `edgeText()` — `data-gesture-target=edge-text`
+ *
  * Lifecycle:
  * - `isEditing` — off renders the text pill; on renders the editor
  * - `isClickEditEnabled` — on gives the resting pill a default cursor and makes
@@ -100,6 +103,7 @@ export default function EditableEdgeText({
   if (!isClickEditEnabled) {
     return (
       <g
+        data-gesture-target="edge-text"
         onClick={(event) => {
           event.stopPropagation();
           onSelect();
@@ -117,6 +121,7 @@ export default function EditableEdgeText({
 
   return (
     <g
+      data-gesture-target="edge-text"
       onClick={(event) => {
         event.stopPropagation();
         onSelect();

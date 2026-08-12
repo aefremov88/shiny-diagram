@@ -6,6 +6,10 @@
  * A press neither selects nor reaches the surface beneath; it reports the
  * grabbed handle and viewport point through `onGrab`.
  *
+ * Gesture targets:
+ * - `resizeAffordance().edge(side)` — `data-gesture-kind=edge; data-gesture-handle=side`
+ * - `resizeAffordance().handle(handle)` — `data-gesture-kind=handle; data-gesture-handle=handle`
+ *
  * Used by: selected classes, notes, and namespaces.
  */
 
@@ -51,6 +55,8 @@ export default function ResizeAffordance({
           className={`${styles.edge} ${styles[`edge${handle.toUpperCase()}`]}`}
           style={affordanceStyle}
           type="button"
+          data-gesture-kind="edge"
+          data-gesture-handle={handle}
           aria-label={`Resize from ${toAccessiblePosition(handle)} edge`}
           onPointerDown={onPointerDown(handle)}
         />
@@ -61,6 +67,8 @@ export default function ResizeAffordance({
           className={`${styles.handle} ${styles[handle]}`}
           style={affordanceStyle}
           type="button"
+          data-gesture-kind="handle"
+          data-gesture-handle={handle}
           aria-label={`Resize from ${toAccessiblePosition(handle)}`}
           onPointerDown={onPointerDown(handle)}
         />

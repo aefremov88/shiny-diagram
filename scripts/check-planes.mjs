@@ -187,9 +187,12 @@ function checkPresence(component) {
 function checkStructure(component) {
   if (component.annotation === null) return;
   const lines = component.annotation.contentLines;
+  const gestureTargetsIndex = lines.indexOf("Gesture targets:");
   const lifecycleIndex = lines.indexOf("Lifecycle:");
   const modifiersIndex = lines.indexOf("Modifiers:");
-  const sectionIndexes = [lifecycleIndex, modifiersIndex].filter((index) => index >= 0);
+  const sectionIndexes = [gestureTargetsIndex, lifecycleIndex, modifiersIndex].filter(
+    (index) => index >= 0
+  );
   const paragraphEnd = sectionIndexes.length === 0 ? lines.length : Math.min(...sectionIndexes);
   const hasSummary = lines[0]?.trim().length > 0;
   const hasBlankAfterSummary = lines[1] !== undefined && lines[1].trim() === "";
@@ -213,6 +216,22 @@ function checkStructure(component) {
     );
   }
 
+  if (
+    gestureTargetsIndex >= 0 &&
+    [lifecycleIndex, modifiersIndex].some(
+      (sectionIndex) => sectionIndex >= 0 && gestureTargetsIndex > sectionIndex
+    )
+  ) {
+    componentViolation(
+      component,
+      "annotation section order",
+      "`Gesture targets:` must precede `Lifecycle:` and `Modifiers:` when present.",
+      "Move the gesture-target section before lifecycle and modifier sections, then run `npm run planes`."
+    );
+  }
+
+  checkGestureTargets(component, lines);
+
   for (const heading of ["Lifecycle:", "Modifiers:"]) {
     const entries = sectionEntries(lines, heading);
     if (entries === null) continue;
@@ -227,6 +246,48 @@ function checkStructure(component) {
   }
 
   checkAnchorFormat(component, lines);
+}
+
+function checkGestureTargets(component, lines) {
+  const range = gestureTargetSectionRange(lines);
+  if (range === null) return;
+  const targetLines = lines
+    .slice(range.start, range.end)
+    .filter((line) => line.trim().length > 0 && !/^\s/.test(line));
+  const parsed = targetLines.map((line) => /^- `([^`]+)` — `([^`]+)`$/.exec(line));
+
+  if (targetLines.length === 0 || parsed.some((target) => target === null)) {
+    componentViolation(
+      component,
+      "gesture-target structure",
+      "Every top-level entry under `Gesture targets:` must exactly match `- `<address>` — `<query>`` and the section must contain at least one entry.",
+      "Add one or more exact gesture-target entries, then run `npm run planes`."
+    );
+  }
+
+  const addresses = parsed.filter((target) => target !== null).map((target) => target[1]);
+  if (new Set(addresses).size !== addresses.length) {
+    componentViolation(
+      component,
+      "gesture-target address uniqueness",
+      "The component declares the same gesture-target Address more than once.",
+      "Keep one entry per local Address, then run `npm run planes`."
+    );
+  }
+}
+
+function gestureTargetSectionRange(lines) {
+  const headingIndex = lines.indexOf("Gesture targets:");
+  if (headingIndex < 0) return null;
+  let end = headingIndex + 1;
+  while (
+    end < lines.length &&
+    lines[end].trim().length > 0 &&
+    !isUiAnnotationSectionHeading(lines[end])
+  ) {
+    end += 1;
+  }
+  return { start: headingIndex + 1, end };
 }
 
 function checkAnchorFormat(component, lines) {
@@ -317,7 +378,7 @@ function sectionEntries(lines, heading) {
   if (sectionIndex < 0) return null;
   const entries = [];
   for (const line of lines.slice(sectionIndex + 1)) {
-    if (line === "Lifecycle:" || line === "Modifiers:") break;
+    if (isUiAnnotationSectionHeading(line)) break;
     if (line.trim().length === 0 || /^\s/.test(line)) continue;
     const match = /^- `([^`]+)`(?:\s|$)/.exec(line);
     entries.push({ line, subject: match?.[1] ?? null });
@@ -330,12 +391,16 @@ function sectionRange(lines, heading) {
   if (headingIndex < 0) return null;
   let end = lines.length;
   for (let index = headingIndex + 1; index < lines.length; index += 1) {
-    if (lines[index] === "Lifecycle:" || lines[index] === "Modifiers:") {
+    if (isUiAnnotationSectionHeading(lines[index])) {
       end = index;
       break;
     }
   }
   return { start: headingIndex + 1, end };
+}
+
+function isUiAnnotationSectionHeading(line) {
+  return line === "Gesture targets:" || line === "Lifecycle:" || line === "Modifiers:";
 }
 
 function topLevelBulletRanges(lines, start, end) {

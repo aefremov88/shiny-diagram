@@ -5,6 +5,9 @@
  * and keyboard input through `onBlur` and `onKeyDown`. `ariaLabel` supplies the
  * accessible name.
  *
+ * Gesture targets:
+ * - `textField()` — `role=textbox`
+ *
  * Lifecycle:
  * - `disabled` — on prevents editing and shows it as unavailable
  * - `invalid` — on exposes invalid state and error treatment

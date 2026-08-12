@@ -5,6 +5,9 @@
  * `onClick` when clicked. `elementRef` exposes the surface host for
  * consumer-owned measurement.
  *
+ * Gesture targets:
+ * - `surface()` — `data-gesture-target=surface`
+ *
  * Used by: note surfaces.
  *
  * Lifecycle:
@@ -33,6 +36,7 @@ export default function StickyNoteSurfaceFrame({
   return (
     <div
       className={`${styles.frame} ${dragging ? styles.dragging : ""}`}
+      data-gesture-target="surface"
       ref={elementRef}
       title={title}
       onClick={onClick}

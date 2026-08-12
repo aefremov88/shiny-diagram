@@ -5,6 +5,9 @@
  * selected, supports arrow, Home, and End navigation, and reports a selected
  * option through `onChange`.
  *
+ * Gesture targets:
+ * - `segmentedControl().option(name)` — `role=radio; accessible-name=name`
+ *
  * Used by: Mermaid/Shiny mode selection.
  */
 

@@ -6,6 +6,9 @@
  * dragging do not engage while drawing. When `rect` is non-null, it also renders
  * the pending rectangle.
  *
+ * Gesture targets:
+ * - `drawSurface()` — `data-gesture-target=draw-surface`
+ *
  * Used by: class and namespace placement gestures.
  */
 
@@ -33,6 +36,7 @@ export default function RectDrawOverlay({
   return (
     <div
       className={styles.overlay}
+      data-gesture-target="draw-surface"
       style={style}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}

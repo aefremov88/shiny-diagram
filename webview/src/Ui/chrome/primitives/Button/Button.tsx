@@ -5,6 +5,9 @@
  * icon-only presentation, renders `icon` and uses `ariaLabel` as its accessible
  * name and tooltip. Clicking reports `onClick`.
  *
+ * Gesture targets:
+ * - `button()` — `role=button`
+ *
  * Lifecycle:
  * - `disabled` — on shows the command as unavailable and it cannot be pressed
  * - `visible` — off preserves the command's layout space while removing it

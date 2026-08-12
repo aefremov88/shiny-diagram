@@ -10,6 +10,10 @@
  * while keyboard dismissal returns focus to the control. The six-column grid is
  * keyboard-navigable, and the popup paints at the supplied `stacking` plane.
  *
+ * Gesture targets:
+ * - `colorSelect()` — `role=button; aria-haspopup=grid`
+ * - `colorSelect().option(section, name)` — `role=gridcell; accessible-name=name; data-gesture-section=section`
+ *
  * Lifecycle:
  * - `disabled` — on means the list cannot be opened and shows the control as
  *   unavailable
@@ -182,6 +186,7 @@ export default function ColorSelect({
                 {documentColors.map((color) => (
                   <ColorOption
                     key={color}
+                    section="document"
                     value={color}
                     selected={!isMultiple && colorsEqual(color, value)}
                     onSelect={selectValue}
@@ -194,6 +199,7 @@ export default function ColorSelect({
             {palette.map((preset, index) => (
               <ColorOption
                 key={preset.value}
+                section="preset"
                 value={preset.value}
                 label={preset.name}
                 selected={
@@ -243,6 +249,7 @@ function ColorPreview({
 }
 
 function ColorOption({
+  section,
   value,
   label,
   selected,
@@ -252,6 +259,7 @@ function ColorOption({
   onFocus,
   onSelect,
 }: {
+  readonly section: "preset" | "document";
   readonly value: string;
   readonly label?: string;
   readonly selected: boolean;
@@ -267,6 +275,7 @@ function ColorOption({
       ref={buttonRef}
       type="button"
       role="gridcell"
+      data-gesture-section={section}
       className={styles.colorOption}
       style={dynamicStyle}
       aria-label={label ?? value}

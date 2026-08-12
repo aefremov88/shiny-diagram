@@ -5,6 +5,9 @@
  * focus from the field it sits in and reports the press through `onMouseDown`;
  * clicking it reports `onClick`.
  *
+ * Gesture targets:
+ * - `dismissButton()` — `role=button`
+ *
  * Used by: field clear and cancel actions.
  */
 

@@ -6,6 +6,9 @@
  * from the keyboard, by clicking anywhere outside, or by its own dismiss control
  * — reports `onDismiss`. The popup paints at the supplied `stacking` plane.
  *
+ * Gesture targets:
+ * - `validationPopup().dismissButton()` — `role=alert > role=button; accessible-name=Dismiss`
+ *
  * Used by: invalid class names, namespace names, style names, relationship
  * labels, and multiplicities.
  */

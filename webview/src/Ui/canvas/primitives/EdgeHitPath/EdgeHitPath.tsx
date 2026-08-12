@@ -4,6 +4,9 @@
  * Follows `d` with a transparent stroke that receives pointer input across a
  * wider corridor and presents an action cursor.
  *
+ * Gesture targets:
+ * - `edgeHitPath()` — `data-gesture-target=edge-hit-path`
+ *
  * Used by: relationship selection.
  */
 
@@ -15,5 +18,5 @@ type EdgeHitPathProps = {
 };
 
 export default function EdgeHitPath({ d }: EdgeHitPathProps): ReactElement {
-  return <path className={styles.path} d={d} />;
+  return <path className={styles.path} d={d} data-gesture-target="edge-hit-path" />;
 }

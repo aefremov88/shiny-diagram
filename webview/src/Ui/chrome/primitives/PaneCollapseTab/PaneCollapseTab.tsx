@@ -4,6 +4,9 @@
  * Clicking the tab reports `onToggle`, supplies the matching expand or collapse
  * accessible instruction, and paints at the supplied `stacking` plane.
  *
+ * Gesture targets:
+ * - `paneCollapseTab()` — `role=button`
+ *
  * Used by: the editor's property pane.
  *
  * Lifecycle:
