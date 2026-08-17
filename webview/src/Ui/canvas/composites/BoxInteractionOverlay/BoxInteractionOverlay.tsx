@@ -4,7 +4,8 @@
  * Centers outline and resize geometry with `centerOffset`. A supplied `haloTint`
  * paints the halo at `haloStacking`; resize targets use `affordanceStacking`. A
  * resize press reports its handle and viewport point through `onResizeGrab` and
- * does not reach the surface beneath.
+ * does not reach the surface beneath. `resizeTargetRole` and names returned by
+ * `toResizeTargetName` are passed through to the resize targets.
  *
  * Lifecycle:
  * - `selected` — on keeps the selection outline visible; off shows it only on
@@ -40,6 +41,8 @@ type BoxInteractionOverlayProps = {
   readonly pending: boolean;
   readonly resizeVisible: boolean;
   readonly haloTone?: "canvas" | "faint";
+  readonly resizeTargetRole?: string;
+  readonly toResizeTargetName?: (handle: ResizeHandle) => string;
   readonly onResizeGrab: (handle: ResizeHandle, point: Point) => void;
 };
 
@@ -52,6 +55,8 @@ export default function BoxInteractionOverlay({
   haloTone,
   haloStacking,
   affordanceStacking,
+  resizeTargetRole,
+  toResizeTargetName,
   onResizeGrab,
 }: BoxInteractionOverlayProps): ReactElement {
   return (
@@ -69,6 +74,8 @@ export default function BoxInteractionOverlay({
           <ResizeAffordance
             centerOffset={centerOffset}
             stacking={affordanceStacking}
+            targetRole={resizeTargetRole}
+            toTargetName={toResizeTargetName}
             onGrab={onResizeGrab}
           />
         </div>

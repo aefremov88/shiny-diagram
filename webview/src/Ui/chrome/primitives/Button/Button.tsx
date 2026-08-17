@@ -3,7 +3,8 @@
  *
  * In labeled presentation, renders `label` beside `icon` when supplied. In
  * icon-only presentation, renders `icon` and uses `ariaLabel` as its accessible
- * name and tooltip. Clicking reports `onClick`.
+ * name and tooltip. `targetRole` and `targetName` are transcribed onto the
+ * button. Clicking reports `onClick`.
  *
  * Gesture targets:
  * - `button()` — `role=button`
@@ -41,6 +42,8 @@ type ButtonProps = {
   readonly icon?: GlyphDescriptor;
   readonly ariaLabel?: string;
   readonly title?: string;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly disabled?: boolean;
   readonly visible?: boolean;
   readonly variant?: "default" | "danger" | "rowAction" | "ghost";
@@ -53,6 +56,8 @@ export default function Button({
   icon,
   ariaLabel,
   title,
+  targetRole,
+  targetName,
   disabled = false,
   variant = "default",
   presentation = "labeled",
@@ -74,6 +79,8 @@ export default function Button({
       type="button"
       className={className}
       disabled={disabled || !visible}
+      data-target-role={targetRole}
+      data-target-name={targetName}
       aria-label={presentation === "iconOnly" ? ariaLabel : undefined}
       aria-hidden={!visible}
       tabIndex={visible ? undefined : -1}

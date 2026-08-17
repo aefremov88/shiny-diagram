@@ -71,6 +71,8 @@ export default function MemberTable({
       rows={toRows(fields)}
       addLabel="+ attribute"
       addTitle="Add attribute"
+      addTargetRole="button"
+      addTargetName="Add attribute"
       validate={() => []}
       isEditable={isSelected}
       isEmphasisEditable
@@ -114,6 +116,8 @@ export default function MemberTable({
       rows={toRows(methods)}
       addLabel="+ method"
       addTitle="Add member"
+      addTargetRole="button"
+      addTargetName="Add member"
       validate={() => []}
       isEditable={isSelected}
       isEmphasisEditable
@@ -169,6 +173,8 @@ function toRows(members: readonly ClassMemberView[]): readonly EditableTextListR
   return members.map((member) => ({
     text: member.text,
     emphasis: toEmphasis(member.classifier),
+    targetRole: "member",
+    targetName: member.text,
   }));
 }
 

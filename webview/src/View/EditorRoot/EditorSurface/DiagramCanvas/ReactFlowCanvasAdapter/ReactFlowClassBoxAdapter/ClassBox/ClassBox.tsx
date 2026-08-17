@@ -213,6 +213,8 @@ export default function ClassBox({
       strokeWidth={separatorThickness}
       lineStyle={separatorLineStyle}
       color={resolvedStyle.color}
+      targetRole="class-box"
+      targetName={view.classId}
       dragging={isDragging}
       placementCursor={isConnectSourceEnabled}
       onClick={onClassBoxClick}
@@ -226,6 +228,8 @@ export default function ClassBox({
         haloTone={haloTone ?? undefined}
         haloStacking={NODE_BEHIND_CONTENT_Z_INDEX}
         affordanceStacking={NODE_ABOVE_CONTENT_Z_INDEX}
+        resizeTargetRole="resize-handle"
+        toResizeTargetName={(handle) => handle}
         onResizeGrab={onResizeGrab}
       />
       <ReactFlowConnectionHandlesAdapter

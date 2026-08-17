@@ -2,9 +2,10 @@
  * Inline action button for cancel and add affordances.
  *
  * Renders `glyph`, uses `label` as its accessible name, and shows `title` as the
- * tooltip, defaulting to that accessible name. Pressing it does not steal focus from the field it sits
- * in; clicking it reports `onClick`. `surface` overrides the selected fallback
- * surface.
+ * tooltip, defaulting to that accessible name. `targetRole` and `targetName` are
+ * transcribed onto the button. Pressing it does not steal focus from the field
+ * it sits in; clicking it reports `onClick`. `surface` overrides the selected
+ * fallback surface.
  *
  * Gesture targets:
  * - `actionButton()` — `role=button`
@@ -36,6 +37,8 @@ type InlineActionButtonProps = {
   readonly label: string;
   readonly title?: string;
   readonly surface?: string;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly disabled?: boolean;
   readonly visible?: boolean;
   readonly treatment: "cancel" | "add";
@@ -51,6 +54,8 @@ export default function InlineActionButton({
   disabled = false,
   visible = true,
   surface,
+  targetRole,
+  targetName,
   surfaceTone = "default",
   onClick,
 }: InlineActionButtonProps): ReactElement {
@@ -61,6 +66,8 @@ export default function InlineActionButton({
       className={`${styles.button} ${styles[treatment]} ${styles[surfaceTone]} ${visible ? "" : styles.hidden}`}
       disabled={disabled}
       style={style}
+      data-target-role={targetRole}
+      data-target-name={targetName}
       aria-label={label}
       title={title}
       onMouseDown={(event) => event.preventDefault()}

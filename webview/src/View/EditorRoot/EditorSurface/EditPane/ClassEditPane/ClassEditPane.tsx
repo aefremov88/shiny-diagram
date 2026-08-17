@@ -91,6 +91,8 @@ export default function ClassEditPane({
                 <NamedStyleSelector view={selectedClasses} styles={declaredStyles} />
                 <Button
                   label={styleActionLabel}
+                  targetRole="button"
+                  targetName={styleActionLabel}
                   variant="rowAction"
                   disabled={!selectedNamedStyle && !selectedDirectStyle}
                   onClick={onStyleAction}

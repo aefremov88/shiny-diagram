@@ -96,7 +96,8 @@ Button for a labeled or icon-only command.
 
 In labeled presentation, renders `label` beside `icon` when supplied. In
 icon-only presentation, renders `icon` and uses `ariaLabel` as its accessible
-name and tooltip. Clicking reports `onClick`.
+name and tooltip. `targetRole` and `targetName` are transcribed onto the
+button. Clicking reports `onClick`.
 
 Gesture targets:
 
@@ -132,6 +133,8 @@ type ButtonProps = {
   readonly icon?: GlyphDescriptor;
   readonly ariaLabel?: string;
   readonly title?: string;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly disabled?: boolean;
   readonly visible?: boolean;
   readonly variant?: "default" | "danger" | "rowAction" | "ghost";
@@ -422,11 +425,8 @@ reports `onChange` and returns focus to the control. Closing it without choosing
 reports nothing: an outside press leaves focus where the click placed it,
 while keyboard dismissal returns focus to the control. The six-column grid is
 keyboard-navigable, and the popup paints at the supplied `stacking` plane.
-
-Gesture targets:
-
-- `colorSelect()` — `role=button; aria-haspopup=grid`
-- `colorSelect().option(section, name)` — `role=gridcell; accessible-name=name; data-gesture-section=section`
+`targetRole` and `targetName` identify the trigger; `optionTargetRole`
+identifies options, whose names come from preset names or document colors.
 
 Lifecycle:
 
@@ -447,6 +447,9 @@ type ColorSelectProps = {
   readonly documentColors: readonly string[];
   readonly constantValue: string;
   readonly stacking: number;
+  readonly targetRole?: string;
+  readonly targetName?: string;
+  readonly optionTargetRole?: string;
   readonly disabled?: boolean;
   readonly preview: "fill" | "stroke" | "text";
   readonly onChange: (value: string | null) => void;
@@ -811,6 +814,7 @@ Pane frame with a persistent edge-control slot and collapsible content.
 
 Sets the expanded frame from pixel `width`, renders `edgeControl` against the
 shell, and arranges `children` vertically in a scrolling content region.
+`targetRole` and `targetName` are transcribed onto the shell.
 
 Used by: the tool pane and property pane.
 
@@ -825,6 +829,8 @@ type PaneFrameProps = {
   readonly children: ReactNode;
   readonly width: number;
   readonly collapsed?: boolean;
+  readonly targetRole?: string;
+  readonly targetName?: string;
 };
 ```
 
@@ -1150,9 +1156,10 @@ type HaloRingProps = {
 Inline action button for cancel and add affordances.
 
 Renders `glyph`, uses `label` as its accessible name, and shows `title` as the
-tooltip, defaulting to that accessible name. Pressing it does not steal focus from the field it sits
-in; clicking it reports `onClick`. `surface` overrides the selected fallback
-surface.
+tooltip, defaulting to that accessible name. `targetRole` and `targetName` are
+transcribed onto the button. Pressing it does not steal focus from the field
+it sits in; clicking it reports `onClick`. `surface` overrides the selected
+fallback surface.
 
 Gesture targets:
 
@@ -1182,6 +1189,8 @@ type InlineActionButtonProps = {
   readonly label: string;
   readonly title?: string;
   readonly surface?: string;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly disabled?: boolean;
   readonly visible?: boolean;
   readonly treatment: "cancel" | "add";
@@ -1391,12 +1400,9 @@ Resize affordance with corner, midpoint, and full-edge grab targets.
 Centers visible handles and wider edge targets around the host boundary using
 `centerOffset`, placing edge targets at `stacking` and handles one plane above.
 A press neither selects nor reaches the surface beneath; it reports the
-grabbed handle and viewport point through `onGrab`.
-
-Gesture targets:
-
-- `resizeAffordance().edge(side)` — `data-gesture-kind=edge; data-gesture-handle=side`
-- `resizeAffordance().handle(handle)` — `data-gesture-kind=handle; data-gesture-handle=handle`
+grabbed handle and viewport point through `onGrab`. When supplied,
+`targetRole` and names returned by `toTargetName` are transcribed onto each
+visible handle.
 
 Used by: selected classes, notes, and namespaces.
 
@@ -1404,6 +1410,8 @@ Used by: selected classes, notes, and namespaces.
 type ResizeAffordanceProps = {
   readonly centerOffset?: number;
   readonly stacking: number;
+  readonly targetRole?: string;
+  readonly toTargetName?: (handle: ResizeHandle) => string;
   readonly onGrab: (handle: ResizeHandle, point: Point) => void;
 };
 ```
@@ -1431,7 +1439,8 @@ Box interaction overlay combining outline, halo, and resize affordances.
 Centers outline and resize geometry with `centerOffset`. A supplied `haloTint`
 paints the halo at `haloStacking`; resize targets use `affordanceStacking`. A
 resize press reports its handle and viewport point through `onResizeGrab` and
-does not reach the surface beneath.
+does not reach the surface beneath. `resizeTargetRole` and names returned by
+`toResizeTargetName` are passed through to the resize targets.
 
 Lifecycle:
 
@@ -1460,6 +1469,8 @@ type BoxInteractionOverlayProps = {
   readonly pending: boolean;
   readonly resizeVisible: boolean;
   readonly haloTone?: "canvas" | "faint";
+  readonly resizeTargetRole?: string;
+  readonly toResizeTargetName?: (handle: ResizeHandle) => string;
   readonly onResizeGrab: (handle: ResizeHandle, point: Point) => void;
 };
 ```
@@ -1522,12 +1533,10 @@ exclusively by the list: pointer dragging reports `onRowReorder` with source
 row and destination gap, while preventing a host drag from starting; a drag
 can be cancelled from the keyboard, leaving the order unchanged. Actions use
 `actionStacking`, validation uses `validationStacking`, and `surface` supplies
-an explicit action ground over the class-member fallback. Editing lifecycle
-is reported through `onEditStart` and `onEditEnd`.
-
-Gesture targets:
-
-- `editableTextList().row(index)` — `data-gesture-row=index`
+an explicit action ground over the class-member fallback. Row target values
+are transcribed from row data; `addTargetRole` and `addTargetName` are
+transcribed onto the add control. Editing lifecycle is reported through
+`onEditStart` and `onEditEnd`.
 
 Used by: class attribute and operation rows.
 
@@ -1543,6 +1552,8 @@ type EditableTextListProps = {
   readonly rows: readonly EditableTextListRow[];
   readonly addLabel: string;
   readonly addTitle: string;
+  readonly addTargetRole?: string;
+  readonly addTargetName?: string;
   readonly surface?: string;
   readonly actionStacking: number;
   readonly validationStacking: number;
@@ -1561,13 +1572,16 @@ type EditableTextListProps = {
 
 EditableTextList entry carrying text and optional emphasis content.
 
-`text` supplies the row value and `emphasis` supplies its initial underline,
-italic, or unemphasized state.
+`text` supplies the row value, `emphasis` supplies its initial underline,
+italic, or unemphasized state, and `targetRole` and `targetName` are
+transcribed onto the row host.
 
 ```ts
 export type EditableTextListRow = {
   readonly text: string;
   readonly emphasis?: TextEmphasis | null;
+  readonly targetRole?: string;
+  readonly targetName?: string;
 };
 ```
 
@@ -1936,12 +1950,9 @@ Styled box surface framing vertically arranged content with user values.
 
 Fills its host with `children`, uses `title` as the tooltip, applies `fill`,
 `stroke`, `strokeWidth`, `lineStyle`, and `color` with base fallbacks, and
-reports `onClick` when clicked. `placementCursor` selects the placement cursor;
-`elementRef` exposes the surface host for consumer-owned measurement.
-
-Gesture targets:
-
-- `surface()` — `data-gesture-target=surface`
+reports `onClick` when clicked. `targetRole` and `targetName` are transcribed
+onto the host. `placementCursor` selects the placement cursor; `elementRef`
+exposes the surface host for consumer-owned measurement.
 
 Used by: class surfaces.
 
@@ -1958,6 +1969,8 @@ type StyledBoxSurfaceFrameProps = {
   readonly strokeWidth?: string;
   readonly lineStyle: "solid" | "dashed" | "dotted";
   readonly color?: string;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly children: ReactNode;
   readonly dragging: boolean;
   readonly placementCursor: boolean;

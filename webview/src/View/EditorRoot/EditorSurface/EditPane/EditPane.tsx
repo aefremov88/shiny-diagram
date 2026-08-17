@@ -163,6 +163,7 @@ export default function EditPane({
     <PaneFrame
       width={EDIT_PANE_WIDTH}
       collapsed={isCollapsed}
+      targetRole="edit-pane"
       edgeControl={
         <PaneCollapseTab
           collapsed={isCollapsed}

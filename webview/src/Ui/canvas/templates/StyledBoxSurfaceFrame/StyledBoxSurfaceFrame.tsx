@@ -3,11 +3,9 @@
  *
  * Fills its host with `children`, uses `title` as the tooltip, applies `fill`,
  * `stroke`, `strokeWidth`, `lineStyle`, and `color` with base fallbacks, and
- * reports `onClick` when clicked. `placementCursor` selects the placement cursor;
- * `elementRef` exposes the surface host for consumer-owned measurement.
- *
- * Gesture targets:
- * - `surface()` — `data-gesture-target=surface`
+ * reports `onClick` when clicked. `targetRole` and `targetName` are transcribed
+ * onto the host. `placementCursor` selects the placement cursor; `elementRef`
+ * exposes the surface host for consumer-owned measurement.
  *
  * Used by: class surfaces.
  *
@@ -26,6 +24,8 @@ type StyledBoxSurfaceFrameProps = {
   readonly strokeWidth?: string;
   readonly lineStyle: "solid" | "dashed" | "dotted";
   readonly color?: string;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly children: ReactNode;
   readonly dragging: boolean;
   readonly placementCursor: boolean;
@@ -40,6 +40,8 @@ export default function StyledBoxSurfaceFrame({
   strokeWidth,
   lineStyle,
   color,
+  targetRole,
+  targetName,
   dragging,
   placementCursor,
   children,
@@ -65,7 +67,8 @@ export default function StyledBoxSurfaceFrame({
     <div
       ref={elementRef}
       className={className}
-      data-gesture-target="surface"
+      data-target-role={targetRole}
+      data-target-name={targetName}
       style={style}
       title={title}
       onClick={onClick}

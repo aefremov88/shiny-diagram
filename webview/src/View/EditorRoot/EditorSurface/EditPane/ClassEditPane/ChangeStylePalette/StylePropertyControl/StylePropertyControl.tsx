@@ -13,6 +13,7 @@ import StrokeSelect from "../../../../../../../Ui/chrome/composites/StrokeSelect
 
 type StylePropertyControlProps = {
   readonly property: StylePropertyName;
+  readonly targetName: string;
   readonly value: string | null | "multiple";
   readonly presets: ColorSelectPresetCatalog;
   readonly documentColors: readonly string[];
@@ -23,6 +24,7 @@ type StylePropertyControlProps = {
 
 export default function StylePropertyControl({
   property,
+  targetName,
   value,
   presets,
   documentColors,
@@ -40,6 +42,9 @@ export default function StylePropertyControl({
         documentColors={documentColors}
         constantValue={constantValue}
         stacking={CHROME_SELECTOR_POPUP_ABOVE_CONTROL_Z_INDEX}
+        targetRole="color-select"
+        targetName={targetName}
+        optionTargetRole="color-option"
         onChange={onChange}
       />
     );

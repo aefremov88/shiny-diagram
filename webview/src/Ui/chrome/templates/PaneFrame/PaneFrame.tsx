@@ -3,6 +3,7 @@
  *
  * Sets the expanded frame from pixel `width`, renders `edgeControl` against the
  * shell, and arranges `children` vertically in a scrolling content region.
+ * `targetRole` and `targetName` are transcribed onto the shell.
  *
  * Used by: the tool pane and property pane.
  *
@@ -19,6 +20,8 @@ type PaneFrameProps = {
   readonly children: ReactNode;
   readonly width: number;
   readonly collapsed?: boolean;
+  readonly targetRole?: string;
+  readonly targetName?: string;
 };
 
 export default function PaneFrame({
@@ -26,13 +29,20 @@ export default function PaneFrame({
   collapsed = false,
   edgeControl,
   children,
+  targetRole,
+  targetName,
 }: PaneFrameProps): ReactElement {
   const frameStyle: CSSProperties & { "--pane-frame-width": string } = {
     "--pane-frame-width": `${width}px`,
   };
 
   return (
-    <div className={collapsed ? styles.collapsedShell : styles.shell} style={frameStyle}>
+    <div
+      className={collapsed ? styles.collapsedShell : styles.shell}
+      style={frameStyle}
+      data-target-role={targetRole}
+      data-target-name={targetName}
+    >
       {edgeControl}
       {collapsed ? null : <div className={styles.frame}>{children}</div>}
     </div>

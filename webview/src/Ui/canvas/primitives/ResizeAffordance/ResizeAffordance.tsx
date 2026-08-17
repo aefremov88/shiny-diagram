@@ -4,11 +4,9 @@
  * Centers visible handles and wider edge targets around the host boundary using
  * `centerOffset`, placing edge targets at `stacking` and handles one plane above.
  * A press neither selects nor reaches the surface beneath; it reports the
- * grabbed handle and viewport point through `onGrab`.
- *
- * Gesture targets:
- * - `resizeAffordance().edge(side)` — `data-gesture-kind=edge; data-gesture-handle=side`
- * - `resizeAffordance().handle(handle)` — `data-gesture-kind=handle; data-gesture-handle=handle`
+ * grabbed handle and viewport point through `onGrab`. When supplied,
+ * `targetRole` and names returned by `toTargetName` are transcribed onto each
+ * visible handle.
  *
  * Used by: selected classes, notes, and namespaces.
  */
@@ -22,6 +20,8 @@ export type ResizeHandle = "nw" | "n" | "ne" | "e" | "se" | "s" | "sw" | "w";
 type ResizeAffordanceProps = {
   readonly centerOffset?: number;
   readonly stacking: number;
+  readonly targetRole?: string;
+  readonly toTargetName?: (handle: ResizeHandle) => string;
   readonly onGrab: (handle: ResizeHandle, point: Point) => void;
 };
 
@@ -31,6 +31,8 @@ const EDGE_HANDLES: readonly Extract<ResizeHandle, "n" | "e" | "s" | "w">[] = ["
 export default function ResizeAffordance({
   centerOffset = 3,
   stacking,
+  targetRole,
+  toTargetName,
   onGrab,
 }: ResizeAffordanceProps): ReactElement {
   // Event handler props derivation
@@ -55,8 +57,6 @@ export default function ResizeAffordance({
           className={`${styles.edge} ${styles[`edge${handle.toUpperCase()}`]}`}
           style={affordanceStyle}
           type="button"
-          data-gesture-kind="edge"
-          data-gesture-handle={handle}
           aria-label={`Resize from ${toAccessiblePosition(handle)} edge`}
           onPointerDown={onPointerDown(handle)}
         />
@@ -67,8 +67,8 @@ export default function ResizeAffordance({
           className={`${styles.handle} ${styles[handle]}`}
           style={affordanceStyle}
           type="button"
-          data-gesture-kind="handle"
-          data-gesture-handle={handle}
+          data-target-role={targetRole}
+          data-target-name={toTargetName?.(handle)}
           aria-label={`Resize from ${toAccessiblePosition(handle)}`}
           onPointerDown={onPointerDown(handle)}
         />

@@ -83,6 +83,9 @@ export default function RelationshipEdge({
   return (
     // React Flow owns the edge shell, so the five edge elements remain consumer-side assembly.
     <g
+      data-target-role="edge"
+      data-target-source={view.sourceClassId}
+      data-target-target={view.targetClassId}
       onClick={(event) => {
         event.stopPropagation();
         onEdgeSelect();

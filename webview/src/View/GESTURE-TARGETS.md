@@ -18,8 +18,6 @@ The future View target tree will combine these local addresses using the actual 
 | Chrome | Primitives | TextField | `textField()` | `role=textbox` |
 | Chrome | Primitives | ToggleButton | `toggleButton()` | `role=button` |
 | Chrome | Primitives | ValidationPopup | `validationPopup().dismissButton()` | `role=alert > role=button; accessible-name=Dismiss` |
-| Chrome | Composites | ColorSelect | `colorSelect()` | `role=button; aria-haspopup=grid` |
-| Chrome | Composites | ColorSelect | `colorSelect().option(section, name)` | `role=gridcell; accessible-name=name; data-gesture-section=section` |
 | Chrome | Composites | CommitComboBox | `comboBox()` | `data-gesture-target=combo-box` |
 | Chrome | Composites | CommitComboBox | `comboBox().option(name)` | `role=option; accessible-name=name` |
 | Chrome | Composites | Dropdown | `dropdown()` | `role=button; aria-haspopup=listbox` |
@@ -35,11 +33,7 @@ The future View target tree will combine these local addresses using the actual 
 | Canvas | Primitives | InlineTextField | `textField()` | `role=textbox` |
 | Canvas | Primitives | InlineToggleButton | `toggleButton()` | `role=button` |
 | Canvas | Primitives | InlineValidationPopup | `validationPopup().dismissButton()` | `role=alert > role=button; accessible-name=Dismiss` |
-| Canvas | Primitives | ResizeAffordance | `resizeAffordance().edge(side)` | `data-gesture-kind=edge; data-gesture-handle=side` |
-| Canvas | Primitives | ResizeAffordance | `resizeAffordance().handle(handle)` | `data-gesture-kind=handle; data-gesture-handle=handle` |
 | Canvas | Composites | EditableEdgeText | `edgeText()` | `data-gesture-target=edge-text` |
-| Canvas | Composites | EditableTextList | `editableTextList().row(index)` | `data-gesture-row=index` |
 | Canvas | Composites | RectDrawOverlay | `drawSurface()` | `data-gesture-target=draw-surface` |
 | Canvas | Templates | HullSurfaceFrame | `surface()` | `data-gesture-target=surface` |
 | Canvas | Templates | StickyNoteSurfaceFrame | `surface()` | `data-gesture-target=surface` |
-| Canvas | Templates | StyledBoxSurfaceFrame | `surface()` | `data-gesture-target=surface` |

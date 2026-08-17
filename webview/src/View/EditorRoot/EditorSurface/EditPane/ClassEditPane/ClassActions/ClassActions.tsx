@@ -32,8 +32,14 @@ export default function ClassActions({ view }: ClassActionsProps): ReactElement 
 
   return (
     <ControlGroup columns={2}>
-      <Button label="Duplicate" onClick={onDuplicate} />
-      <Button label="Delete" variant="danger" onClick={onDelete} />
+      <Button label="Duplicate" targetRole="button" targetName="Duplicate" onClick={onDuplicate} />
+      <Button
+        label="Delete"
+        targetRole="button"
+        targetName="Delete"
+        variant="danger"
+        onClick={onDelete}
+      />
     </ControlGroup>
   );
 }
