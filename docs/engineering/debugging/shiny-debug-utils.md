@@ -2,7 +2,7 @@
 
 > **Implementation state:** Aspirational
 >
-> **Document state:** Work-in-Progress
+> **Document state:** Work-in-Progress, stale
 >
 > **Last reviewed:** 2026-08-12
 >

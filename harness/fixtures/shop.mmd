@@ -1,0 +1,19 @@
+classDiagram
+
+class Order {
+  total: number
+}
+
+class Customer {
+  name: string
+}
+
+class Invoice {
+  amount: number
+}
+
+Order --> Customer : belongs to
+
+%% @spatial:Order x=120 y=120 w=170 h=90
+%% @spatial:Customer x=420 y=120 w=170 h=90
+%% @spatial:Invoice x=120 y=320 w=170 h=90

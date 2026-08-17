@@ -2,7 +2,7 @@
 
 > **Implementation state:** Aspirational — neither library is built yet
 >
-> **Document state:** Current — owns the API of `shiny-debug-utils`; the harness API is owned by the harness repo's README
+> **Document state:** Stale
 >
 > **Last reviewed:** 2026-08-12
 >
