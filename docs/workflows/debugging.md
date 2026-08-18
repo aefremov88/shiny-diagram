@@ -1,6 +1,6 @@
 # Debugging Manual
 
-> **Implementation state:** Aspirational — neither library is built yet
+> **Implementation state:** Aspirational
 >
 > **Document state:** Stale
 >
