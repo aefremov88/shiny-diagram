@@ -1,12 +1,10 @@
 # Testing Framework
 
-> **Implementation state:** Current
->
-> **Document state:** Maintained
->
-> **Last reviewed:** 2026-08-10
->
-> **Scope:** The regression test suites: their structure, coverage rules, and shared machinery
+> **Kind:** Defining  
+> **Document state:** Maintained  
+> **Implementation state:** Implemented  
+> **Last reviewed:** 2026-08-18  
+> **Scope:** The regression test suites: their structure, coverage rules, and shared machinery  
 
 ## 1. Overview
 

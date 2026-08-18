@@ -1,9 +1,10 @@
 # Shiny — specification
 
-> **Implementation state:** Aspirtional
-> **Document state:** Maintained
-> **Last reviewed:** 2026-06-19
-> **Scope:** A vision of a product high-level mechanics and features
+> **Kind:** Defining  
+> **Document state:** Maintained  
+> **Implementation state:** Aspirational  
+> **Last reviewed:** 2026-08-18  
+> **Scope:** A vision of a product high-level mechanics and features  
 
 ## 1. Summary
 

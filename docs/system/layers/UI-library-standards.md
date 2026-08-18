@@ -1,7 +1,12 @@
-> **Implementation state:** Implemented and checker-enforced
-> **Document state:** Maintained 
-> **Scope:** `webview/src/ui/**`  
-> **Goal** Must-follow standards of the UI library layer: what it owns, how it is structured, and where every style value is defined. Domain components consuming the library are governed by [react-standards](./react-standards.md); components are self-documenting — contracts live in code and file annotations, not in this document. `styles.css` governs itself through its header annotation.
+# UI library standards
+
+> **Kind:** Defining  
+> **Document state:** Maintained  
+> **Implementation state:** Implemented  
+> **Last reviewed:** 2026-08-18  
+> **Scope:** Rules for the ownership, structure, and style values of the UI library layer under `webview/src/Ui/**`  
+
+Domain components consuming the library are governed by [react-standards](./react-standards.md); components are self-documenting — contracts live in code and file annotations, not in this document. `styles.css` governs itself through its header annotation.
 
 Layer consumers, declared per layer: 
 - the View domain tree consumes both wings

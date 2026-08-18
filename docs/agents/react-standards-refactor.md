@@ -1,5 +1,11 @@
 # React Standards Refactor Agent Manifest
 
+> **Kind:** Defining  
+> **Document state:** Stale  
+> **Implementation state:** Aspirational  
+> **Last reviewed:** 2026-08-18  
+> **Scope:** Instructions for an agent refactoring React components to comply with the repository's React standards  
+
 ## Purpose
 
 You are a coding agent working on View React components.

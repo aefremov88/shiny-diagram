@@ -24,7 +24,7 @@ if (selectedPlanes[0] === undefined) {
 
 for (const plane of selectedPlanes) {
   const outputFile = path.resolve(repoRoot, plane.outputPath);
-  const content = await plane.generate({ repoRoot });
+  const content = await plane.generate({ repoRoot, planes });
   await mkdir(path.dirname(outputFile), { recursive: true });
   await writeFile(outputFile, content, "utf8");
   console.log(`Updated ${plane.name}: ${path.relative(repoRoot, outputFile)}`);

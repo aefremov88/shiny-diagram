@@ -1,12 +1,10 @@
 # Agent Manual
 
-> **Implementation state:** Current
->
-> **Document state:** Maintained
->
-> **Last reviewed:** 2026-08-11
->
-> **Scope:** Instructions for any agent working on Shiny Diagram: onboarding, decision levels, standing rules, and the report
+> **Kind:** Defining  
+> **Document state:** Maintained  
+> **Implementation state:** Implemented  
+> **Last reviewed:** 2026-08-18  
+> **Scope:** Instructions for any agent working on Shiny Diagram: onboarding, decision levels, standing rules, and reporting  
 
 ## 0. Your role
 

@@ -1,9 +1,10 @@
 # Coding Standards
 
-> **Implementation state:** Current
-> **Document state:** Maintained
-> **Last reviewed:** 2026-06-19
-> **Scope:** Rules and standards of a code in Shiny repo
+> **Kind:** Defining  
+> **Document state:** Maintained  
+> **Implementation state:** Implemented  
+> **Last reviewed:** 2026-08-18  
+> **Scope:** Rules and standards of a code in Shiny repo  
 
 ## 1. Enforced standards
 

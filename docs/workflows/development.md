@@ -1,12 +1,10 @@
 # Development Process
 
-> **Implementation state:** Current
-> 
-> **Document state:** Maintained
-> 
-> **Last reviewed:** 2026-08-10
-> 
-> **Scope:** The three development loops, and the checks
+> **Kind:** Defining  
+> **Document state:** Maintained  
+> **Implementation state:** Implemented  
+> **Last reviewed:** 2026-08-18  
+> **Scope:** The three development loops and their checks  
 
 ## 1. Workflows
 

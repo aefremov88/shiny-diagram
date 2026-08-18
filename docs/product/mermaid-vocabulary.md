@@ -1,9 +1,10 @@
 # Mermaid Vocabulary (class diagrams)
 
-> **Implementation state:** Current  
-> **Document state:** Maintained
-> **Last reviewed:** 2026-07-14  
-> **Scope:** The closed vocabulary for provenance and write-back, rooted in the structure of the Mermaid class-diagram language and the Shiny annotation dialect it carries in comments, and the definition of invalid language. Documents and annotations that speak about source use these terms; no improvised names.
+> **Kind:** Defining  
+> **Document state:** Maintained  
+> **Implementation state:** Implemented  
+> **Last reviewed:** 2026-08-18  
+> **Scope:** Defines the source language Shiny reads and writes — Mermaid class diagrams plus the Shiny annotation dialect: its grammar and its boundary (invalid language).  
 
 ## 1. Ontology
 

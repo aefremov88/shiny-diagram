@@ -1,9 +1,10 @@
 # System Architecture
 
-> **Implementation state:** Current
-> **Document state:** Current
-> **Last reviewed:** 2026-07-04
-> **Scope:** Runtime invariants, subsystem topology, and the read/write dataflows — at a glance, with links to code.
+> **Kind:** Defining  
+> **Document state:** Maintained  
+> **Implementation state:** Implemented  
+> **Last reviewed:** 2026-08-18  
+> **Scope:** Runtime invariants, subsystem topology, and the read/write dataflows — at a glance, with links to code.  
 
 This document records the **invariants and shape** of the system: the constraints that are spread across many files and can't be recovered by reading any one of them. It deliberately does **not** transcribe types, signatures, or per-handler behavior — those live in the code and its `@fileoverview` headers. Structural rules are in [Architectural Standards](./architectural-standards.md); the write path is detailed in [Write-Back Pipeline](./write-back-pipeline.md).
 

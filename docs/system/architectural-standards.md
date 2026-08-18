@@ -1,9 +1,10 @@
 # Architectural Standards
 
-> **Implementation state:** Aspirational
-> **Document state:** Maintained
-> **Last reviewed:** 2026-06-26
-> **Scope:** Structural rules for production code in the Extension Host and Webview
+> **Kind:** Defining  
+> **Document state:** Maintained  
+> **Implementation state:** Aspirational  
+> **Last reviewed:** 2026-08-18  
+> **Scope:** Structural rules for production code in the Extension Host and Webview  
 
 ## Index
 

@@ -38,7 +38,7 @@ if (violations.length > 0) {
 async function checkPlaneStaleness() {
   for (const plane of planes) {
     const outputFile = path.resolve(repoRoot, plane.outputPath);
-    const expected = await plane.generate({ repoRoot });
+    const expected = await plane.generate({ repoRoot, planes });
     let actual;
     try {
       actual = await readFile(outputFile, "utf8");

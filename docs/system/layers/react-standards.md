@@ -1,9 +1,12 @@
-> **Implementation state:** Implemented and checker-enforced
+# React standards
+
+> **Kind:** Defining  
 > **Document state:** Maintained  
-> **Scope:** `webview/src/View/**`  
-> **Audience:** Coding agents  
-> **Last reviewed:** 2026-06-29  
-> **Goal** Must-follow rules of organization of code, dependencies and implementation patterns of domain components — the React component tree rooted at EditorRoot. The UI library is its own layer at `webview/src/ui`, governed entirely by [UI Library Standards](./UI-library-standards.md); other React components outside the EditorRoot tree may not comply
+> **Implementation state:** Implemented  
+> **Last reviewed:** 2026-08-18  
+> **Scope:** Rules for the organization, dependencies, and implementation patterns of domain React components under `webview/src/View/**`  
+
+These rules govern the React component tree rooted at EditorRoot. The UI library is its own layer at `webview/src/Ui`, governed entirely by [UI library standards](./UI-library-standards.md); other React components outside the EditorRoot tree may not comply.
 
 # 0. About the file
 

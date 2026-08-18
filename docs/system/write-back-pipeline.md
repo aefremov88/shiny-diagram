@@ -1,9 +1,10 @@
 # Write-Back Pipeline (translate → resolve)
 
-> **Implementation state:** Current
-> **Document state:** Current
-> **Last reviewed:** 2026-07-14
-> **Scope:** How a semantic `EditorCommand` becomes a `SourceEdit[]` transaction — the model it reads, the intent vocabulary between the two layers, each layer's responsibilities, and the management plane that catalogs every command's write rules.
+> **Kind:** Defining  
+> **Document state:** Maintained  
+> **Implementation state:** Implemented  
+> **Last reviewed:** 2026-08-18  
+> **Scope:** How a semantic `EditorCommand` becomes a `SourceEdit[]` transaction — the model it reads, the intent vocabulary between the two layers, each layer's responsibilities, and the management plane that catalogs every command's write rules.  
 
 ## 1. Pipeline shape
 

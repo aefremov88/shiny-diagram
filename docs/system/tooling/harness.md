@@ -1,12 +1,10 @@
 # shiny-debug-utils
 
-> **Implementation state:** Aspirational
->
-> **Document state:** Work-in-Progress, stale
->
-> **Last reviewed:** 2026-08-12
->
-> **Scope:** The Shiny companion library for debugging: what it contains, its dependencies, the debug hooks it requires inside Shiny. The API lives in `docs/engineering/debugging-manual.md`; this document contains no API chapter.
+> **Kind:** Defining  
+> **Document state:** Work-in-progress  
+> **Implementation state:** Aspirational  
+> **Last reviewed:** 2026-08-18  
+> **Scope:** The Shiny companion debugging library: its contents, dependencies, and required debug hooks  
 
 `shiny-debug-utils` is the Shiny vocabulary for debugging: target queries that name Shiny's UI elements. Nothing else. It is a companion to `vscode-debug-harness`, used alongside it, not a layer over it: a scenario imports from both libraries directly.
 

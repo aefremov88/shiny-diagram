@@ -1,12 +1,10 @@
 # Debugging Manual
 
-> **Implementation state:** Aspirational
->
-> **Document state:** Stale
->
-> **Last reviewed:** 2026-08-12
->
-> **Scope:** The holistic picture of debugging Shiny live: the two libraries, setup, running scenarios, the Shiny-side API
+> **Kind:** Defining  
+> **Document state:** Stale  
+> **Implementation state:** Aspirational  
+> **Last reviewed:** 2026-08-18  
+> **Scope:** The complete live-debugging workflow: libraries, setup, scenarios, and the Shiny-side API  
 
 ## 1. The two libraries
 

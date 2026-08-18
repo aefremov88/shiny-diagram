@@ -1,12 +1,10 @@
 # Debugging Manual
 
-> **Implementation state:** Aspirational — the debug harness this manual relies on is not built yet
->
-> **Document state:** Maintained
->
-> **Last reviewed:** 2026-08-11
->
-> **Scope:** Instructions for the agent running a debug session: evidence, instruments, process, rules
+> **Kind:** Defining  
+> **Document state:** Maintained  
+> **Implementation state:** Aspirational  
+> **Last reviewed:** 2026-08-18  
+> **Scope:** Instructions for an agent running a debug session: evidence, instruments, process, and rules  
 
 ## 0. Before you start
 
