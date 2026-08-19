@@ -113,7 +113,7 @@ function checkWritebackAnnotations() {
       rule: "write-back annotation header",
       subject: JSON.stringify(entry.commandName),
       message: `Annotation opens with an invalid header: ${JSON.stringify(header)}.`,
-      fix: "Use one of the header sentence formats in write-back-pipeline.md §7.2, then run `npm run planes`.",
+      fix: "Use one of the header sentence formats in docs/system/layers/write-back-pipeline.md §7.2, then run `npm run planes`.",
     });
   }
 }

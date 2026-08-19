@@ -1,78 +1,122 @@
 # Debugging Manual
 
 > **Kind:** Defining  
-> **Document state:** Stale  
+> **Document state:** Maintained  
 > **Implementation state:** Aspirational  
-> **Last reviewed:** 2026-08-18  
-> **Scope:** The complete live-debugging workflow: libraries, setup, scenarios, and the Shiny-side API  
+> **Last reviewed:** 2026-08-19  
+> **Scope:** Setting up and running live debugging of Shiny webview interactions  
 
-## 1. The two libraries
+A debug session is a TypeScript scenario executed by `vscode-custom-editor-harness` against a real VS Code instance running Shiny.
 
-- **`vscode-debug-harness`** — separate repo (`anton-efremov/vscode-debug-harness`). Launches a real VS Code with Shiny loaded and runs your scenario inside it. Provides the generic API: gestures, targets, commands, document access, screenshots. Knows nothing about Shiny. Its README owns the install detail and the full API; its architecture doc lives in that repo.
-- **`shiny-debug-utils`** — this repo, `debug/shiny-debug-utils/`. Target queries that name Shiny's UI elements (`classBox("Order")`) and return targets for the harness gestures. Nothing else. Architecture: `docs/engineering/architecture/shiny-debug-utils.md`.
+The workflow combines two APIs:
 
-A **scenario** is a TypeScript file that describes one debugging run. It imports from both libraries and calls the functions with top-level `await`:
+- **`vscode-custom-editor-harness`** — generic VS Code and webview operations: opening a document, gestures, commands, document inspection, screenshots, and scenario execution.
+- **Shiny target library** (`debug/targets/`) — semantic targets for Shiny editor elements. Its design is defined in [Target Library](../system/tooling/target-library.md).
+
+The harness README is the reference for the generic harness API.
+
+## 1. Setup
+
+`vscode-custom-editor-harness` is a development dependency of Shiny.
+
+The harness runs against a dedicated VS Code executable configured through:
+
+```text
+VSCODE_EXECUTABLE_PATH
+```
+
+A graphical display must be available to that VS Code instance.
+
+Debug assets live under:
+
+```text
+debug/
+├── targets/
+├── scenarios/
+└── fixtures/
+```
+
+- `targets/` — reusable Shiny target library.
+- `scenarios/` — disposable TypeScript debug scenarios.
+- `fixtures/` — reusable source documents opened by scenarios.
+
+## 2. Scenario
+
+A scenario describes one debug session. It imports generic operations from the harness and semantic targets from Shiny.
 
 ```ts
-import { openWith, drag, at, exists, readSource } from "vscode-debug-harness";
-import { classBox, edgeLine } from "shiny-debug-utils";
+import {
+  openWith,
+  drag,
+  at,
+  readSource,
+  screenshot,
+} from "vscode-custom-editor-harness";
+import { classBox } from "../targets";
 
 await openWith("../fixtures/case.mmd", "shiny.diagram");
-await drag(classBox("Order"), at(400, 200));
-console.log(await exists(edgeLine("Customer", "Order")));
+await drag(classBox("Order").header(), at(400, 200));
+
 console.log(await readSource());
+await screenshot("after-drag");
 ```
 
-## 2. Setup
+Top-level `await` is supported.
 
-- `vscode-debug-harness` is a devDependency of this repo; `npm install` is the whole setup.
-- `shiny-debug-utils` is repo code; nothing to install.
-- A display server must exist — desktop VS Code has no headless mode. In WSL, WSLg provides it. On a machine with no display, wrap the run in `xvfb-run`.
+The target vocabulary and address composition are defined by `docs/product/editor-interface.md` and implemented by the target library. Scenario code composes those targets with generic harness operations.
 
-## 3. Running a scenario
+## 3. Running
 
-- `npm run debug-harness -- <scenario-file>` — the script calls the harness's binary. Scenario home: `debug/scenarios/` (gitignored); reusable source files: `debug/fixtures/`.
-- `--attended` — leave the VS Code open after the scenario finishes. Default: run to completion, tear down.
-A run produces output on two channels.
+From the repository root:
 
-To the terminal:
+```text
+npm run debug -- debug/scenarios/<scenario>.ts
+```
 
-- The scenario's `console` output, streamed during the run.
-- The path of the run's workspace.
-- Exit code: zero when the scenario ran to completion; non-zero when it threw or the run failed to start.
+For an attended run:
 
-To the file system — the run's workspace folder, kept after the run:
+```text
+npm run debug -- debug/scenarios/<scenario>.ts --attended
+```
 
-1. The `.mmd` diagram files — as the scenario left them. You read these to check what was actually written to disk.
-2. `.shiny/session.log` — Shiny's own log of the session, written by the extension as in any normal workspace.
-3. Screenshot files — created only if the scenario called `screenshot(name)`.
+An attended run leaves VS Code open after the scenario finishes. A normal run closes VS Code when the scenario completes.
 
-## 4. API of `vscode-debug-harness`
+Each run uses a fresh workspace. Files opened through `openWith` are copied into that workspace, so fixtures remain unchanged.
 
-Owned by the harness README — the single source: targets and the waiting rule, gestures (`click`, `doubleClick`, `drag`, `type`, `press`), `openWith`, `runCommand`, `readSource`, `exists`, `screenshot`, `webview()`.
+## 4. Evidence from a run
 
-Shiny-specific notes on two of them:
+The terminal receives:
 
-- `openWith(sourceFile, "shiny.diagram")` — Shiny's view type; this is how a diagram opens in the Shiny editor.
-- `runCommand` — Shiny's own commands work too, e.g. `shiny.exportPng`, and `shiny.mark` (writes a note into the session log — useful to mark phases of a run).
+- scenario `console` output;
+- the run workspace path;
+- launch or runtime errors;
+- the process exit code.
 
-## 5. API of `shiny-debug-utils`
+The run workspace is kept after completion. Relevant artifacts include:
 
-Target queries: functions that name a Shiny UI element and return a target for the harness gestures. The set is defined by the target plane (`webview/src/View/GESTURE-TARGETS.md`); until the plane exists, the list below is the contract.
+- the `.mmd` documents as left by the scenario;
+- `.shiny/session.log`, written by Shiny during the session;
+- screenshots explicitly created by the scenario.
 
-- `classBox(name)` — a class box surface. A second argument names a region for gestures that depend on where inside the box the pointer lands: `classBox("Order", "header")`.
-- `resizeHandle(name, edge)` — a class's resize handle: `"left"`, `"right"`, `"top"`, `"bottom"`, or a corner.
-- `edgeLine(from, to)` — an edge between two classes.
-- `noteBox(id)` — a note surface.
-- `namespaceBox(name)` — a namespace surface.
-- `option(name)` — an option in the currently open selection control.
+`readSource()` returns the in-memory document text, including unsaved edits. To inspect persisted content, save the document through a VS Code command before reading the workspace file.
 
-Composition — chrome actions are harness gestures on targets, no special functions:
+## 5. Shiny-specific operations
+
+Shiny's custom-editor view type is:
+
+```text
+shiny.diagram
+```
+
+so a fixture is opened with:
 
 ```ts
-await click(deleteButton());                 // press a button
-await click(nameField()); await type("Order"); await press("Enter");   // set a text field
-await click(strokeDropdown()); await click(option("dashed"));          // pick from a dropdown
+await openWith("../fixtures/case.mmd", "shiny.diagram");
 ```
 
-The pane target queries (`deleteButton()`, `nameField()`, `strokeDropdown()` above) are placeholders: their real names come from the target plane.
+Shiny VS Code commands can be invoked through the harness `runCommand` operation. In particular:
+
+- `shiny.mark` writes a user mark into `.shiny/session.log`;
+- `shiny.exportPng` runs Shiny's PNG export command.
+
+The full harness operation set and target waiting semantics are defined by the `vscode-custom-editor-harness` README.

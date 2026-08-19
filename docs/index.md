@@ -38,9 +38,8 @@
 | Path | Kind | State | Scope |
 | --- | --- | --- | --- |
 | [`docs/system/architectural-standards.md`](./system/architectural-standards.md) | Defining | Maintained | Structural rules for production code in the Extension Host and Webview |
-| [`docs/system/coding-standards.md`](./system/coding-standards.md) | Defining | Maintained | Rules and standards of a code in Shiny repo |
-| [`docs/system/system-architecture.md`](./system/system-architecture.md) | Defining | Maintained | Runtime invariants, subsystem topology, and the read/write dataflows — at a glance, with links to code. |
-| [`docs/system/write-back-pipeline.md`](./system/write-back-pipeline.md) | Defining | Maintained | How a semantic `EditorCommand` becomes a `SourceEdit[]` transaction — the model it reads, the intent vocabulary between the two layers, each layer's responsibilities, and the management plane that catalogs every command's write rules. |
+| [`docs/system/coding-standards.md`](./system/coding-standards.md) | Defining | Maintained | Rules and standards of a code: formatting, naming, annotation, syntax patterns |
+| [`docs/system/system-architecture.md`](./system/system-architecture.md) | Defining | Maintained | Concrete system topology, ownership, invariants, and read/write dataflows |
 
 ## `docs/system/layers/`
 
@@ -48,6 +47,7 @@
 | --- | --- | --- | --- |
 | [`docs/system/layers/react-standards.md`](./system/layers/react-standards.md) | Defining | Maintained | Rules for the organization, dependencies, and implementation patterns of domain React components under `webview/src/View/**` |
 | [`docs/system/layers/UI-library-standards.md`](./system/layers/UI-library-standards.md) | Defining | Maintained | Rules for the ownership, structure, and style values of the UI library layer under `webview/src/Ui/**` |
+| [`docs/system/layers/write-back-pipeline.md`](./system/layers/write-back-pipeline.md) | Defining | Maintained | How a semantic `EditorCommand` becomes a `SourceEdit[]` transaction — the model it reads, the intent vocabulary between the two layers, each layer's responsibilities, and the management plane that catalogs every command's write rules. |
 
 ## `docs/system/tooling/`
 
@@ -69,4 +69,3 @@
 | --- | --- | --- | --- |
 | [`webview/src/Controller/translate/WRITEBACK-CATALOG.md`](../webview/src/Controller/translate/WRITEBACK-CATALOG.md) | Collecting | Maintained | Write-back command rules generated from translator annotations |
 | [`webview/src/Ui/UI-CATALOG.md`](../webview/src/Ui/UI-CATALOG.md) | Collecting | Maintained | UI-library component contracts generated from component annotations |
-| [`webview/src/View/GESTURE-TARGETS.md`](../webview/src/View/GESTURE-TARGETS.md) | Collecting | Maintained | UI-library gesture targets generated from component annotations |

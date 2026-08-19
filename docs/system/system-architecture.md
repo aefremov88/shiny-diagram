@@ -3,12 +3,12 @@
 > **Kind:** Defining  
 > **Document state:** Maintained  
 > **Implementation state:** Implemented  
-> **Last reviewed:** 2026-08-18  
-> **Scope:** Runtime invariants, subsystem topology, and the read/write dataflows — at a glance, with links to code.  
+> **Last reviewed:** 2026-08-19  
+> **Scope:** Concrete system topology, ownership, invariants, and read/write dataflows  
 
-This document records the **invariants and shape** of the system: the constraints that are spread across many files and can't be recovered by reading any one of them. It deliberately does **not** transcribe types, signatures, or per-handler behavior — those live in the code and its `@fileoverview` headers. Structural rules are in [Architectural Standards](./architectural-standards.md); the write path is detailed in [Write-Back Pipeline](./write-back-pipeline.md).
+This document records **what the Shiny system is**: its runtimes, layers, major components, ownership boundaries, and data loops. It deliberately does **not** prescribe how architectural units should generally be structured or enforced — those rules live in [Architectural Standards](https://chatgpt.com/g/g-p-6a8241d01c088191b7ab2fe56fc2ce8b/c/architectural-standards.md).
 
-## 1. Invariants
+## 1. System invariants
 
 - The `.mmd` document is the durable source of truth.
 - The Extension Host is the sole document writer.
@@ -19,59 +19,281 @@ This document records the **invariants and shape** of the system: the constraint
 - Write intents are translated and resolved against one frozen snapshot — they never observe each other's output. A whole-statement rewrite is delete + insert, resolved atomically.
 - Transient View state is not persisted unless it becomes explicit product data.
 
-## 2. Topology
+## 2. System topology
 
-Two isolated runtimes, communicating only through a validated message protocol:
+### 2.1 Runtime boundary
 
-```text
-VS Code ── Extension Host ──(protocol)── Webview
-             (sole writer,              (React app)
-              owns .mmd)
-```
-
-Webview layers (dependencies point downward only):
+Shiny runs across two isolated runtimes:
 
 ```text
-Bridge → Shell → { mermaidRenderer | Controller → View }
-shared = dependency-free foundation
+VS Code
+  │
+  ▼
+Extension Host
+  │
+  │ validated message protocol
+  ▼
+Webview
 ```
 
-- **Extension Host** (`extension-host/`) — owns the `.mmd` document, applies edits, emits source snapshots. It builds one `vscode.WorkspaceEdit` per transaction and applies it atomically against the current document.
-- **Bridge / Shell** (`webview/src/Bridge`, `Shell`) — transport, protocol adapters, and product-level Mermaid/Shiny mode selection.
-- **Controller** (`webview/src/Controller`) — the functional core: interprets source, derives the view model, and turns editor commands into edits.
-- **View** (`webview/src/View`) — React editor UI; emits semantic editor-command transactions, never touches source.
+#### Extension Host
 
-Layer ownership and the full import matrix are normative in [Architectural Standards §4](./architectural-standards.md#4-webview-layered-architecture).
+The **Extension Host** (`extension-host/`) owns the `.mmd` document, applies source edits, and emits authoritative source snapshots.
 
-## 3. Read dataflow (source → pixels)
+For a visual edit, it converts a validated protocol payload into one `vscode.WorkspaceEdit` and applies the transaction atomically to the current document.
+
+##### Boundary
+
+The Extension Host receives and emits only protocol-owned wire data across the Webview boundary.
+
+It does not interpret Shiny editor commands or derive application semantics from source-edit payloads.
+
+The protocol contract is declared locally in:
+
+```text
+extension-host/protocol.ts
+```
+
+#### Webview
+
+The **Webview** (`webview/src/`) owns rendering, editor interaction, source interpretation, and construction of source edits.
+
+##### Boundary
+
+The Webview receives authoritative source snapshots from the Extension Host and sends source-edit transactions back through the protocol.
+
+The Webview protocol contract is declared independently in:
+
+```text
+webview/src/Bridge/protocol.ts
+```
+
+The two protocol modules intentionally duplicate the same JSON-compatible wire vocabulary. Each runtime validates and adapts protocol data at its own boundary; application contracts are not shared across runtimes.
+
+### 2.2 Webview layers
+
+The Webview has the following dependency topology:
+
+```text
+Bridge
+  ↓
+Shell ─────────────────────────→ ui/chrome
+  ├── mermaidRenderer
+  └── Controller
+        ↓
+      View ────────────────────→ ui/chrome, ui/canvas
+
+ui/{core,chrome,canvas} → shared
+shared = dependency-free Webview foundation
+```
+
+- **Bridge** (`webview/src/Bridge/`) owns communication with the Extension Host and adaptation between protocol and Webview contracts.
+- **Shell** (`webview/src/Shell/`) owns product-level mode selection and mounts either standard Mermaid rendering or the Shiny editor branch.
+- **mermaidRenderer** (`webview/src/mermaidRenderer/`) owns standard Mermaid rendering.
+- **Controller** (`webview/src/Controller/`) interprets source, derives the View model, and translates editor commands into source edits.
+- **View** (`webview/src/View/`) owns the React editor UI, transient interaction state, and source-agnostic interaction and layout decisions.
+- **ui** (`webview/src/ui/`) is the editor-blind UI library. Shell consumes `ui/chrome`; View consumes `ui/chrome` and `ui/canvas`; `ui/core` is internal library machinery.
+- **shared** (`webview/src/shared/`) contains foundational vocabulary whose semantics cross Webview layers.
+
+Dependency direction expresses **static knowledge**, not runtime call direction. Runtime control may return upward through callbacks without creating a reverse dependency.
+
+#### 2.2.1 Controller
+
+`ShinyController` is the Controller composition root:
+
+```text
+                 ┌── parse
+ShinyController ─┼── deriveViews
+                 └── commands
+```
+
+- **parse** interprets a source snapshot into the source-derived model and provenance.
+- **deriveViews** projects that model into the read-only schema consumed by View.
+- **commands** translates View command transactions into `SourceEdit[]`.
+- **Controller/model** contains source-derived vocabulary shared across Controller components.
+
+`ShinyController` owns sequencing between these components. The components do not call one another directly; their outputs meet through the composition root and shared model contracts.
+
+The command path has two internal stages:
+
+```text
+EditorCommandTransaction
+  → translate
+  → WriteIntent[]
+  → resolve
+  → SourceEdit[]
+```
+
+##### Boundary
+
+Controller receives authoritative `sourceText` snapshots and semantic `EditorCommandTransaction` values.
+
+Controller exposes:
+
+- the read-only View model consumed by View;
+- `SourceEdit[]` transactions consumed by Bridge.
+
+Controller owns:
+
+- Mermaid parsing and source-derived semantics;
+- source provenance;
+- generation of new source identities and source names;
+- translation of editor intent into source edits.
+
+Raw source does not cross from Controller into View.
+
+Controller does not own editor interaction state or source-agnostic layout choices made by the View.
+
+#### 2.2.2 View
+
+The View layer exposes four system-level areas:
+
+```text
+View/
+├── EditorRoot/
+├── commands/
+├── state/
+└── views/
+```
+
+- **EditorRoot** owns the Shiny React editor tree and exposes `EditorView`, the View runtime entry point.
+- **commands** defines the View-to-Controller command vocabulary: `EditorCommand`, `EditorCommandTransaction`, and `EditorDispatch`.
+- **state** contains shared transient editor-state shapes used within the View tree.
+- **views** defines the centralized read-only render schema through which Controller supplies data to View.
+
+The two semantic flows across the View boundary run in opposite runtime directions:
+
+```text
+Controller ── EditorViewModel ──→ View
+Controller ←─ EditorCommandTransaction ── View
+```
+
+##### Boundary
+
+View receives a read-only `EditorViewModel`.
+
+View emits semantic `EditorCommandTransaction` values.
+
+View owns:
+
+- rendering and editor interaction;
+- transient View state;
+- layout choices available from interaction and render context.
+
+View may reference existing source-derived identities supplied by Controller, but it does not invent identities for newly created source entities.
+
+View does not:
+
+- receive raw source text;
+- parse Mermaid;
+- construct `WriteIntent`s or `SourceEdit`s.
+
+## 3. Read dataflow — source to pixels
+
+Every authoritative source snapshot runs through the complete read path:
 
 ```text
 sourceText
-  → parseDiagram            → { DiagramGraph, ProvenanceIndex }
-  → deriveViews             → view model (spatial-aware element views)
-  → View / React Flow       → rendered diagram
+  → parseDiagram
+  → { DiagramGraph, ProvenanceIndex }
+  → deriveViews
+  → EditorViewModel
+  → View / React Flow
+  → rendered diagram
 ```
 
-- **`parseDiagram`** (`Controller/parse/`) produces two structures from one parse: **`DiagramGraph`** (semantic — what exists and how it relates) and **`ProvenanceIndex`** (syntactic — where each written statement is, as `SourceSpan`s). A statement absent from provenance is implicit and not editable in place.
-- **`deriveViews`** (`Controller/deriveViews/`) projects the graph into the read-only render schema the View consumes. Raw `sourceText` does not cross into View.
+### 3.1 Parse
 
-## 4. Write dataflow (command → edit)
+`Controller/parse/` interprets the source snapshot and produces two structures from one parse:
+
+- **`DiagramGraph`** — semantic representation of what exists and how entities relate.
+- **`ProvenanceIndex`** — syntactic representation of where written source statements live, expressed as `SourceSpan`s.
+
+A statement absent from provenance is implicit and therefore cannot be edited in place.
+
+### 3.2 Derive Views
+
+`Controller/deriveViews/` projects the parsed model into the spatially aware, read-only render schema defined by `View/views`.
+
+The resulting `EditorViewModel` is supplied to View.
+
+Raw `sourceText` does not cross this boundary.
+
+## 4. Write dataflow — interaction to source
+
+A source-affecting View interaction runs through the following loop:
 
 ```text
-EditorCommand transaction
-  → translate  (graph, provenance[, sourceText])  → WriteIntent[]
-  → resolve    (provenance, sourceText)            → SourceEdit[]
-  → Bridge → Extension Host → WorkspaceEdit → new snapshot → (read dataflow)
+View interaction
+  → EditorCommandTransaction
+  → Controller commands
+      → translate
+      → WriteIntent[]
+      → resolve
+      → SourceEdit[]
+  → Extension Bridge
+  → protocol edit payload
+  → Extension Host
+  → WorkspaceEdit
+  → .mmd document
+  → new source snapshot
+  → read dataflow
 ```
 
-- **translate** (`Controller/translate/`) turns semantic commands into logical `WriteIntent`s — operations plus references into parsed provenance areas. It owns Mermaid *content* (payloads are normalized, relative-indented, no EOL).
-- **resolve** (`Controller/resolve/`) turns intents into concrete `SourceEdit`s — resolving references to positions, deriving indentation/EOL/separators, coalescing co-located insertions, and asserting non-overlap. It owns *presentation*.
-- The intent vocabulary, anchor providers, and per-kind workers are documented in [Write-Back Pipeline](./write-back-pipeline.md).
+### 4.1 Editor commands
 
-## 5. Coordinate primitives
+View describes **editor intent**, not Mermaid syntax or source ranges.
 
-All positions are zero-based; spans are half-open (end exclusive). `SourcePosition`, `SourceSpan`, and `SourceEdit` are defined in `Controller/model/sourceEdit.ts`; the wire edit payload is defined independently at each protocol boundary and kept structurally synchronized ([Architectural Standards §3.2](./architectural-standards.md#32-protocol-boundary)).
+One user/editor action is represented by one `EditorCommandTransaction`, which may contain several primitive `EditorCommand` values.
 
----
+View supplies facts it owns, such as positions and sizes chosen through interaction.
 
-*For anything below this altitude — exact types, command shapes, handler/worker behavior — read the code or the linked pipeline doc. If a fact here can be recovered by opening the file it describes, it does not belong in this document.*
+Controller supplies source-specific facts, including source syntax and identities for newly created source entities.
+
+### 4.2 Translate
+
+Translation turns semantic editor commands into logical `WriteIntent[]`.
+
+A `WriteIntent` describes an intended source operation using references into parsed provenance rather than concrete source positions.
+
+Translation owns Mermaid **content**:
+
+- normalized payload text;
+- relative indentation;
+- no concrete source position;
+- no document EOL.
+
+All intents in a transaction are derived from the same frozen source snapshot.
+
+### 4.3 Resolve
+
+Resolution turns `WriteIntent[]` into concrete `SourceEdit[]`.
+
+It owns source **placement and presentation**:
+
+- resolving provenance references to concrete source positions;
+- deriving indentation, EOL, and separators;
+- coalescing co-located insertions;
+- asserting that final edit ranges do not overlap.
+
+All intents in one transaction are resolved against the same frozen source snapshot and therefore never observe one another's output.
+
+### 4.4 Extension Bridge
+
+Extension Bridge converts Controller-owned `SourceEdit[]` values into the independently declared protocol representation.
+
+It adapts between application and wire contracts without adding editor semantics.
+
+### 4.5 Extension Host application
+
+The Extension Host validates the incoming wire payload, converts it into one `vscode.WorkspaceEdit`, and applies the transaction atomically to the current `.mmd` document.
+
+The resulting document becomes authoritative.
+
+VS Code then produces a new source snapshot, which re-enters the complete read dataflow.
+
+The detailed intent vocabulary, resolution rules, anchor providers, and individual write-back operations are documented in [Write-Back Pipeline](https://chatgpt.com/g/g-p-6a8241d01c088191b7ab2fe56fc2ce8b/c/layers/write-back-pipeline.md).
+
+------
+
+*For anything below this altitude — exact types, command variants, component internals, worker behavior, or import allowlists — read the relevant subsystem document or the code. Architectural Standards defines how architectural boundaries are structured; this document records which boundaries Shiny actually has.*

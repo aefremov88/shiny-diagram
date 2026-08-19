@@ -3,7 +3,7 @@
 > **Kind:** Defining  
 > **Document state:** Maintained  
 > **Implementation state:** Implemented  
-> **Last reviewed:** 2026-08-18  
+> **Last reviewed:** 2026-08-19  
 > **Scope:** Defines the source language Shiny reads and writes — Mermaid class diagrams plus the Shiny annotation dialect: its grammar and its boundary (invalid language).  
 
 ## 1. Ontology
@@ -203,7 +203,7 @@ Rules:
 
 ## 5. Shiny model
 
-How the ontology surfaces in Shiny's pipeline; details in [Write-Back Pipeline](./write-back-pipeline.md).
+How the ontology surfaces in Shiny's pipeline; details in [Write-Back Pipeline](../system/layers/write-back-pipeline.md).
 
 ### 5.1 Provenance
 

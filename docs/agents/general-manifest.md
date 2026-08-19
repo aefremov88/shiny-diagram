@@ -3,7 +3,7 @@
 > **Kind:** Defining  
 > **Document state:** Maintained  
 > **Implementation state:** Implemented  
-> **Last reviewed:** 2026-08-18  
+> **Last reviewed:** 2026-08-19  
 > **Scope:** Instructions for any agent working on Shiny Diagram: onboarding, decision levels, standing rules, and reporting  
 
 ## 0. Your role
@@ -18,7 +18,7 @@ Read before your first task:
 2. `docs/engineering/development-process.md` — the loops, the checks, and where your work lands.
 3. `docs/engineering/coding-standards.md` — rules for all code in the repo.
 4. `docs/engineering/architecture/architectural-standards.md` — module boundaries and the webview–host protocol.
-5. `docs/engineering/architecture/write-back-pipeline.md` — the core mechanism: how visual edits become source edits.
+5. `docs/system/layers/write-back-pipeline.md` — the core mechanism: how visual edits become source edits.
 6. `docs/engineering/architecture/testing-framework.md` — the test suites and their case sources.
 7. `docs/engineering/architecture/mermaid-vocabulary.md` — the language, its statements, and its invalid forms.
 
@@ -44,7 +44,7 @@ A task is classified by its changes, taken together. The task's level is the hig
    - `docs/engineering/architecture/architectural-standards.md` — module boundaries and the webview–host protocol rules.
    - `docs/engineering/architecture/react-standards.md` — responsibilities and implementation patterns of domain components.
    - `docs/engineering/architecture/UI-library-standards.md` — the UI library layer's rules.
-   - `docs/engineering/architecture/write-back-pipeline.md` — the pipeline's design.
+   - `docs/system/layers/write-back-pipeline.md` — the pipeline's design.
    - `docs/engineering/architecture/testing-framework.md` — the test suites and coverage rules.
    - `docs/engineering/architecture/stack.md` — the technology choices.
    - `docs/engineering/coding-standards.md` — the rules for all code.

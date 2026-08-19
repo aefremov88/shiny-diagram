@@ -3,8 +3,8 @@
 > **Kind:** Defining  
 > **Document state:** Maintained  
 > **Implementation state:** Implemented  
-> **Last reviewed:** 2026-08-18  
-> **Scope:** Rules and standards of a code: formatting, naming, annotation, syntax patterns
+> **Last reviewed:** 2026-08-19  
+> **Scope:** Rules and standards of a code: formatting, naming, annotation, syntax patterns  
 
 ## 1. Enforced standards
 

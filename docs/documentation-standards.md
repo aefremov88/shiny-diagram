@@ -3,7 +3,7 @@
 > **Kind:** Defining  
 > **Document state:** Maintained  
 > **Implementation state:** Aspirational  
-> **Last reviewed:** 2026-08-18  
+> **Last reviewed:** 2026-08-19  
 > **Scope:** Rules and structure for all documentation in this repository — centralized doc/ folder and decentralized planes  
 
 ## 1. Purpose
@@ -31,7 +31,7 @@ Defining documents live under `docs/`:
 
 Collecting documents live with their sources, not under `docs/`:
 
-- A plane lives in the root of the code area it collects. Example: `webview/src/Ui/GESTURE-TARGETS.md` collects gesture facts from the UI library. Reason: the plane changes together with that code.
+- A plane lives in the root of the code area it collects. Example: `webview/src/Ui/UI-CATALOG.md` collects component facts from the UI library. Reason: the plane changes together with that code.
 - `docs/index.md` is the one collecting document inside `docs/`, because its sources are the documents themselves.
 
 The index lists both: all documents under `docs/` and all planes.

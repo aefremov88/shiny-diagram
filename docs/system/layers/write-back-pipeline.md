@@ -3,7 +3,7 @@
 > **Kind:** Defining  
 > **Document state:** Maintained  
 > **Implementation state:** Implemented  
-> **Last reviewed:** 2026-08-18  
+> **Last reviewed:** 2026-08-19  
 > **Scope:** How a semantic `EditorCommand` becomes a `SourceEdit[]` transaction — the model it reads, the intent vocabulary between the two layers, each layer's responsibilities, and the management plane that catalogs every command's write rules.  
 
 ## 1. Pipeline shape
@@ -184,7 +184,7 @@ b. otherwise → Makes <N> writes:         // an option holding several writes n
 - at block opening
 ```
 
-- `<term> **<unit>**` pairs come from the closed lists in [Mermaid Vocabulary](./mermaid-vocabulary.md) — no improvised names:
+- `<term> **<unit>**` pairs come from the closed lists in [Mermaid Vocabulary](../../product/source-grammar.md) — no improvised names:
   - **statement** — a statement term from Vocabulary §2.1, e.g. `class declaration **statement**`
   - **entry** — an entry term from Vocabulary §4.2, e.g. `style property **entry**`
   - **clause** — a clause term from Vocabulary §4.2, e.g. `relationship label **clause**`
