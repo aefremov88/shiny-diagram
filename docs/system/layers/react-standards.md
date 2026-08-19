@@ -3,7 +3,7 @@
 > **Kind:** Defining  
 > **Document state:** Maintained  
 > **Implementation state:** Implemented  
-> **Last reviewed:** 2026-08-18  
+> **Last reviewed:** 2026-08-19  
 > **Scope:** Rules for the organization, dependencies, and implementation patterns of domain React components under `webview/src/View/**`  
 
 These rules govern the React component tree rooted at EditorRoot. The UI library is its own layer at `webview/src/Ui`, governed entirely by [UI library standards](./UI-library-standards.md); other React components outside the EditorRoot tree may not comply.
@@ -62,7 +62,7 @@ These rules govern the React component tree rooted at EditorRoot. The UI library
 - **Activity** — a specific kind of work inside a responsibility. Activities are used to organize implementation rules.
 - **Implementation pattern** — an allowed way to implement an activity in code. Implementation patterns are numbered and referenced by ID.
 - **Domain component** — a component of the EditorRoot tree: the subject of this document. It owns editor semantics and composes its visible surface exclusively from library elements.
-- **Library element** — a semantic-blind UI component of the UI library layer (`webview/src/ui`), governed by [UI Library Standards](./UI-library-standards.md). Wings (`chrome/`, `canvas/`), tiers, and element contracts are that document's vocabulary.
+- **Library element** — a semantic-blind UI component of the UI library layer (`webview/src/Ui`), governed by [UI Library Standards](./UI-library-standards.md). Wings (`chrome/`, `canvas/`), tiers, and element contracts are that document's vocabulary.
 - **Situation vocabulary** — the library's option and variant names ("inline", "compact", "secondary"). Domain components translate editor facts into this vocabulary; they never pass visual values.
 
 Hierarchy:
@@ -136,9 +136,9 @@ A React Component has Framework adaptation responsibility when it absorbs a fore
 	- command and transaction types are **never** defined locally
 	- a primitive command **may** be added **only** if it cannot be expressed as a combination of existing primitives
 
-5. `webview/src/ui` — the UI library layer: tiered, editor-blind UI elements owning shared visuals and interaction behavior; governed by [UI Library Standards](./UI-library-standards.md)
+5. `webview/src/Ui` — the UI library layer: tiered, editor-blind UI elements owning shared visuals and interaction behavior; governed by [UI Library Standards](./UI-library-standards.md)
 	- the **only** source of cross-component shared visual components
-	- domain components import from the `chrome/` and `canvas/` wings; `core/` is library-internal and never exposed outside `webview/src/ui`
+	- domain components import from the `chrome/` and `canvas/` wings; `core/` is library-internal and never exposed outside `webview/src/Ui`
 	- a library component and its boundary types are importable; its owned children, internal files, and `.module.css` are not
 
 6. `webview/src/View/config` — static View configuration read by components and support files.
@@ -168,7 +168,7 @@ A React Component has Framework adaptation responsibility when it absorbs a fore
 
 1. any layer above the `View` layer — `Controller`, `Shell`, `Bridge` — dependencies between layers point strictly inward
 2. another component's internal support files
-3. a sibling, parent, or any non-owned component — shared components are reached only through `webview/src/ui`.
+3. a sibling, parent, or any non-owned component — shared components are reached only through `webview/src/Ui`.
 4. a third-party framework library, when the file does not implement Framework adaptation responsibility.
 
 # 3. Component receives

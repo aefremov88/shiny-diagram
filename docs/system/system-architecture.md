@@ -6,7 +6,7 @@
 > **Last reviewed:** 2026-08-19  
 > **Scope:** Concrete system topology, ownership, invariants, and read/write dataflows  
 
-This document records **what the Shiny system is**: its runtimes, layers, major components, ownership boundaries, and data loops. It deliberately does **not** prescribe how architectural units should generally be structured or enforced — those rules live in [Architectural Standards](https://chatgpt.com/g/g-p-6a8241d01c088191b7ab2fe56fc2ce8b/c/architectural-standards.md).
+This document records **what the Shiny system is**: its runtimes, layers, major components, ownership boundaries, and data loops. It deliberately does **not** prescribe how architectural units should generally be structured or enforced — those rules live in [Architectural Standards](./architectural-standards.md).
 
 ## 1. System invariants
 
@@ -92,7 +92,7 @@ shared = dependency-free Webview foundation
 - **mermaidRenderer** (`webview/src/mermaidRenderer/`) owns standard Mermaid rendering.
 - **Controller** (`webview/src/Controller/`) interprets source, derives the View model, and translates editor commands into source edits.
 - **View** (`webview/src/View/`) owns the React editor UI, transient interaction state, and source-agnostic interaction and layout decisions.
-- **ui** (`webview/src/ui/`) is the editor-blind UI library. Shell consumes `ui/chrome`; View consumes `ui/chrome` and `ui/canvas`; `ui/core` is internal library machinery.
+- **Ui** (`webview/src/Ui/`) is the editor-blind UI library. Shell consumes `Ui/chrome`; View consumes `Ui/chrome` and `Ui/canvas`; `Ui/core` is internal library machinery.
 - **shared** (`webview/src/shared/`) contains foundational vocabulary whose semantics cross Webview layers.
 
 Dependency direction expresses **static knowledge**, not runtime call direction. Runtime control may return upward through callbacks without creating a reverse dependency.
@@ -292,7 +292,7 @@ The resulting document becomes authoritative.
 
 VS Code then produces a new source snapshot, which re-enters the complete read dataflow.
 
-The detailed intent vocabulary, resolution rules, anchor providers, and individual write-back operations are documented in [Write-Back Pipeline](https://chatgpt.com/g/g-p-6a8241d01c088191b7ab2fe56fc2ce8b/c/layers/write-back-pipeline.md).
+The detailed intent vocabulary, resolution rules, anchor providers, and individual write-back operations are documented in [Write-Back Pipeline](./layers/write-back-pipeline.md).
 
 ------
 

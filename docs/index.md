@@ -53,14 +53,14 @@
 
 | Path | Kind | State | Scope |
 | --- | --- | --- | --- |
-| [`docs/system/tooling/harness.md`](./system/tooling/harness.md) | Defining | Work-in-progress | The Shiny companion debugging library: its contents, dependencies, and required debug hooks |
+| [`docs/system/tooling/target-library.md`](./system/tooling/target-library.md) | Defining | Maintained | Shiny-specific target queries used with `vscode-custom-editor-harness` |
 | [`docs/system/tooling/testing-framework.md`](./system/tooling/testing-framework.md) | Defining | Maintained | The regression test suites: their structure, coverage rules, and shared machinery |
 
 ## `docs/workflows/`
 
 | Path | Kind | State | Scope |
 | --- | --- | --- | --- |
-| [`docs/workflows/debugging.md`](./workflows/debugging.md) | Defining | Stale | The complete live-debugging workflow: libraries, setup, scenarios, and the Shiny-side API |
+| [`docs/workflows/debugging.md`](./workflows/debugging.md) | Defining | Maintained | Setting up and running live debugging of Shiny webview interactions |
 | [`docs/workflows/development.md`](./workflows/development.md) | Defining | Maintained | The three development loops and their checks |
 
 ## Planes

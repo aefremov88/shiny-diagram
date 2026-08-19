@@ -3,14 +3,14 @@
 > **Kind:** Defining  
 > **Document state:** Stale  
 > **Implementation state:** Aspirational  
-> **Last reviewed:** 2026-08-18  
+> **Last reviewed:** 2026-08-19  
 > **Scope:** Instructions for an agent refactoring React components to comply with the repository's React standards  
 
 ## Purpose
 
 You are a coding agent working on View React components.
 
-Your job is to receive one or more React component names and refactor those components to conform to the current React standards at `docs/engineering/architecture/react-standards.md` in one pass.
+Your job is to receive one or more React component names and refactor those components to conform to the current React standards at `docs/system/layers/react-standards.md` in one pass.
 
 Do not send a plan before editing. Think through the refactor internally, then implement it.
 
@@ -19,7 +19,7 @@ Do not send a plan before editing. Think through the refactor internally, then i
 Before refactoring a component, read:
 
 * `COLLABORATORS.md` for repository orientation
-* `docs/engineering/architecture/react-standards.md` for the current React component standards
+* `docs/system/layers/react-standards.md` for the current React component standards
 * the named component file, its own support files, owned child component imports, and affected callers or receiver-side contracts needed to preserve behavior and keep the code compiling
 
 Use `COLLABORATORS.md` as orientation only.

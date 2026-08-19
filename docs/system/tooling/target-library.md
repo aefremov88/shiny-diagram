@@ -4,7 +4,7 @@
 > **Document state:** Maintained  
 > **Implementation state:** Aspirational  
 > **Last reviewed:** 2026-08-19  
-> **Scope:** Shiny-specific target queries used with `vscode-custom-editor-harness`
+> **Scope:** Shiny-specific target queries used with `vscode-custom-editor-harness`  
 
 The target library adapts Shiny's semantic editor interface to the generic `ElementTarget` contract of `vscode-custom-editor-harness`.
 
@@ -51,7 +51,7 @@ Examples:
 classBox("Order")
 classBox("Order").header()
 classBox("Order").member("id")
-classBox("Order").resizeHandle("right")
+classBox("Order").resizeHandle("e")
 
 editPane()
 editPane().field("Name")

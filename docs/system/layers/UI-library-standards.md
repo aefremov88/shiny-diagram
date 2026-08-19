@@ -3,7 +3,7 @@
 > **Kind:** Defining  
 > **Document state:** Maintained  
 > **Implementation state:** Implemented  
-> **Last reviewed:** 2026-08-18  
+> **Last reviewed:** 2026-08-19  
 > **Scope:** Rules for the ownership, structure, and style values of the UI library layer under `webview/src/Ui/**`  
 
 Domain components consuming the library are governed by [react-standards](./react-standards.md); components are self-documenting — contracts live in code and file annotations, not in this document. `styles.css` governs itself through its header annotation.
@@ -79,7 +79,7 @@ Selectors — elements offering a closed choice from a popup (Dropdown, ColorSel
 - Raw native interactive elements exist only inside the library — lint-enforced; wing and tier rules are boundary-checker-enforced by path
 
 ```
-webview/src/ui/
+webview/src/Ui/
 ├── core/
 ├── chrome/
 │   ├── tokens.css        the chrome brandbook

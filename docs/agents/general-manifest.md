@@ -14,18 +14,18 @@ You are an agent working on Shiny Diagram — a VS Code extension: a visual edit
 
 Read before your first task:
 
-1. `docs/engineering/architecture/system-architecture.md` — the layers and the data flow.
-2. `docs/engineering/development-process.md` — the loops, the checks, and where your work lands.
-3. `docs/engineering/coding-standards.md` — rules for all code in the repo.
-4. `docs/engineering/architecture/architectural-standards.md` — module boundaries and the webview–host protocol.
+1. `docs/system/system-architecture.md` — the layers and the data flow.
+2. `docs/workflows/development.md` — the loops, the checks, and where your work lands.
+3. `docs/system/coding-standards.md` — rules for all code in the repo.
+4. `docs/system/architectural-standards.md` — module boundaries and the webview–host protocol.
 5. `docs/system/layers/write-back-pipeline.md` — the core mechanism: how visual edits become source edits.
-6. `docs/engineering/architecture/testing-framework.md` — the test suites and their case sources.
-7. `docs/engineering/architecture/mermaid-vocabulary.md` — the language, its statements, and its invalid forms.
+6. `docs/system/tooling/testing-framework.md` — the test suites and their case sources.
+7. `docs/product/source-grammar.md` — the language, its statements, and its invalid forms.
 
 Read when your task touches their layer:
 
-8. `docs/engineering/architecture/react-standards.md` — domain React components.
-9. `docs/engineering/architecture/UI-library-standards.md` — the UI library layer.
+8. `docs/system/layers/react-standards.md` — domain React components.
+9. `docs/system/layers/UI-library-standards.md` — the UI library layer.
 
 ## 2. Decision levels
 
@@ -40,16 +40,15 @@ A task is classified by its changes, taken together. The task's level is the hig
    - **`DiagramGraph`, provenance records, `TransactionOutcome`** — the contract between the Controller's parse side and everything that consumes it.
    - **the annotation grammar** — the contract between Shiny and the `.mmd` file.
 4. **Level 4 — a change of the program's fixed structure.** The architecture, the patterns, the rules of construction. The change itself is the structural decision; it lands as an edit to the document that records it. The closed list of these documents:
-   - `docs/engineering/architecture/system-architecture.md` — the layer model and the data flow.
-   - `docs/engineering/architecture/architectural-standards.md` — module boundaries and the webview–host protocol rules.
-   - `docs/engineering/architecture/react-standards.md` — responsibilities and implementation patterns of domain components.
-   - `docs/engineering/architecture/UI-library-standards.md` — the UI library layer's rules.
+   - `docs/system/system-architecture.md` — the layer model and the data flow.
+   - `docs/system/architectural-standards.md` — module boundaries and the webview–host protocol rules.
+   - `docs/system/layers/react-standards.md` — responsibilities and implementation patterns of domain components.
+   - `docs/system/layers/UI-library-standards.md` — the UI library layer's rules.
    - `docs/system/layers/write-back-pipeline.md` — the pipeline's design.
-   - `docs/engineering/architecture/testing-framework.md` — the test suites and coverage rules.
-   - `docs/engineering/architecture/stack.md` — the technology choices.
-   - `docs/engineering/coding-standards.md` — the rules for all code.
+   - `docs/system/tooling/testing-framework.md` — the test suites and coverage rules.
+   - `docs/system/coding-standards.md` — the rules for all code.
 
-   Not on this list: generated catalogs (the write-back catalog, the UI catalog) change only by regeneration from code; `mermaid-vocabulary.md` records the annotation grammar contract and changes under Level 3 approvals.
+   Not on this list: generated catalogs (the write-back catalog, the UI catalog) change only by regeneration from code; `source-grammar.md` records the annotation grammar contract and changes under Level 3 approvals.
 
 ## 3. How to act at each level
 

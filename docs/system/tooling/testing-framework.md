@@ -3,7 +3,7 @@
 > **Kind:** Defining  
 > **Document state:** Maintained  
 > **Implementation state:** Implemented  
-> **Last reviewed:** 2026-08-18  
+> **Last reviewed:** 2026-08-19  
 > **Scope:** The regression test suites: their structure, coverage rules, and shared machinery  
 
 ## 1. Overview
@@ -22,7 +22,7 @@
 | Suite | Covers | Case source |
 | --- | --- | --- |
 | Write-back regression | wrong or destructive edits to the `.mmd` file | WRITEBACK-CATALOG.md (generated) |
-| Parser compatibility | broken promise of Mermaid–Shiny compatibility | mermaid-vocabulary.md |
+| Parser compatibility | broken promise of Mermaid–Shiny compatibility | source-grammar.md |
 | Layout contracts | broken placement promises | layoutContracts.ts |
 
 - **Organization.** Tests live centrally in `webview/test/`, one folder per suite, not next to the code they test. Beside them: `webview/test/helpers/` (shared assertions and builders) and `webview/test/fixtures/` (shared source-text fixtures).
@@ -45,7 +45,7 @@
 - **Covers:** the promise of Mermaid–Shiny compatibility:
   - Shiny opens what Mermaid opens
   - Shiny breaks where Mermaid breaks
-- **Case source:** `docs/engineering/architecture/mermaid-vocabulary.md`, in two directions. The sync is manual: reviewed when the vocabulary changes.
+- **Case source:** `docs/product/source-grammar.md`, in two directions. The sync is manual: reviewed when the grammar changes.
   - valid Mermaid is valid Shiny — one test per statement kind. Each parses into the correct graph, including syntax forms Shiny itself never writes.
   - invalid Mermaid is invalid Shiny — one test per entry of the vocabulary's "Invalid language" chapter. Each asserts the handling the chapter states: problem view, or ignored.
 - **Mechanics:** text in → parse → assert the graph, or assert the problem report. Inputs are ready files from `webview/test/fixtures/`. No write-back involved.

@@ -3,12 +3,12 @@
 > **Kind:** Defining  
 > **Document state:** Maintained  
 > **Implementation state:** Aspirational  
-> **Last reviewed:** 2026-08-18  
+> **Last reviewed:** 2026-08-19  
 > **Scope:** Instructions for an agent running a debug session: evidence, instruments, process, and rules  
 
 ## 0. Before you start
 
-Read `docs/agents/general-manifest.md` first — your onboarding, decision levels, and standing rules are there. Additionally, for debugging: `docs/engineering/architecture/debug-harness.md` — the debug harness drivers and scenario API.
+Read `docs/agents/general-manifest.md` first — your onboarding, decision levels, and standing rules are there. Then read `docs/workflows/debugging.md` for the maintained debugging setup, scenario workflow, and harness API references.
 
 You are the debugging agent. The user found a bug. Your job: replicate it, fix it, and prove the fix — following this manual.
 
@@ -25,7 +25,7 @@ When the evidence is a log: the user's session is over, and the log is its only 
 Choose the cheapest instrument that can show the bug:
 
 1. **Direct function calls.** Most of Shiny is plain functions: the pipeline (parse, translate, resolve, layout) and the view logic (transaction builders, hook logic). Import them in a script or test and call them with any source text, command, or action values. Components that must render run under vitest with jsdom. No editor involved.
-2. **The debug harness.** Launches your own VS Code with Shiny loaded, driven by a scenario file you write. Use it when the bug needs the real editor: document saving, the bridge, rendering, interactions. Its capabilities: open a `.mmd` file in the Shiny editor, run VS Code commands, read and save the document, read the webview DOM, perform real clicks and drags and typing, take screenshots. A scenario is a TypeScript file importing the harness drivers, run as `npm run debug-harness -- <scenario-file>`; the driver API is in the debug harness doc.
+2. **The debug harness.** Launches your own VS Code with Shiny loaded, driven by a scenario file you write. Use it when the bug needs the real editor: document saving, the bridge, rendering, interactions. Its capabilities: open a `.mmd` file in the Shiny editor, run VS Code commands, read and save the document, read the webview DOM, perform real clicks and drags and typing, take screenshots. A scenario is a TypeScript file importing the harness drivers, run as `npm run debug -- <scenario-file>`; the workflow and driver API references are in `docs/workflows/debugging.md`.
 
 ## 3. The process
 

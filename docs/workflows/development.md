@@ -3,7 +3,7 @@
 > **Kind:** Defining  
 > **Document state:** Maintained  
 > **Implementation state:** Implemented  
-> **Last reviewed:** 2026-08-18  
+> **Last reviewed:** 2026-08-19  
 > **Scope:** The three development loops and their checks  
 
 ## 1. Workflows
@@ -100,7 +100,7 @@ Checks verify the code and change nothing. Some have a paired rewrite command th
 
 ### 2.4 Boundary constraints
 
-- **Does:** verifies the Webview module boundaries defined in `docs/engineering/architecture/architectural-standards.md` — which layers may import which, and the protocol-file contract between webview and extension host.
+- **Does:** verifies the Webview module boundaries defined in `docs/system/architectural-standards.md` — which layers may import which, and the protocol-file contract between webview and extension host.
 - **Scope:** whole repo — the import graph is global.
 - **Check:** `npm run check:boundaries`.
 - **Files:** `scripts/check-webview-boundaries.mjs`.
@@ -123,7 +123,7 @@ Checks verify the code and change nothing. Some have a paired rewrite command th
 
 ### 2.6 Regression tests
 
-- **Does:** runs the regression test suites. The suites, their structure, and their coverage rules are defined in `docs/engineering/testing-framework.md`.
+- **Does:** runs the regression test suites. The suites, their structure, and their coverage rules are defined in `docs/system/tooling/testing-framework.md`.
 - **Scope:** whole repo.
 - **Check:** `npm run test`.
 - **Files:** see the testing framework doc.

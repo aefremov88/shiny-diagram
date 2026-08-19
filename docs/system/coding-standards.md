@@ -176,7 +176,7 @@ Every non-component TypeScript module and non-library CSS module begins with a `
 
 React component files (`.tsx`) are exempt.
 
-UI library files under `webview/src/ui/**` follow [UI Library Standards](./architecture/UI-library-standards.md) instead:
+UI library files under `webview/src/Ui/**` follow [UI Library Standards](./layers/UI-library-standards.md) instead:
 
 - component `.tsx` files may use a `@behavior` or `@render` header for non-derivable facts, or omit the header;
 - component `.module.css` files may use a `@render` header for non-derivable facts, or omit the header;
@@ -216,7 +216,7 @@ Non-exported functions: JSDoc block if non-trivial; omit for obvious one-liners.
 
 #### CSS style ownership
 
-Style value ownership is architectural, not local preference. For `webview/src/ui/**` and the temporary allowlisted legacy canvas surface CSS modules, the [UI Library Standards property ownership table](./architecture/UI-library-standards.md#property-ownership) is authoritative:
+Style value ownership is architectural, not local preference. For `webview/src/Ui/**` and the temporary allowlisted legacy canvas surface CSS modules, the [UI Library Standards property ownership table](./layers/UI-library-standards.md#property-ownership) is authoritative:
 
 - token-owned properties use `var(--shiny-*)` reads, not raw values;
 - local literals are allowed only for properties owned by the component or arranging template;

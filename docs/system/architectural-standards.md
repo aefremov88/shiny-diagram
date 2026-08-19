@@ -6,7 +6,7 @@
 > **Last reviewed:** 2026-08-19  
 > **Scope:** Structural rules for production code in the Extension Host and Webview  
 
-This document defines **how production code is structured**. The concrete layers, components, and dataflows of Shiny are defined in [System Architecture](https://chatgpt.com/g/g-p-6a8241d01c088191b7ab2fe56fc2ce8b/c/system-architecture.md).
+This document defines **how production code is structured**. The concrete layers, components, and dataflows of Shiny are defined in [System Architecture](./system-architecture.md).
 
 ## 1. Vocabulary
 
@@ -59,7 +59,7 @@ A shared foundation is a bottom-level layer containing definitions whose semanti
 
 It must not depend on its consumers.
 
-The concrete Shiny layer graph is defined in [System Architecture](https://chatgpt.com/g/g-p-6a8241d01c088191b7ab2fe56fc2ce8b/c/system-architecture.md).
+The concrete Shiny layer graph is defined in [System Architecture](./system-architecture.md).
 
 ## 3. React layers
 
@@ -114,7 +114,7 @@ The structure repeats recursively.
 
 Architectural rules are enforced mechanically where they can be derived from source structure.
 
-`scripts/check-webview-boundaries.mjs` enforces the concrete dependency graph and public import surfaces defined by [System Architecture](https://chatgpt.com/g/g-p-6a8241d01c088191b7ab2fe56fc2ce8b/c/system-architecture.md), including reverse dependencies and prohibited deep imports. It runs as part of:
+`scripts/check-webview-boundaries.mjs` enforces the concrete dependency graph and public import surfaces defined by [System Architecture](./system-architecture.md), including reverse dependencies and prohibited deep imports. It runs as part of:
 
 ```text
 npm run check
