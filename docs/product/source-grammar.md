@@ -1,4 +1,4 @@
-# Mermaid Vocabulary (class diagrams)
+# Source grammar (class diagrams)
 
 > **Kind:** Defining  
 > **Document state:** Maintained  
