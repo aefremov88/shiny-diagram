@@ -8,7 +8,7 @@ dedicated VS Code instance.
 Set `VSCODE_EXECUTABLE_PATH` to a portable or unpacked desktop VS Code executable, then run:
 
 ```sh
-npm run debug -- harness/scenarios/smoke.ts
+npm run debug -- debug/scenarios/smoke.ts
 ```
 
 Add `--attended` to keep the VS Code window open.

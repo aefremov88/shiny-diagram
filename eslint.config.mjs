@@ -8,7 +8,7 @@ export default [
     ignores: ["out/**", "node_modules/**"],
   },
   {
-    files: ["extension-host/**/*.ts", "webview/src/**/*.{ts,tsx}"],
+    files: ["extension-host/**/*.ts", "webview/src/**/*.{ts,tsx}", "debug/targets/**/*.ts"],
     languageOptions: {
       parser: tsparser,
       parserOptions: {
