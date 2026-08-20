@@ -180,6 +180,7 @@ Collapse tab mounted against a pane edge.
 
 Clicking the tab reports `onToggle`, supplies the matching expand or collapse
 accessible instruction, and paints at the supplied `stacking` plane.
+`targetRole` identifies the button by its current accessible instruction.
 
 Gesture targets:
 
@@ -196,6 +197,7 @@ Lifecycle:
 type PaneCollapseTabProps = {
   readonly stacking: number;
   readonly collapsed: boolean;
+  readonly targetRole?: string;
   readonly onToggle: () => void;
 };
 ```
@@ -205,6 +207,7 @@ type PaneCollapseTabProps = {
 Back-navigation button that keeps its place when unavailable.
 
 Renders `label` as the button content; clicking it reports `onClick`.
+`targetRole` and `targetName` are transcribed while the link is `visible`.
 
 Gesture targets:
 
@@ -221,6 +224,8 @@ Lifecycle:
 type ReservedBackLinkProps = {
   readonly label: string;
   readonly visible?: boolean;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly onClick?: () => void;
 };
 ```
@@ -231,7 +236,8 @@ Segmented control for one selection from a labeled option set.
 
 Renders `options` as a radiogroup named by `ariaLabel`, marks `value` as
 selected, supports arrow, Home, and End navigation, and reports a selected
-option through `onChange`.
+option through `onChange`. `optionTargetRole` identifies each option by its
+visible label.
 
 Gesture targets:
 
@@ -271,7 +277,8 @@ Used by: color, line, annotation, named-style, and relationship choices.
 Status indicator with a tooltip.
 
 Renders a circular indicator selected by `variant` and exposes `title` as
-its tooltip and accessible name.
+its tooltip and accessible name. `targetRole` and `targetName` are transcribed
+onto the indicator.
 
 Modifiers:
 
@@ -284,6 +291,8 @@ Modifiers:
 type StatusDotProps = {
   readonly title: string;
   readonly variant: "positive" | "attention" | "error";
+  readonly targetRole?: string;
+  readonly targetName?: string;
 };
 ```
 
@@ -326,7 +335,7 @@ Text field for controlled single-line entry.
 
 Displays `value`, reports edits through `onChange`, and forwards focus loss
 and keyboard input through `onBlur` and `onKeyDown`. `ariaLabel` supplies the
-accessible name.
+accessible name; `targetRole` and `targetName` are transcribed onto the input.
 
 Gesture targets:
 
@@ -349,6 +358,8 @@ Modifiers:
 type TextFieldProps = {
   readonly value: string;
   readonly ariaLabel?: string;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly disabled?: boolean;
   readonly invalid?: boolean;
   readonly hasEndAction?: boolean;
@@ -364,7 +375,8 @@ Toggle button for a glyph, an optional label, and persistent pressed state.
 
 Renders `icon` when supplied, uses `title` as the tooltip and as the
 accessible name when `label` is absent, exposes `pressed`, and reports
-`onClick` when clicked.
+`onClick` when clicked. `targetRole` and `targetName` are transcribed onto the
+button.
 
 Gesture targets:
 
@@ -392,6 +404,8 @@ type ToggleButtonProps = {
   readonly pressed: boolean;
   readonly disabled?: boolean;
   readonly size: "labeledTile" | "glyphTile";
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly onClick?: () => void;
 };
 ```
@@ -508,6 +522,7 @@ and reports `onDiscard` with its messages; backing out restores it and reports
 or the draft changes. While a nonempty draft has focus, the clear action
 empties it and reports `onClear`. `ariaLabel` always names the field and its
 clear action. Validation paints at the supplied `validationStacking` plane.
+`targetRole` and `targetName` are transcribed onto the text input.
 
 Used by: relationship labels and optional class labels.
 
@@ -525,6 +540,8 @@ type CommitClearableTextFieldProps = {
   readonly validate: (draft: string) => readonly string[];
   readonly disabled?: boolean;
   readonly isLabelVisible?: boolean;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly onCommit: (value: string) => void;
   readonly onClear: () => void;
   readonly onDiscard: (messages: readonly string[]) => void;
@@ -546,7 +563,8 @@ failing validation (`validate`) shows its messages and is never committed.
 While the menu is open, keyboard dismissal closes it and returns focus to its
 control without cancelling the field draft; an outside press closes it without
 moving focus. The menu paints at `menuStacking`, and validation paints at
-`validationStacking`.
+`validationStacking`. `targetRole` and `targetName` are transcribed onto the
+value control, while `optionTargetRole` identifies each named option.
 
 Gesture targets:
 
@@ -572,6 +590,9 @@ type CommitComboBoxProps = {
   readonly validate: (draft: string) => readonly string[];
   readonly disabled?: boolean;
   readonly isLabelVisible?: boolean;
+  readonly targetRole?: string;
+  readonly targetName?: string;
+  readonly optionTargetRole?: string;
   readonly onCommit: (value: string) => void;
   readonly onDiscard: (messages: readonly string[]) => void;
   readonly onCancel: () => void;
@@ -589,7 +610,8 @@ leaving with an invalid draft restores the committed value and reports
 `onDiscard` with its messages; backing out restores it and reports `onCancel`.
 A failed confirmation keeps its messages visible until dismissed or the draft
 changes. `ariaLabel` always supplies the accessible name, and validation
-paints at the supplied `validationStacking` plane.
+paints at the supplied `validationStacking` plane. `targetRole` and
+`targetName` are transcribed onto the text input.
 
 Used by: class names, namespace names, and diagram style names.
 
@@ -607,6 +629,8 @@ type CommitTextFieldProps = {
   readonly validate: (draft: string) => readonly string[];
   readonly disabled?: boolean;
   readonly isLabelVisible?: boolean;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly onCommit: (value: string) => void;
   readonly onDraftChange?: (value: string) => void;
   readonly onDiscard: (messages: readonly string[]) => void;
@@ -624,7 +648,9 @@ control and closes it the same way. Closing it without choosing reports
 nothing: an outside press leaves focus where the click placed it, while
 keyboard dismissal returns focus to the control. Choosing an entry closes the list and reports its value through
 `onChange`. Each entry may show a text label, a preview, or both, as its options
-entry supplies; the list paints at the supplied `stacking` plane.
+entry supplies; the list paints at the supplied `stacking` plane. `targetRole`
+and `targetName` identify the trigger, while `optionTargetRole` identifies
+each named option.
 
 Gesture targets:
 
@@ -644,6 +670,9 @@ type DropdownProps = {
   readonly value: string;
   readonly stacking: number;
   readonly disabled?: boolean;
+  readonly targetRole?: string;
+  readonly targetName?: string;
+  readonly optionTargetRole?: string;
   readonly onChange: (value: string) => void;
 };
 ```
@@ -689,7 +718,8 @@ cleared; every other row reports its value. Choosing returns focus to the contro
 choosing reports nothing: an outside press leaves focus where the click placed
 it, while keyboard dismissal returns focus to the control; the row list is
 keyboard-navigable. `popupWidth` sets the popup's minimum width before viewport
-clamping, and the popup paints at the supplied `stacking` plane.
+clamping, and the popup paints at the supplied `stacking` plane. `targetRole`
+and `targetName` are transcribed onto the trigger.
 
 Gesture targets:
 
@@ -717,6 +747,8 @@ type StrokeSelectProps = {
   readonly stacking: number;
   readonly disabled?: boolean;
   readonly kind: "width" | "dash";
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly onChange: (value: string | null) => void;
 };
 ```
@@ -726,7 +758,8 @@ type StrokeSelectProps = {
 Toggle button containing a styled box swatch.
 
 Renders `label` and the supplied box `styleValues`, exposes `pressed`, and
-reports `onClick` when clicked.
+reports `onClick` when clicked. `targetRole` and `targetName` are transcribed
+onto the button.
 
 Gesture targets:
 
@@ -745,6 +778,8 @@ type SwatchToggleProps = {
   readonly label: string;
   readonly pressed: boolean;
   readonly disabled?: boolean;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly onClick?: () => void;
 };
 ```
@@ -976,7 +1011,8 @@ Used by: member-row reordering.
 Endpoint handle marking a visible relationship reconnect point with positive reconnect emphasis.
 
 Centers a noninteractive circular handle at `point`; the surrounding
-framework-owned reconnect target remains invisible.
+framework-owned reconnect target remains invisible. `targetRole` and
+`targetName` are transcribed onto the handle.
 
 Used by: relationship reconnection.
 
@@ -988,6 +1024,8 @@ Lifecycle:
 type EdgeEndpointHandleProps = {
   readonly point: Point;
   readonly visible: boolean;
+  readonly targetRole?: string;
+  readonly targetName?: string;
 };
 ```
 
@@ -1256,7 +1294,8 @@ Renders the text (`text`) exactly where its editable counterpart appears,
 so swapping display for editing does not shift a pixel. When editing is
 enabled, clicking asks to edit (`onEditRequest`) — the element only requests;
 opening an editor is the consumer's decision. Otherwise it attaches no
-pointer handlers and leaves cursor choice to its host.
+pointer handlers and leaves cursor choice to its host. `targetRole` and
+`targetName` are transcribed onto the text block.
 
 Gesture targets:
 
@@ -1285,6 +1324,8 @@ type InlineTextBlockProps = {
   readonly text: string;
   readonly isEditEnabled?: boolean;
   readonly variant: "primary" | "secondary" | "heading" | "body" | "row";
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly onEditRequest: (event: MouseEvent<HTMLDivElement>) => void;
 };
 ```
@@ -1357,7 +1398,7 @@ Inline glyph toggle calibrated for diagram text controls.
 
 Renders `glyph`, uses `label` as its accessible name and tooltip, reports
 `onClick` when clicked, and uses `surface` when supplied instead of the
-base surface.
+base surface. `targetRole` and `targetName` are transcribed onto the button.
 
 Gesture targets:
 
@@ -1375,6 +1416,8 @@ type InlineToggleButtonProps = {
   readonly label: string;
   readonly surface?: string;
   readonly pressed: boolean;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly onClick: () => void;
 };
 ```
@@ -1628,7 +1671,8 @@ reports `onCommit`, while backing out restores the initial value and reports
 `onCancel`. Line breaks are typed as ordinary input; committing is only by the
 save action or by leaving the editor. The optional `validation` remains
 anchored beside the text region in either state. `elementRef` exposes the
-content host for consumer-owned measurement.
+content host for consumer-owned measurement. `targetRole` and `targetName`
+are transcribed onto that host.
 
 Used by: note-body display and editing.
 
@@ -1646,6 +1690,8 @@ type InlineCommitTextAreaProps = {
   readonly validation?: ReactNode;
   readonly isEditing: boolean;
   readonly isEditEnabled?: boolean;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly onEditRequest: (event: MouseEvent<HTMLDivElement>) => void;
   readonly onCommit: (value: string) => void;
   readonly onCancel: () => void;
@@ -1668,7 +1714,8 @@ messages; backing out or using the cancel action restores it and reports
 `onCancel`. Validation uses `validationStacking`, while `surface` supplies an
 explicit cancel ground over the treatment-selected fallback. Header
 treatments open at the display text's intrinsic width, then follow the draft
-between a usable minimum and their container's available width.
+between a usable minimum and their container's available width. `targetRole`
+and `targetName` identify the active display or editor element.
 
 Lifecycle:
 
@@ -1700,6 +1747,8 @@ type InlineCommitTextFieldProps = DisplayState & {
   readonly isEditEnabled?: boolean;
   readonly isCancelVisible?: boolean;
   readonly treatment: InlineTextTreatment;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly onCommit: (value: string) => void;
   readonly onDraftChange?: (value: string) => void;
   readonly onDiscard: (messages: readonly string[]) => void;
@@ -1718,7 +1767,9 @@ with one, reports text and emphasis through `onCommit`; leaving with an invalid
 draft restores both and reports `onDiscard` with messages; backing out or
 cancelling restores both and reports `onCancel`. Controls use `actionStacking`,
 validation uses `validationStacking`, and `surface` supplies an explicit action
-ground over the base fallback.
+ground over the base fallback. `targetRole` and `targetName` identify the
+edited row host, and `emphasisTargetRole` identifies each named emphasis
+control beneath it.
 
 Used by: class-member editing with underline and italic controls.
 
@@ -1729,6 +1780,9 @@ type InlineEmphasisCommitTextFieldProps = {
   readonly surface?: string;
   readonly actionStacking: number;
   readonly validationStacking: number;
+  readonly targetRole?: string;
+  readonly targetName?: string;
+  readonly emphasisTargetRole?: string;
   readonly validate: (draft: string) => readonly string[];
   readonly onCommit: (value: string, emphasis: TextEmphasis | null) => void;
   readonly onDiscard: (messages: readonly string[]) => void;
@@ -1789,7 +1843,8 @@ Maintains `minHeight`, places `validation` first, then centers intrinsically
 sized display content in the full-width `leading`, `primary`, and `trailing`
 slots while editors retain the slot width, and draws the lower separator from
 `separatorColor`, `separatorThickness`, and `separatorLineStyle` with base
-fallbacks. `elementRef` exposes the header host for consumer-owned measurement.
+fallbacks. `elementRef` exposes the header host for consumer-owned measurement;
+`targetRole` and `targetName` are transcribed onto that host.
 
 Used by: the title region of a class.
 
@@ -1803,6 +1858,8 @@ type BoxHeaderFrameProps = {
   readonly separatorThickness?: string;
   readonly separatorLineStyle: "solid" | "dashed" | "dotted";
   readonly minHeight: number;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly elementRef?: Ref<HTMLElement>;
 };
 ```
@@ -1886,13 +1943,16 @@ Hull header frame holding one line of heading content.
 
 Places intrinsically sized `children` at the leading edge of a fixed-height,
 full-width strip with an inset from the hull edge; content may grow to the
-strip's available width.
+strip's available width. `targetRole` and `targetName` are transcribed onto the
+header.
 
 Used by: a namespace heading.
 
 ```ts
 type HullHeaderFrameProps = {
   readonly children: ReactNode;
+  readonly targetRole?: string;
+  readonly targetName?: string;
 };
 ```
 
@@ -1903,6 +1963,7 @@ Hull surface frame with user-supplied color and border values.
 Fills its host with `children`, uses `title` as the tooltip, applies `fill`,
 `stroke`, `strokeWidth`, `lineStyle`, and `color` with neutral fallbacks.
 Pressing it reports `onPressStart`; clicking it reports `onClick`.
+`targetRole` and `targetName` are transcribed onto the surface.
 
 Gesture targets:
 
@@ -1919,6 +1980,8 @@ type HullSurfaceFrameProps = {
   readonly lineStyle: "solid" | "dashed" | "dotted";
   readonly color?: string;
   readonly children: ReactNode;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly onPressStart: () => void;
   readonly onClick: (event: MouseEvent<HTMLDivElement>) => void;
 };
@@ -1930,7 +1993,8 @@ Sticky-note surface framing content with movable-object treatment.
 
 Fills its host with `children`, uses `title` as the tooltip, and reports
 `onClick` when clicked. `elementRef` exposes the surface host for
-consumer-owned measurement.
+consumer-owned measurement. `targetRole` and `targetName` are transcribed onto
+the surface.
 
 Gesture targets:
 
@@ -1948,6 +2012,8 @@ type StickyNoteSurfaceFrameProps = {
   readonly title: string;
   readonly children: ReactNode;
   readonly dragging: boolean;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly onClick: (event: MouseEvent<HTMLDivElement>) => void;
   readonly elementRef?: Ref<HTMLDivElement>;
 };

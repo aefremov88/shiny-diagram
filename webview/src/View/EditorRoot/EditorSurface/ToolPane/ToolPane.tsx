@@ -42,7 +42,7 @@ export default function ToolPane({
   const isNamespacePlacementActive = namespaceGestureState.kind === "creating";
 
   return (
-    <PaneFrame width={TOOL_PANE_WIDTH}>
+    <PaneFrame width={TOOL_PANE_WIDTH} targetRole="tool-pane" targetName="">
       <PaneSection label="Nodes">
         <NodePlacementTools
           kind="class"

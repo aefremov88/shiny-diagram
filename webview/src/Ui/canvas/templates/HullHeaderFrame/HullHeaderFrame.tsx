@@ -3,7 +3,8 @@
  *
  * Places intrinsically sized `children` at the leading edge of a fixed-height,
  * full-width strip with an inset from the hull edge; content may grow to the
- * strip's available width.
+ * strip's available width. `targetRole` and `targetName` are transcribed onto the
+ * header.
  *
  * Used by: a namespace heading.
  */
@@ -13,8 +14,18 @@ import styles from "./HullHeaderFrame.module.css";
 
 type HullHeaderFrameProps = {
   readonly children: ReactNode;
+  readonly targetRole?: string;
+  readonly targetName?: string;
 };
 
-export default function HullHeaderFrame({ children }: HullHeaderFrameProps): ReactElement {
-  return <header className={styles.header}>{children}</header>;
+export default function HullHeaderFrame({
+  children,
+  targetRole,
+  targetName,
+}: HullHeaderFrameProps): ReactElement {
+  return (
+    <header className={styles.header} data-target-role={targetRole} data-target-name={targetName}>
+      {children}
+    </header>
+  );
 }

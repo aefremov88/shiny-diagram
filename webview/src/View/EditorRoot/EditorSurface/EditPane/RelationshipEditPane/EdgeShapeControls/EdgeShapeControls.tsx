@@ -57,6 +57,8 @@ export default function EdgeShapeControls({
               options={endpointOptions}
               value={view.sourceEndpointKind}
               stacking={CHROME_MENU_ABOVE_CONTROL_Z_INDEX}
+              targetRole="field"
+              targetName="Source endpoint"
               onChange={(value) => onSourceEndpointKindChange(value as RelationshipEndpointKind)}
             />
           ),
@@ -74,6 +76,8 @@ export default function EdgeShapeControls({
               }))}
               value={view.lineKind}
               stacking={CHROME_MENU_ABOVE_CONTROL_Z_INDEX}
+              targetRole="field"
+              targetName="Line"
               onChange={(value) => onLineKindChange(value as RelationshipLineKind)}
             />
           ),
@@ -85,6 +89,8 @@ export default function EdgeShapeControls({
               options={endpointOptions}
               value={view.targetEndpointKind}
               stacking={CHROME_MENU_ABOVE_CONTROL_Z_INDEX}
+              targetRole="field"
+              targetName="Target endpoint"
               onChange={(value) => onTargetEndpointKindChange(value as RelationshipEndpointKind)}
             />
           ),
@@ -93,7 +99,13 @@ export default function EdgeShapeControls({
           label: "",
           control: (
             <ControlGroup>
-              <Button label="Reverse" variant="rowAction" onClick={onReverse} />
+              <Button
+                label="Reverse"
+                targetRole="button"
+                targetName="Reverse"
+                variant="rowAction"
+                onClick={onReverse}
+              />
             </ControlGroup>
           ),
         },

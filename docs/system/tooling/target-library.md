@@ -34,7 +34,7 @@ vscode-custom-editor-harness target contract
 The target library depends on:
 
 - the editor-interface specification for semantic target addresses;
-- Shiny's DOM structure and stable target attributes used to resolve those addresses;
+- Shiny's target attributes used to resolve those addresses;
 - the harness target contract.
 
 The dependency on the harness is one-way: the target library consumes the generic target contract; the harness remains Shiny-agnostic.
@@ -65,9 +65,39 @@ Queries are declarative: they identify an editor element. Waiting and gesture ex
 
 ## 4. DOM contract
 
-Targets are resolved from the rendered DOM using normal DOM structure and, where needed, stable Shiny-owned target attributes.
+Every addressable editor element exposes two Shiny-owned attributes:
 
-Stable target attributes are part of the editor-interface implementation contract. They identify semantic editor elements, remain stable across debug sessions, and carry no runtime behavior.
+```text
+data-target-role
+data-target-name
+```
+
+`data-target-role` identifies the element's semantic role within its parent target. `data-target-name` identifies the addressed instance within that role.
+
+Roles are the kebab-case form of the corresponding editor-interface address segment: `classBox` becomes `class-box`, `resizeHandle` becomes `resize-handle`, and `colorSelect` becomes `color-select`.
+
+Names encode the semantic arguments of that address segment:
+
+- no arguments: the empty string;
+- one argument: the argument string unchanged;
+- two or more arguments: the compact JSON serialization of the ordered argument array.
+
+An address segment has one fixed arity, so the target resolver knows which form to construct and interpret. JSON array serialization is reversible and collision-free for ordered multi-argument values because JSON escaping preserves every string boundary and character. The rule is generic; it does not depend on the target role.
+
+Examples:
+
+| Address segment | `data-target-role` | `data-target-name` |
+| --------------- | ------------------ | ------------------ |
+| `shell()` | `shell` | `""` |
+| `classBox("Order")` | `class-box` | `"Order"` |
+| `.resizeHandle("e")` | `resize-handle` | `"e"` |
+| `edge("Order", "Item")` | `edge` | `["Order","Item"]` |
+
+UI code constructs a multi-argument name with `JSON.stringify(argumentStrings)`, where `argumentStrings` is the ordered array of semantic arguments. The target library constructs the same value for matching and may use `JSON.parse` when it needs to recover the arguments.
+
+The target library resolves editor-interface addresses uniformly through these attributes. A composed address is resolved segment by segment through the corresponding role/name pairs.
+
+The attributes are part of the editor-interface implementation contract. They identify semantic editor elements, remain stable across debug sessions, and carry no runtime behavior.
 
 Shiny-specific DOM knowledge used for target resolution is centralized in the target library.
 

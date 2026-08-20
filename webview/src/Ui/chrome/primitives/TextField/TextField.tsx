@@ -3,7 +3,7 @@
  *
  * Displays `value`, reports edits through `onChange`, and forwards focus loss
  * and keyboard input through `onBlur` and `onKeyDown`. `ariaLabel` supplies the
- * accessible name.
+ * accessible name; `targetRole` and `targetName` are transcribed onto the input.
  *
  * Gesture targets:
  * - `textField()` — `role=textbox`
@@ -26,6 +26,8 @@ import styles from "./TextField.module.css";
 type TextFieldProps = {
   readonly value: string;
   readonly ariaLabel?: string;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly disabled?: boolean;
   readonly invalid?: boolean;
   readonly hasEndAction?: boolean;
@@ -39,6 +41,8 @@ export default function TextField({
   disabled = false,
   invalid = false,
   ariaLabel,
+  targetRole,
+  targetName,
   hasEndAction = false,
   onChange,
   onBlur,
@@ -51,6 +55,8 @@ export default function TextField({
       disabled={disabled}
       aria-invalid={invalid}
       aria-label={ariaLabel}
+      data-target-role={targetRole}
+      data-target-name={targetName}
       onChange={(event) => onChange(event.currentTarget.value)}
       onBlur={onBlur}
       onKeyDown={onKeyDown}

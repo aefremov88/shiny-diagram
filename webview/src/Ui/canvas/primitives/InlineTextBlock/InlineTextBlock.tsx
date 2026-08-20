@@ -5,7 +5,8 @@
  * so swapping display for editing does not shift a pixel. When editing is
  * enabled, clicking asks to edit (`onEditRequest`) — the element only requests;
  * opening an editor is the consumer's decision. Otherwise it attaches no
- * pointer handlers and leaves cursor choice to its host.
+ * pointer handlers and leaves cursor choice to its host. `targetRole` and
+ * `targetName` are transcribed onto the text block.
  *
  * Gesture targets:
  * - `text()` — `data-gesture-target=inline-text`
@@ -34,6 +35,8 @@ type InlineTextBlockProps = {
   readonly text: string;
   readonly isEditEnabled?: boolean;
   readonly variant: "primary" | "secondary" | "heading" | "body" | "row";
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly onEditRequest: (event: MouseEvent<HTMLDivElement>) => void;
 };
 
@@ -41,6 +44,8 @@ export default function InlineTextBlock({
   text,
   isEditEnabled = true,
   variant,
+  targetRole,
+  targetName,
   onEditRequest,
 }: InlineTextBlockProps): ReactElement {
   const title = variant === "primary" || variant === "row" ? text : undefined;
@@ -49,6 +54,8 @@ export default function InlineTextBlock({
     <div
       className={`${styles.text} ${styles[variant]} ${isEditEnabled ? styles.editEnabled : ""}`}
       data-gesture-target="inline-text"
+      data-target-role={targetRole}
+      data-target-name={targetName}
       title={title}
       onClick={isEditEnabled ? onEditRequest : undefined}
       onDoubleClick={isEditEnabled ? onEditRequest : undefined}

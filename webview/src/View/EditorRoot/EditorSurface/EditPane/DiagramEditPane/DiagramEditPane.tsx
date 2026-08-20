@@ -71,7 +71,13 @@ export default function DiagramEditPane({
 
   return (
     <>
-      <ReservedBackLink label="← Back" visible={origin !== undefined} onClick={onBack} />
+      <ReservedBackLink
+        label="← Back"
+        visible={origin !== undefined}
+        targetRole="button"
+        targetName="← Back"
+        onClick={onBack}
+      />
       <SavedStyles
         view={namedStyles}
         selectionState={selectionState}
@@ -96,7 +102,13 @@ export default function DiagramEditPane({
             />
           </PaneSection>
           <PaneSection label="Actions">
-            <Button label="Delete style" variant="danger" onClick={onDelete} />
+            <Button
+              label="Delete style"
+              targetRole="button"
+              targetName="Delete style"
+              variant="danger"
+              onClick={onDelete}
+            />
           </PaneSection>
         </>
       ) : null}

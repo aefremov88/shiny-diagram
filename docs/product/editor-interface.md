@@ -2,7 +2,7 @@
 
 > **Kind:** Defining  
 > **Document state:** Work-in-progress  
-> **Implementation state:** Aspirational  
+> **Implementation state:** Implemented  
 > **Last reviewed:** 2026-08-19  
 > **Scope:** The authoritative description of the editor interface: the component tree, each component's behavior, what its actions write to the source, and its address for programmatic access  
 
@@ -19,22 +19,23 @@ Each interactive part carries an **address** — the way debugging scenarios ref
 
 ## Webview composition - top level
 
-The root component: one persistent shell inside the VS Code panel.
+The root component: one persistent shell inside the VS Code panel. Root address: `shell()`.
 
 Composition:
 
-| Part           | Presence | Address   |
-| -------------- | -------- | --------- |
-| Webview header | always   | `shell()` |
-| View slot      | always   | —         |
+| Part           | Presence | Address |
+| -------------- | -------- | ------- |
+| Webview header | always   | —       |
+| View slot      | always   | —       |
 
 Options of the view slot:
 
 | Component       | Condition                           |
 | --------------- | ----------------------------------- |
-| Problem list    | the source state prevents rendering |
-| Autorender view | view toggle set to Autorender       |
-| Editor view     | view toggle set to Editor           |
+| Problem list            | invalid syntax or unsupported diagram type |
+| Missing-annotation list | one or more classes lack `@spatial`        |
+| Mermaid view            | view toggle set to Mermaid and source can render |
+| Shiny view              | view toggle set to Shiny and source can render   |
 
 ### Webview header
 
@@ -43,9 +44,11 @@ Composition:
 | Part            | Presence                                 | Address               | Actions                                                      |
 | --------------- | ---------------------------------------- | --------------------- | ------------------------------------------------------------ |
 | Title           | always                                   | —                     | none — identifies the panel as Shiny                         |
-| View toggle     | always                                   | `.viewToggle(view)`   | **click:** switches between Autorender and Editor            |
-| Status message  | optional — shown when action is needed   | `.status()`           | none — reports invalid Mermaid syntax and missing, malformed, orphaned, or duplicated annotations |
-| Generate button | optional — shown with the status message | `.button("Generate")` | **click:** computes missing spatial metadata and replaces malformed Shiny annotations where safe + writes the annotation statements |
+| View toggle     | always                                      | `.viewToggle(view)` — view: `"Shiny" | "Mermaid"` | **click:** switches between the Shiny editor and Mermaid rendering |
+| Status dot      | always; addressable while action is needed | `.status()`                                    | none — its tooltip reports missing spatial annotations, unsupported diagram type, or invalid Mermaid syntax |
+| Generate button | optional — shown for missing annotations   | `.button("Generate")`                         | **click:** computes missing spatial metadata + writes the annotation statements |
+| Export button   | always; disabled outside a ready Shiny view | `.button(label)` — `"Export PNG"` or `"Exporting…"` | **click:** exports the rendered diagram as PNG |
+| History buttons | always                                      | `.button("Undo")` / `.button("Redo")`       | **click:** requests the corresponding editor history action |
 
 ### View slot/Problem list
 
@@ -57,13 +60,25 @@ Composition:
 
 | Part         | Presence                 | Address                          | Actions                   |
 | ------------ | ------------------------ | -------------------------------- | ------------------------- |
-| Problem item | one per blocking problem | `.item(text)` — text as rendered | none — states one problem |
+| Problem item | one per blocking problem | `.item(message)` — the rendered error or unsupported-type message, excluding line and source-fragment context | none — states one problem |
 
-### View slot/Autorender view
+### View slot/Missing-annotation list
+
+Replaces the active view while any class lacks `@spatial`, until Generate resolves the missing annotations. It is read-only.
+
+Root address: `missingAnnotations()`.
+
+Composition:
+
+| Part | Presence | Address | Actions |
+| ---- | -------- | ------- | ------- |
+| Missing class item | one per class without `@spatial` | `.item(className)` | none — identifies one unpositioned class |
+
+### View slot/Mermaid view
 
 Displays the diagram with the standard Mermaid renderer. Informational only: zoom and pan, never modifies source. Shiny annotations are invisible to it. No addressable parts.
 
-### View slot/Editor view
+### View slot/Shiny view
 
 The manipulation surface.
 
@@ -106,7 +121,6 @@ Composition:
 | Note                    | one per note                                                 | `note(text)`                                      |
 | Namespace hull          | one per namespace                                            | `namespace(path)`                                 |
 | Legend                  | optional                                                     | —                                                 |
-| Missing-annotation list | optional — shown while any class lacks `@spatial`, until Generate resolves them; read-only | `missingAnnotations()`; items: `.item(className)` |
 
 #### Class box
 
@@ -115,8 +129,8 @@ Composition:
 │        <<Stereotype>>         │   ← optional
 │         Display label         │   ← header
 ├───────────────────────────────┤
-│ [+] fieldName: Type           │
-│ [+] methodName(arg): Return   │   ← prefix dropdown + member text
+│ fieldName: Type               │
+│ methodName(arg): Return       │   ← member text; emphasis controls while editing
 └───────────────────────────────┘
 ```
 
@@ -131,7 +145,7 @@ Composition:
 | Stereotype             | optional — when the class has an annotation | `.stereotype()`                                              | none — renders the class annotation (`<<interface>>`)        |
 | Header                 | always                                      | `.header()`                                                  | **double-click:** enters inline editing<br>**commit:** renames the class identifier + rewrites relationship endpoints, direct-style targets, spatial annotations, style applications, and colon-style member owners; attached-note targets are unchanged |
 | Member row             | one per member                              | `.member(text)` — text as rendered                           | **double-click:** enters inline editing<br>**commit:** rewrites the member text |
-| Member prefix dropdown | one per member row                          | `.member(text).prefix()`                                     | **select:** writes the row's leading visibility marker: none, `+`, `-`, `#`, `~` |
+| Member emphasis controls | 2 while a member row is being edited    | `.member(text).emphasis(name)` — name: `"Underline" | "Italic"` | **click:** toggles the corresponding static or abstract classifier on the member |
 | Add buttons            | always                                      | `.button(label)` — visible label                             | **click:** appends a new attribute or method row and opens it for editing + writes a member statement |
 
 Rules:
@@ -150,7 +164,7 @@ Composition:
 | Part     | Presence                                     | Address                                   | Actions                                                      |
 | -------- | -------------------------------------------- | ----------------------------------------- | ------------------------------------------------------------ |
 | Line     | always                                       | `edge(from, to)`                          | **click:** selects the edge + opens the relationship variant of the edit pane |
-| Endpoint | 2 (source, target)                           | `.sourceEndpoint()` / `.targetEndpoint()` | **drag:** reconnects the edge to the class it is dropped on + rewrites the relationship's source or target identifier |
+| Endpoint | 2 (source, target); targets are rendered only while the edge is selected | `.sourceEndpoint()` / `.targetEndpoint()` | **drag:** reconnects the edge to the class it is dropped on + rewrites the relationship's source or target identifier |
 | Label    | optional — when the relationship has a label | `.label()`                                | **double-click:** enters inline editing<br>**commit:** rewrites the text after `:` |
 
 Rules:
@@ -200,8 +214,8 @@ Composition:
 
 | Part                       | Presence | Address                                 | Actions                                                      |
 | -------------------------- | -------- | --------------------------------------- | ------------------------------------------------------------ |
-| Node tools                 | always   | `.tool(name)` — the tool's visible name | **select, then click the canvas:** creates the element at that point + writes the declaration statement and its annotations; tools: Class, Interface, Abstract class, Enumeration, Note, Namespace |
-| Relationship kind selector | always   | `.tool(name)`                           | **select, then click source class, then target class:** creates the relationship + writes the relationship statement; kinds: association, inheritance, composition, aggregation, dependency, realization, solid link, dashed link |
+| Node tools                 | always   | `.tool(name)` — the tool's visible name | **select, then click the canvas:** creates the element at that point + writes the declaration statement and its annotations; tools: Class, Namespace, Note |
+| Relationship tools        | always   | `.tool(name)` — the tool's visible name | **select, then click source class, then target class:** creates the relationship + writes the relationship statement; tools: Association, Directed association, Bidirectional association, Dependency, Inheritance, Realization, Aggregation, Composition |
 
 ### Edit pane
 
@@ -223,6 +237,7 @@ Shared rules:
 - Namespace style changes write to the `@style` annotation.
 - If a style edit targets a class sharing a `classDef` with other classes, Shiny creates or assigns a unique style instead of changing multiple classes.
 - Controls share the address forms `.button(label)`, `.field(label)`, `.colorSelect(label)` with `.option(name)` — the option name is a preset name or, for colors already used in the diagram, the raw color value.
+- The pane edge control is `.button("Collapse pane")` while expanded and `.button("Expand pane")` while collapsed.
 
 #### Class variant
 
@@ -237,42 +252,59 @@ Composition:
 | Stereotype field     | always                       | `.field("Stereotype")`                      | **commit:** edits the class annotation (`<<interface>>`)     |
 | Named style selector | always                       | `.field("Style")`                           | **select:** assigns a `classDef` style + writes the style application |
 | Color selects        | 3 (Fill, Stroke, Text color) | `.colorSelect(label)`, then `.option(name)` | **click:** opens a palette of presets and document colors<br>**click an option:** writes the direct style property |
-| Action buttons       | always                       | `.button(label)`                            | **click:** runs the class action as labeled; Delete removes the declaration and every reference |
+| Line selectors       | 2 (Width, Dash)              | `.field(label)`                             | **select:** writes the direct style property                 |
+| Style action button  | always                       | `.button(label)` — `"Save style"` or `"Edit style"` | **click:** creates or opens the selected named style |
+| Action buttons       | always                       | `.button("Duplicate")` / `.button("Delete")` | **click:** duplicates the class or removes its declaration and every reference |
 
 #### Relationship variant
 
 Composition:
 
-| Part                | Presence           | Address                                                      | Actions                                                      |
-| ------------------- | ------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| Kind selector       | always             | `.field("Kind")`                                             | **select:** rewrites the relationship operator               |
-| Multiplicity fields | 2 (source, target) | `.field("Source multiplicity")` / `.field("Target multiplicity")` | **commit:** rewrites the multiplicity clause at that endpoint |
-| Label field         | always             | `.field("Label")`                                            | **commit:** rewrites the relationship label                  |
-| Delete button       | always             | `.button("Delete")`                                          | **click:** removes the relationship statement                |
+| Part                     | Presence           | Address                                                      | Actions                                                      |
+| ------------------------ | ------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Source endpoint selector | always             | `.field("Source endpoint")`                                  | **select:** rewrites the relationship's source endpoint kind |
+| Line selector            | always             | `.field("Line")`                                             | **select:** rewrites the relationship's solid or dashed line kind |
+| Target endpoint selector | always             | `.field("Target endpoint")`                                  | **select:** rewrites the relationship's target endpoint kind |
+| Reverse button           | always             | `.button("Reverse")`                                         | **click:** swaps source and target endpoints and their multiplicities |
+| Multiplicity fields      | 2 (source, target) | `.field("Source multiplicity")` / `.field("Target multiplicity")` | **commit:** rewrites the multiplicity clause at that endpoint |
+| Label field              | always             | `.field("Label")`                                            | **commit:** rewrites the relationship label                  |
+| Action buttons           | always             | `.button("Duplicate")` / `.button("Delete")`               | **click:** duplicates or removes the relationship statement  |
 
 #### Note variant
 
 Composition:
 
-| Part           | Presence | Address                 | Actions                                                      |
-| -------------- | -------- | ----------------------- | ------------------------------------------------------------ |
-| Text field     | always   | `.field("Text")`        | **commit:** rewrites the note text                           |
-| Attach control | always   | `.field("Attached to")` | **select:** switches between free and attached + rewrites the statement form |
-| Delete button  | always   | `.button("Delete")`     | **click:** removes the note and its annotation as a pair     |
+Note text is edited only through `note(text).text()` on the canvas; the edit pane has no text field.
+
+| Part              | Presence                         | Address                      | Actions                                                      |
+| ----------------- | -------------------------------- | ---------------------------- | ------------------------------------------------------------ |
+| Attach button     | when the note is free            | `.button("Attach to class")` | **click:** starts class selection for attachment             |
+| Detach button     | when the note is attached        | `.button("Detach")`         | **click:** rewrites the note as free                         |
+| Duplicate button  | always                           | `.button("Duplicate")`      | **click:** duplicates the note and its annotation            |
+| Delete button     | always                           | `.button("Delete")`         | **click:** removes the note and its annotation as a pair     |
 
 #### Namespace variant
 
 Composition:
 
-| Part           | Presence                     | Address                                | Actions                                                      |
-| -------------- | ---------------------------- | -------------------------------------- | ------------------------------------------------------------ |
-| Style controls | 3 (Fill, Stroke, Text color) | `.colorSelect(label)`, `.option(name)` | **click:** opens the palette<br>**click an option:** writes the `@style` annotation |
-| Delete button  | always                       | `.button("Delete")`                    | **click:** removes the namespace block; member classes remain, moved to the parent scope |
+| Part             | Presence                     | Address                                | Actions                                                      |
+| ---------------- | ---------------------------- | -------------------------------------- | ------------------------------------------------------------ |
+| Name field       | always                       | `.field("Name")`                       | **commit:** renames the namespace path                       |
+| Color controls   | 3 (Fill, Stroke, Text color) | `.colorSelect(label)`, `.option(name)` | **click:** opens the palette<br>**click an option:** writes the `@style` annotation |
+| Line controls    | 2 (Width, Dash)              | `.field(label)`                        | **select:** writes the corresponding `@style` property       |
+| Reset button     | always                       | `.button("Reset style")`               | **click:** removes the namespace style annotation            |
+| Delete button    | always                       | `.button("Delete")`                    | **click:** removes the namespace block; member classes remain, moved to the parent scope |
 
 #### Diagram variant
 
 Composition:
 
-| Part         | Presence           | Address             | Actions                                                      |
-| ------------ | ------------------ | ------------------- | ------------------------------------------------------------ |
-| Saved styles | one per `classDef` | `.savedStyle(name)` | **rename:** rewrites the style definition name + every application<br>**edit properties:** rewrites the style property list |
+| Part              | Presence                             | Address                                      | Actions                                                      |
+| ----------------- | ------------------------------------ | -------------------------------------------- | ------------------------------------------------------------ |
+| Saved style       | one per `classDef`                   | `.savedStyle(name)`                          | **click:** selects the style for editing                     |
+| New-style button  | always                               | `.button("+ New style")`                    | **click:** creates and selects a named style                 |
+| Back button       | while editing a style opened from a class | `.button("← Back")`                    | **click:** restores the originating class selection         |
+| Name field        | while a saved style is selected      | `.field("Name")`                            | **commit:** rewrites the style definition name and every application |
+| Color controls    | while a saved style is selected      | `.colorSelect(label)`, `.option(name)`       | **click:** writes the style property                         |
+| Line controls     | while a saved style is selected      | `.field(label)` — label: `"Width" | "Dash"` | **select:** writes the style property                        |
+| Delete button     | while a saved style is selected      | `.button("Delete style")`                   | **click:** removes the style definition                     |

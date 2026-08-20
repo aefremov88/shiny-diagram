@@ -59,6 +59,8 @@ export default function NodePlacementTools({
       pressed={isPressed}
       title={tool.name}
       size="labeledTile"
+      targetRole="tool"
+      targetName={tool.name}
       onClick={onClick}
     />
   );

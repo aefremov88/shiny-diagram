@@ -40,6 +40,9 @@ export default function StylePropertyControl({
         constantValue={constantValue}
         value={value}
         stacking={CHROME_SELECTOR_POPUP_ABOVE_CONTROL_Z_INDEX}
+        targetRole="color-select"
+        targetName={toTargetName(property)}
+        optionTargetRole="option"
         onChange={onChange}
       />
     );
@@ -53,6 +56,8 @@ export default function StylePropertyControl({
       presets={property === "strokeWidth" ? WIDTH_PRESETS : DASH_PRESETS}
       documentValues={documentValues}
       stacking={CHROME_SELECTOR_POPUP_ABOVE_CONTROL_Z_INDEX}
+      targetRole="field"
+      targetName={property === "strokeWidth" ? "Width" : "Dash"}
       onChange={onChange}
     />
   );
@@ -61,4 +66,10 @@ export default function StylePropertyControl({
 // Private helpers
 function isColorProperty(property: StylePropertyName): property is "fill" | "stroke" | "color" {
   return property === "fill" || property === "stroke" || property === "color";
+}
+
+function toTargetName(property: "fill" | "stroke" | "color"): string {
+  if (property === "fill") return "Fill";
+  if (property === "stroke") return "Stroke";
+  return "Text color";
 }

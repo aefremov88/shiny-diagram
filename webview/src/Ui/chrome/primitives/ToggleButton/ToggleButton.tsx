@@ -3,7 +3,8 @@
  *
  * Renders `icon` when supplied, uses `title` as the tooltip and as the
  * accessible name when `label` is absent, exposes `pressed`, and reports
- * `onClick` when clicked.
+ * `onClick` when clicked. `targetRole` and `targetName` are transcribed onto the
+ * button.
  *
  * Gesture targets:
  * - `toggleButton()` — `role=button`
@@ -33,6 +34,8 @@ type ToggleButtonProps = {
   readonly pressed: boolean;
   readonly disabled?: boolean;
   readonly size: "labeledTile" | "glyphTile";
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly onClick?: () => void;
 };
 
@@ -43,6 +46,8 @@ export default function ToggleButton({
   pressed,
   disabled = false,
   size,
+  targetRole,
+  targetName,
   onClick,
 }: ToggleButtonProps): ReactElement {
   const className = size === "labeledTile" ? styles.labeledTileButton : styles.glyphTileButton;
@@ -55,6 +60,8 @@ export default function ToggleButton({
       aria-pressed={pressed}
       disabled={disabled}
       title={title}
+      data-target-role={targetRole}
+      data-target-name={targetName}
       onClick={onClick}
     >
       {icon === undefined ? null : (

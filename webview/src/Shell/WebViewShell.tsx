@@ -88,7 +88,7 @@ export default function WebViewShell({
     ) : null;
 
   return (
-    <main className={styles.shell}>
+    <main className={styles.shell} data-target-role="shell" data-target-name="">
       <WebViewHeader
         mode={mode}
         documentName={documentName}

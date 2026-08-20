@@ -7,7 +7,9 @@
  * nothing: an outside press leaves focus where the click placed it, while
  * keyboard dismissal returns focus to the control. Choosing an entry closes the list and reports its value through
  * `onChange`. Each entry may show a text label, a preview, or both, as its options
- * entry supplies; the list paints at the supplied `stacking` plane.
+ * entry supplies; the list paints at the supplied `stacking` plane. `targetRole`
+ * and `targetName` identify the trigger, while `optionTargetRole` identifies
+ * each named option.
  *
  * Gesture targets:
  * - `dropdown()` — `role=button; aria-haspopup=listbox`
@@ -58,6 +60,9 @@ type DropdownProps = {
   readonly value: string;
   readonly stacking: number;
   readonly disabled?: boolean;
+  readonly targetRole?: string;
+  readonly targetName?: string;
+  readonly optionTargetRole?: string;
   readonly onChange: (value: string) => void;
 };
 
@@ -66,6 +71,9 @@ export default function Dropdown({
   value,
   stacking,
   disabled = false,
+  targetRole,
+  targetName,
+  optionTargetRole,
   onChange,
 }: DropdownProps): ReactElement {
   const [isOpen, setIsOpen] = useState(false);
@@ -101,6 +109,8 @@ export default function Dropdown({
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         aria-label={selectedOption?.isLabelVisible === false ? selectedOption.label : undefined}
+        data-target-role={targetRole}
+        data-target-name={targetName}
         onClick={() => setIsOpen((current) => !current)}
       >
         <span className={styles.triggerContent}>
@@ -124,6 +134,8 @@ export default function Dropdown({
               role="option"
               aria-selected={option.value === value}
               aria-label={option.isLabelVisible === false ? option.label : undefined}
+              data-target-role={optionTargetRole}
+              data-target-name={option.label}
               onClick={() => selectValue(option.value)}
             >
               {option.swatchStyle || option.swatchKind ? (

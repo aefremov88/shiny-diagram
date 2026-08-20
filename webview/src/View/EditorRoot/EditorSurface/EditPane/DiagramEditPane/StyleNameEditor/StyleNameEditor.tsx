@@ -51,6 +51,8 @@ export default function StyleNameEditor({
               initialValue={selectedStyle.name}
               validate={(draft) => validateStyleName(draft, selectedStyle, view)}
               ariaLabel="Style name"
+              targetRole="field"
+              targetName="Name"
               isLabelVisible={false}
               validationStacking={CHROME_VALIDATION_ABOVE_CONTROL_Z_INDEX}
               onCommit={onNameCommit}

@@ -57,6 +57,8 @@ export default function HeaderTextControls({
               ]}
               validate={() => []}
               ariaLabel="Annotation"
+              targetRole="field"
+              targetName="Stereotype"
               isLabelVisible={false}
               menuStacking={CHROME_MENU_ABOVE_CONTROL_Z_INDEX}
               validationStacking={CHROME_VALIDATION_ABOVE_CONTROL_Z_INDEX}
@@ -73,6 +75,8 @@ export default function HeaderTextControls({
               initialValue={view.header.name}
               validate={(draft) => onNameCommit(view.classId, draft.trim())}
               ariaLabel="Name"
+              targetRole="field"
+              targetName="Name"
               isLabelVisible={false}
               validationStacking={CHROME_VALIDATION_ABOVE_CONTROL_Z_INDEX}
               onCommit={() => undefined}
@@ -88,6 +92,8 @@ export default function HeaderTextControls({
               initialValue={label}
               validate={() => []}
               ariaLabel="Label"
+              targetRole="field"
+              targetName="Label"
               isLabelVisible={false}
               validationStacking={CHROME_VALIDATION_ABOVE_CONTROL_Z_INDEX}
               onCommit={(draft) => onLabelCommit(view.classId, draft.trim() || null)}

@@ -35,6 +35,8 @@ export default function MultiplicityControls({ view }: MultiplicityControlsProps
               options={toMultiplicityOptions()}
               validate={() => []}
               ariaLabel="Source"
+              targetRole="field"
+              targetName="Source multiplicity"
               isLabelVisible={false}
               menuStacking={CHROME_MENU_ABOVE_CONTROL_Z_INDEX}
               validationStacking={CHROME_VALIDATION_ABOVE_CONTROL_Z_INDEX}
@@ -60,6 +62,8 @@ export default function MultiplicityControls({ view }: MultiplicityControlsProps
               options={toMultiplicityOptions()}
               validate={() => []}
               ariaLabel="Target"
+              targetRole="field"
+              targetName="Target multiplicity"
               isLabelVisible={false}
               menuStacking={CHROME_MENU_ABOVE_CONTROL_Z_INDEX}
               validationStacking={CHROME_VALIDATION_ABOVE_CONTROL_Z_INDEX}

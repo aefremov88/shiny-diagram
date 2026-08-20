@@ -43,7 +43,7 @@ export default function SavedStyles({
           ))}
         </ControlGroup>
       </ControlGroup>
-      <Button label="+ New style" onClick={onCreate} />
+      <Button label="+ New style" targetRole="button" targetName="+ New style" onClick={onCreate} />
     </PaneSection>
   );
 }

@@ -9,6 +9,7 @@
  * or the draft changes. While a nonempty draft has focus, the clear action
  * empties it and reports `onClear`. `ariaLabel` always names the field and its
  * clear action. Validation paints at the supplied `validationStacking` plane.
+ * `targetRole` and `targetName` are transcribed onto the text input.
  *
  * Used by: relationship labels and optional class labels.
  *
@@ -32,6 +33,8 @@ type CommitClearableTextFieldProps = {
   readonly validate: (draft: string) => readonly string[];
   readonly disabled?: boolean;
   readonly isLabelVisible?: boolean;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly onCommit: (value: string) => void;
   readonly onClear: () => void;
   readonly onDiscard: (messages: readonly string[]) => void;
@@ -45,6 +48,8 @@ export default function CommitClearableTextField({
   ariaLabel,
   isLabelVisible = true,
   validationStacking,
+  targetRole,
+  targetName,
   onCommit,
   onClear,
   onDiscard,
@@ -75,6 +80,8 @@ export default function CommitClearableTextField({
           invalid={lifecycle.messages.length > 0}
           ariaLabel={ariaLabel}
           hasEndAction={lifecycle.draft !== ""}
+          targetRole={targetRole}
+          targetName={targetName}
           onChange={lifecycle.onDraftChange}
           onBlur={lifecycle.onBlur}
           onKeyDown={lifecycle.onKeyDown}

@@ -3,6 +3,7 @@
  *
  * Clicking the tab reports `onToggle`, supplies the matching expand or collapse
  * accessible instruction, and paints at the supplied `stacking` plane.
+ * `targetRole` identifies the button by its current accessible instruction.
  *
  * Gesture targets:
  * - `paneCollapseTab()` — `role=button`
@@ -21,12 +22,14 @@ import styles from "./PaneCollapseTab.module.css";
 type PaneCollapseTabProps = {
   readonly stacking: number;
   readonly collapsed: boolean;
+  readonly targetRole?: string;
   readonly onToggle: () => void;
 };
 
 export default function PaneCollapseTab({
   collapsed,
   stacking,
+  targetRole,
   onToggle,
 }: PaneCollapseTabProps): ReactElement {
   const style = { zIndex: stacking } satisfies CSSProperties;
@@ -37,6 +40,8 @@ export default function PaneCollapseTab({
       style={style}
       aria-label={collapsed ? "Expand pane" : "Collapse pane"}
       title={collapsed ? "Expand pane" : "Collapse pane"}
+      data-target-role={targetRole}
+      data-target-name={collapsed ? "Expand pane" : "Collapse pane"}
       onClick={onToggle}
     >
       <svg

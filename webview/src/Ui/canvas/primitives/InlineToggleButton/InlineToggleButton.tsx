@@ -3,7 +3,7 @@
  *
  * Renders `glyph`, uses `label` as its accessible name and tooltip, reports
  * `onClick` when clicked, and uses `surface` when supplied instead of the
- * base surface.
+ * base surface. `targetRole` and `targetName` are transcribed onto the button.
  *
  * Gesture targets:
  * - `toggleButton()` — `role=button`
@@ -24,6 +24,8 @@ type InlineToggleButtonProps = {
   readonly label: string;
   readonly surface?: string;
   readonly pressed: boolean;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly onClick: () => void;
 };
 
@@ -32,6 +34,8 @@ export default function InlineToggleButton({
   label,
   pressed,
   surface,
+  targetRole,
+  targetName,
   onClick,
 }: InlineToggleButtonProps): ReactElement {
   const style = { "--inline-toggle-surface": surface } as CSSProperties;
@@ -43,6 +47,8 @@ export default function InlineToggleButton({
       aria-label={label}
       aria-pressed={pressed}
       title={label}
+      data-target-role={targetRole}
+      data-target-name={targetName}
       onClick={onClick}
     >
       <svg

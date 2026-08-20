@@ -72,7 +72,7 @@ export default function MemberTable({
       addLabel="+ attribute"
       addTitle="Add attribute"
       addTargetRole="button"
-      addTargetName="Add attribute"
+      addTargetName="+ attribute"
       validate={() => []}
       isEditable={isSelected}
       isEmphasisEditable
@@ -117,7 +117,7 @@ export default function MemberTable({
       addLabel="+ method"
       addTitle="Add member"
       addTargetRole="button"
-      addTargetName="Add member"
+      addTargetName="+ method"
       validate={() => []}
       isEditable={isSelected}
       isEmphasisEditable

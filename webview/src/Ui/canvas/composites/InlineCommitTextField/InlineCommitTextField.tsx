@@ -12,7 +12,8 @@
  * `onCancel`. Validation uses `validationStacking`, while `surface` supplies an
  * explicit cancel ground over the treatment-selected fallback. Header
  * treatments open at the display text's intrinsic width, then follow the draft
- * between a usable minimum and their container's available width.
+ * between a usable minimum and their container's available width. `targetRole`
+ * and `targetName` identify the active display or editor element.
  *
  * Lifecycle:
  * - `isEditing` — off renders `displayText` or nothing; on renders the field
@@ -63,6 +64,8 @@ type InlineCommitTextFieldProps = DisplayState & {
   readonly isEditEnabled?: boolean;
   readonly isCancelVisible?: boolean;
   readonly treatment: InlineTextTreatment;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly onCommit: (value: string) => void;
   readonly onDraftChange?: (value: string) => void;
   readonly onDiscard: (messages: readonly string[]) => void;
@@ -87,6 +90,8 @@ export default function InlineCommitTextField({
   isCancelVisible = false,
   validationStacking,
   surface,
+  targetRole,
+  targetName,
   onCommit,
   onDraftChange,
   onDiscard,
@@ -108,6 +113,8 @@ export default function InlineCommitTextField({
         text={displayText}
         isEditEnabled={isEditEnabled}
         variant={displayVariant}
+        targetRole={targetRole}
+        targetName={targetName}
         onEditRequest={onEditRequest}
       />
     ) : null;
@@ -120,6 +127,8 @@ export default function InlineCommitTextField({
   return (
     <div
       className={`${styles.editor} ${styles[treatment]} ${isContentSized ? styles.contentSized : ""}`}
+      data-target-role={targetRole}
+      data-target-name={targetName}
       onPointerDown={(event) => event.stopPropagation()}
       onMouseDown={(event) => event.stopPropagation()}
     >

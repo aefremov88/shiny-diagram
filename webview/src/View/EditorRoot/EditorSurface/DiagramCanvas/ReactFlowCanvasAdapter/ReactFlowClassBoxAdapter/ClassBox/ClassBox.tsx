@@ -146,6 +146,8 @@ export default function ClassBox({
     <InlineCommitTextField
       initialValue={view.header.stereotype}
       displayText={`<<${view.header.stereotype}>>`}
+      targetRole="stereotype"
+      targetName=""
       onEditRequest={requestHeaderEdit("annotation")}
       isEditing={isHeaderEditing(editingState, view.classId, "annotation")}
       isEditEnabled={isSelected}
@@ -239,6 +241,8 @@ export default function ClassBox({
       <BoxHeaderFrame
         elementRef={headerRef}
         minHeight={CLASS_BOX_HEADER_MIN_HEIGHT}
+        targetRole="header"
+        targetName=""
         separatorColor={separatorColor}
         separatorThickness={separatorThickness}
         separatorLineStyle={separatorLineStyle}

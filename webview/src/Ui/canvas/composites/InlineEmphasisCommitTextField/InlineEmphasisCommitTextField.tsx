@@ -8,7 +8,9 @@
  * draft restores both and reports `onDiscard` with messages; backing out or
  * cancelling restores both and reports `onCancel`. Controls use `actionStacking`,
  * validation uses `validationStacking`, and `surface` supplies an explicit action
- * ground over the base fallback.
+ * ground over the base fallback. `targetRole` and `targetName` identify the
+ * edited row host, and `emphasisTargetRole` identifies each named emphasis
+ * control beneath it.
  *
  * Used by: class-member editing with underline and italic controls.
  */
@@ -49,6 +51,9 @@ type InlineEmphasisCommitTextFieldProps = {
   readonly surface?: string;
   readonly actionStacking: number;
   readonly validationStacking: number;
+  readonly targetRole?: string;
+  readonly targetName?: string;
+  readonly emphasisTargetRole?: string;
   readonly validate: (draft: string) => readonly string[];
   readonly onCommit: (value: string, emphasis: TextEmphasis | null) => void;
   readonly onDiscard: (messages: readonly string[]) => void;
@@ -62,6 +67,9 @@ export default function InlineEmphasisCommitTextField({
   actionStacking,
   validationStacking,
   surface,
+  targetRole,
+  targetName,
+  emphasisTargetRole,
   onCommit,
   onDiscard,
   onCancel,
@@ -84,6 +92,8 @@ export default function InlineEmphasisCommitTextField({
   return (
     <div
       className={`${styles.editor} ${emphasis === "underline" ? styles.underlined : ""} ${emphasis === "italic" ? styles.italic : ""}`}
+      data-target-role={targetRole}
+      data-target-name={targetName}
       onPointerDown={(event) => event.stopPropagation()}
       onMouseDown={(event) => event.stopPropagation()}
     >
@@ -97,6 +107,8 @@ export default function InlineEmphasisCommitTextField({
           label="Underline"
           pressed={emphasis === "underline"}
           surface={surface}
+          targetRole={emphasisTargetRole}
+          targetName="Underline"
           onClick={() => setEmphasis((value) => (value === "underline" ? null : "underline"))}
         />
         <InlineToggleButton
@@ -104,6 +116,8 @@ export default function InlineEmphasisCommitTextField({
           label="Italic"
           pressed={emphasis === "italic"}
           surface={surface}
+          targetRole={emphasisTargetRole}
+          targetName="Italic"
           onClick={() => setEmphasis((value) => (value === "italic" ? null : "italic"))}
         />
       </div>

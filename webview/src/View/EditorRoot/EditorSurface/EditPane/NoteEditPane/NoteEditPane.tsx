@@ -42,19 +42,41 @@ export default function NoteEditPane({
         {attachedClassLabel && attachedClassStyle ? (
           <>
             <StyledBoxSwatch styleValues={attachedClassStyle} label={attachedClassLabel} />
-            <Button label="Detach" variant="rowAction" onClick={onAttachmentToggle} />
+            <Button
+              label="Detach"
+              targetRole="button"
+              targetName="Detach"
+              variant="rowAction"
+              onClick={onAttachmentToggle}
+            />
           </>
         ) : (
           <>
-            <Button label="Attach to class" onClick={onAttachmentToggle} />
+            <Button
+              label="Attach to class"
+              targetRole="button"
+              targetName="Attach to class"
+              onClick={onAttachmentToggle}
+            />
             <Button label="Detach" variant="rowAction" visible={false} />
           </>
         )}
       </PaneSection>
       <PaneSection label="Actions">
         <ControlGroup columns={2}>
-          <Button label="Duplicate" onClick={onDuplicate} />
-          <Button label="Delete" variant="danger" onClick={onDelete} />
+          <Button
+            label="Duplicate"
+            targetRole="button"
+            targetName="Duplicate"
+            onClick={onDuplicate}
+          />
+          <Button
+            label="Delete"
+            targetRole="button"
+            targetName="Delete"
+            variant="danger"
+            onClick={onDelete}
+          />
         </ControlGroup>
       </PaneSection>
     </>

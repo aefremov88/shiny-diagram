@@ -164,10 +164,12 @@ export default function EditPane({
       width={EDIT_PANE_WIDTH}
       collapsed={isCollapsed}
       targetRole="edit-pane"
+      targetName=""
       edgeControl={
         <PaneCollapseTab
           collapsed={isCollapsed}
           stacking={CHROME_PANE_EDGE_CONTROL_ABOVE_PANE_Z_INDEX}
+          targetRole="button"
           onToggle={onCollapseToggle}
         />
       }

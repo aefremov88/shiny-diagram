@@ -84,8 +84,7 @@ export default function RelationshipEdge({
     // React Flow owns the edge shell, so the five edge elements remain consumer-side assembly.
     <g
       data-target-role="edge"
-      data-target-source={view.sourceClassId}
-      data-target-target={view.targetClassId}
+      data-target-name={JSON.stringify([view.sourceClassId, view.targetClassId])}
       onClick={(event) => {
         event.stopPropagation();
         onEdgeSelect();
@@ -117,8 +116,18 @@ export default function RelationshipEdge({
         startMarkerId={view.sourceEndpointKind === "none" ? undefined : sourceMarkerId}
         endMarkerId={view.targetEndpointKind === "none" ? undefined : targetMarkerId}
       />
-      <EdgeEndpointHandle point={{ x: sourceX, y: sourceY }} visible={isSelected} />
-      <EdgeEndpointHandle point={{ x: targetX, y: targetY }} visible={isSelected} />
+      <EdgeEndpointHandle
+        point={{ x: sourceX, y: sourceY }}
+        visible={isSelected}
+        targetRole="source-endpoint"
+        targetName=""
+      />
+      <EdgeEndpointHandle
+        point={{ x: targetX, y: targetY }}
+        visible={isSelected}
+        targetRole="target-endpoint"
+        targetName=""
+      />
       {view.sourceMultiplicity || isSourceMultiplicityEditing ? (
         <EdgeText
           x={sourceMultiplicityX + multiplicityNormal.x}
@@ -189,7 +198,12 @@ function EdgeText({
   readonly onEditCancel: () => void;
 }): ReactElement {
   return (
-    <g className={isEditing ? "nopan" : undefined} transform={`translate(${x} ${y})`}>
+    <g
+      className={isEditing ? "nopan" : undefined}
+      transform={`translate(${x} ${y})`}
+      data-target-role={variant === "label" ? "label" : undefined}
+      data-target-name={variant === "label" ? "" : undefined}
+    >
       <EditableEdgeText
         text={text}
         treatment={variant}

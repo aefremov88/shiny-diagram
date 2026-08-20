@@ -138,6 +138,9 @@ export default function EditableTextList({
               <Editor
                 initialValue={row.text}
                 initialEmphasis={isEmphasisEditable ? (row.emphasis ?? null) : null}
+                targetRole={row.targetRole}
+                targetName={row.targetName}
+                emphasisTargetRole="emphasis"
                 validate={validate}
                 actionStacking={actionStacking}
                 validationStacking={validationStacking}
@@ -273,6 +276,9 @@ function toRenderedDropGap(dragState: ReorderDragState): number {
 function Editor({
   initialValue,
   initialEmphasis,
+  targetRole,
+  targetName,
+  emphasisTargetRole,
   validate,
   actionStacking,
   validationStacking,
@@ -283,6 +289,9 @@ function Editor({
 }: {
   readonly initialValue: string;
   readonly initialEmphasis: TextEmphasis | null;
+  readonly targetRole?: string;
+  readonly targetName?: string;
+  readonly emphasisTargetRole?: string;
   readonly validate: (draft: string) => readonly string[];
   readonly actionStacking: number;
   readonly validationStacking: number;
@@ -296,6 +305,9 @@ function Editor({
       <InlineEmphasisCommitTextField
         initialValue={initialValue}
         initialEmphasis={initialEmphasis}
+        targetRole={targetRole}
+        targetName={targetName}
+        emphasisTargetRole={emphasisTargetRole}
         validate={validate}
         actionStacking={actionStacking}
         validationStacking={validationStacking}

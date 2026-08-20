@@ -33,6 +33,8 @@ export default function NamedStyleSelector({
     <Dropdown
       value={selectedValue}
       stacking={CHROME_MENU_ABOVE_CONTROL_Z_INDEX}
+      targetRole="field"
+      targetName="Style"
       options={[
         ...(selectedValue === "multiple"
           ? [

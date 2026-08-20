@@ -153,6 +153,8 @@ export default function RelationshipTools({
             pressed={isActive}
             title={tool.name}
             size="glyphTile"
+            targetRole="tool"
+            targetName={tool.name}
             onClick={() => onRelationshipPlacementStart(tool.seed)}
           />
         );

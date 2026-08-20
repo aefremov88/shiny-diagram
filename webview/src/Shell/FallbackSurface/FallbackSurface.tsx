@@ -29,9 +29,18 @@ export default function FallbackSurface({ documentStatus }: FallbackSurfaceProps
 
   if (documentStatus.status === "unsupportedDiagramType") {
     return (
-      <section className={styles.surface} aria-label="Unsupported diagram type">
+      <section
+        className={styles.surface}
+        aria-label="Unsupported diagram type"
+        data-target-role="problem-list"
+        data-target-name=""
+      >
         <div className={styles.unsupportedPanel}>
-          <p className={styles.unsupportedMessage}>
+          <p
+            className={styles.unsupportedMessage}
+            data-target-role="item"
+            data-target-name={toUnsupportedDiagramTypeMessage(documentStatus.diagramType)}
+          >
             {toUnsupportedDiagramTypeMessage(documentStatus.diagramType)}
           </p>
           <p className={styles.supportedHeading}>Shiny supports:</p>
@@ -50,12 +59,16 @@ export default function FallbackSurface({ documentStatus }: FallbackSurfaceProps
       <section
         className={`${styles.surface} ${styles.missingSurface}`}
         aria-label="Classes without spatial annotations"
+        data-target-role="missing-annotations"
+        data-target-name=""
       >
         <div className={styles.missingPanel}>
           <h2 className={styles.missingHeading}>Classes without spatial annotations</h2>
           <ul className={styles.missingList}>
             {documentStatus.missingClassIds.map((classId) => (
-              <li key={classId}>{classId}</li>
+              <li key={classId} data-target-role="item" data-target-name={classId}>
+                {classId}
+              </li>
             ))}
           </ul>
           <p className={styles.missingGuidance}>Generate places them on the canvas</p>
@@ -65,10 +78,20 @@ export default function FallbackSurface({ documentStatus }: FallbackSurfaceProps
   }
 
   return (
-    <section className={styles.surface} aria-label="Document parse errors">
+    <section
+      className={styles.surface}
+      aria-label="Document parse errors"
+      data-target-role="problem-list"
+      data-target-name=""
+    >
       <div className={styles.errorLog}>
         {documentStatus.errors.map((error, index) => (
-          <article className={styles.errorEntry} key={`${error.line}:${index}`}>
+          <article
+            className={styles.errorEntry}
+            key={`${error.line}:${index}`}
+            data-target-role="item"
+            data-target-name={error.message}
+          >
             <div className={styles.errorLocation}>Line {error.line}</div>
             {error.fragment ? <code className={styles.errorFragment}>{error.fragment}</code> : null}
             <div className={styles.errorMessage}>{error.message}</div>

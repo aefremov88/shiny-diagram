@@ -28,6 +28,8 @@ export default function StyleChip({ view, pressed, onStyleSelect }: StyleChipPro
     <SwatchToggle
       styleValues={resolveStyleProperties(view.properties, CLASS_STYLE_CONSTANTS)}
       label={view.name}
+      targetRole="saved-style"
+      targetName={view.name}
       pressed={pressed}
       onClick={onClick}
     />

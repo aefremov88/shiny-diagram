@@ -5,7 +5,8 @@
  * sized display content in the full-width `leading`, `primary`, and `trailing`
  * slots while editors retain the slot width, and draws the lower separator from
  * `separatorColor`, `separatorThickness`, and `separatorLineStyle` with base
- * fallbacks. `elementRef` exposes the header host for consumer-owned measurement.
+ * fallbacks. `elementRef` exposes the header host for consumer-owned measurement;
+ * `targetRole` and `targetName` are transcribed onto that host.
  *
  * Used by: the title region of a class.
  */
@@ -22,11 +23,15 @@ type BoxHeaderFrameProps = {
   readonly separatorThickness?: string;
   readonly separatorLineStyle: "solid" | "dashed" | "dotted";
   readonly minHeight: number;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly elementRef?: Ref<HTMLElement>;
 };
 
 export default function BoxHeaderFrame({
   minHeight,
+  targetRole,
+  targetName,
   separatorColor,
   separatorThickness,
   separatorLineStyle,
@@ -44,7 +49,13 @@ export default function BoxHeaderFrame({
   } as CSSProperties;
 
   return (
-    <header ref={elementRef} className={styles.header} style={style}>
+    <header
+      ref={elementRef}
+      className={styles.header}
+      style={style}
+      data-target-role={targetRole}
+      data-target-name={targetName}
+    >
       {validation}
       {leading ? <div className={styles.leading}>{leading}</div> : null}
       <div className={styles.primary}>{primary}</div>

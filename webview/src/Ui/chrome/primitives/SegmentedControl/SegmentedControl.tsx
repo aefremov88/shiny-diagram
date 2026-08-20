@@ -3,7 +3,8 @@
  *
  * Renders `options` as a radiogroup named by `ariaLabel`, marks `value` as
  * selected, supports arrow, Home, and End navigation, and reports a selected
- * option through `onChange`.
+ * option through `onChange`. `optionTargetRole` identifies each option by its
+ * visible label.
  *
  * Gesture targets:
  * - `segmentedControl().option(name)` — `role=radio; accessible-name=name`
@@ -25,6 +26,7 @@ type SegmentedControlProps<T extends string> = {
   readonly options: readonly SegmentedControlOption<T>[];
   readonly value: T;
   readonly ariaLabel: string;
+  readonly optionTargetRole?: string;
   readonly onChange: (value: T) => void;
 };
 
@@ -32,6 +34,7 @@ export default function SegmentedControl<T extends string>({
   options,
   value,
   ariaLabel,
+  optionTargetRole,
   onChange,
 }: SegmentedControlProps<T>): ReactElement {
   const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -61,6 +64,8 @@ export default function SegmentedControl<T extends string>({
             aria-checked={selected}
             tabIndex={selected ? 0 : -1}
             className={selected ? styles.selectedSegment : styles.segment}
+            data-target-role={optionTargetRole}
+            data-target-name={option.label}
             onClick={() => onChange(option.value)}
             onKeyDown={(event) => onKeyDown(event, index)}
           >

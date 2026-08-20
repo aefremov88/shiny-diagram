@@ -41,6 +41,7 @@ export default function ChangeStylePalette({
         control: (
           <StylePropertyControl
             property={name}
+            targetName={toFieldLabel(name)}
             value={view[name] ?? null}
             presets={presets}
             documentColors={documentColors}

@@ -8,7 +8,8 @@
  * `onCancel`. Line breaks are typed as ordinary input; committing is only by the
  * save action or by leaving the editor. The optional `validation` remains
  * anchored beside the text region in either state. `elementRef` exposes the
- * content host for consumer-owned measurement.
+ * content host for consumer-owned measurement. `targetRole` and `targetName`
+ * are transcribed onto that host.
  *
  * Used by: note-body display and editing.
  *
@@ -32,6 +33,8 @@ type InlineCommitTextAreaProps = {
   readonly validation?: ReactNode;
   readonly isEditing: boolean;
   readonly isEditEnabled?: boolean;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly onEditRequest: (event: MouseEvent<HTMLDivElement>) => void;
   readonly onCommit: (value: string) => void;
   readonly onCancel: () => void;
@@ -45,6 +48,8 @@ export default function InlineCommitTextArea({
   isEditEnabled = true,
   saveLabel,
   validation,
+  targetRole,
+  targetName,
   onEditRequest,
   onCommit,
   onCancel,
@@ -59,7 +64,12 @@ export default function InlineCommitTextArea({
 
   if (!isEditing) {
     return (
-      <div ref={elementRef} className={styles.host}>
+      <div
+        ref={elementRef}
+        className={styles.host}
+        data-target-role={targetRole}
+        data-target-name={targetName}
+      >
         {validation}
         <InlineTextBlock
           text={displayText}
@@ -72,7 +82,12 @@ export default function InlineCommitTextArea({
   }
 
   return (
-    <div ref={elementRef} className={`${styles.host} ${styles.editingHost}`}>
+    <div
+      ref={elementRef}
+      className={`${styles.host} ${styles.editingHost}`}
+      data-target-role={targetRole}
+      data-target-name={targetName}
+    >
       {validation}
       <div
         className={styles.editor}

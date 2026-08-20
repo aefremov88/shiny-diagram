@@ -22,6 +22,8 @@ export default function LabelControls({ view }: LabelControlsProps): ReactElemen
       initialValue={view.label ?? ""}
       validate={() => []}
       ariaLabel="Relationship label"
+      targetRole="field"
+      targetName="Label"
       isLabelVisible={false}
       validationStacking={CHROME_VALIDATION_ABOVE_CONTROL_Z_INDEX}
       onCommit={(value) =>

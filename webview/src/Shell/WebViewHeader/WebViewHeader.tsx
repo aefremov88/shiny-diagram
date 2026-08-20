@@ -42,14 +42,21 @@ export default function WebViewHeader({
       <div className={styles.leftGroup}>
         <h1 className={styles.title}>Shiny Diagram</h1>
         <span className={styles.documentStatus}>
-          <StatusDot variant={status.variant} title={status.title} />
+          <StatusDot
+            variant={status.variant}
+            title={status.title}
+            targetRole={documentStatus.status === "ready" ? undefined : "status"}
+            targetName={documentStatus.status === "ready" ? undefined : ""}
+          />
           {documentName ? <span className={styles.filename}>{documentName}</span> : null}
         </span>
         {documentStatus.status === "missingAnnotations" ? (
-          <Button label="Generate" onClick={onGenerate} />
+          <Button label="Generate" targetRole="button" targetName="Generate" onClick={onGenerate} />
         ) : null}
         <Button
           label={isExporting ? "Exporting…" : "Export PNG"}
+          targetRole="button"
+          targetName={isExporting ? "Exporting…" : "Export PNG"}
           disabled={mode !== "shiny" || documentStatus.status !== "ready" || isExporting}
           title={
             mode !== "shiny" || documentStatus.status !== "ready"
@@ -66,6 +73,8 @@ export default function WebViewHeader({
             ariaLabel="Undo"
             presentation="iconOnly"
             variant="ghost"
+            targetRole="button"
+            targetName="Undo"
             onClick={() => onHistory("undo")}
           />
           <Button
@@ -73,6 +82,8 @@ export default function WebViewHeader({
             ariaLabel="Redo"
             presentation="iconOnly"
             variant="ghost"
+            targetRole="button"
+            targetName="Redo"
             onClick={() => onHistory("redo")}
           />
         </div>
@@ -85,6 +96,7 @@ export default function WebViewHeader({
           value={mode}
           onChange={onModeChange}
           ariaLabel="Diagram mode"
+          optionTargetRole="view-toggle"
         />
       </div>
     </header>

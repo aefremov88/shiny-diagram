@@ -10,7 +10,8 @@
  * choosing reports nothing: an outside press leaves focus where the click placed
  * it, while keyboard dismissal returns focus to the control; the row list is
  * keyboard-navigable. `popupWidth` sets the popup's minimum width before viewport
- * clamping, and the popup paints at the supplied `stacking` plane.
+ * clamping, and the popup paints at the supplied `stacking` plane. `targetRole`
+ * and `targetName` are transcribed onto the trigger.
  *
  * Gesture targets:
  * - `strokeSelect()` — `role=button; aria-haspopup=listbox`
@@ -42,6 +43,8 @@ type StrokeSelectProps = {
   readonly stacking: number;
   readonly disabled?: boolean;
   readonly kind: "width" | "dash";
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly onChange: (value: string | null) => void;
 };
 
@@ -54,6 +57,8 @@ export default function StrokeSelect({
   popupWidth = 148,
   stacking,
   disabled = false,
+  targetRole,
+  targetName,
   onChange,
 }: StrokeSelectProps): ReactElement {
   const [isOpen, setIsOpen] = useState(false);
@@ -128,6 +133,8 @@ export default function StrokeSelect({
         disabled={disabled}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
+        data-target-role={targetRole}
+        data-target-name={targetName}
         onClick={togglePopup}
       >
         <LineSample kind={kind} value={triggerValue} multiple={isMultiple} />

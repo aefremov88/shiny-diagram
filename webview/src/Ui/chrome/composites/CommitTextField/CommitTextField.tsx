@@ -8,7 +8,8 @@
  * `onDiscard` with its messages; backing out restores it and reports `onCancel`.
  * A failed confirmation keeps its messages visible until dismissed or the draft
  * changes. `ariaLabel` always supplies the accessible name, and validation
- * paints at the supplied `validationStacking` plane.
+ * paints at the supplied `validationStacking` plane. `targetRole` and
+ * `targetName` are transcribed onto the text input.
  *
  * Used by: class names, namespace names, and diagram style names.
  *
@@ -31,6 +32,8 @@ type CommitTextFieldProps = {
   readonly validate: (draft: string) => readonly string[];
   readonly disabled?: boolean;
   readonly isLabelVisible?: boolean;
+  readonly targetRole?: string;
+  readonly targetName?: string;
   readonly onCommit: (value: string) => void;
   readonly onDraftChange?: (value: string) => void;
   readonly onDiscard: (messages: readonly string[]) => void;
@@ -44,6 +47,8 @@ export default function CommitTextField({
   ariaLabel,
   isLabelVisible = true,
   validationStacking,
+  targetRole,
+  targetName,
   onCommit,
   onDraftChange,
   onDiscard,
@@ -69,6 +74,8 @@ export default function CommitTextField({
           disabled={disabled}
           invalid={lifecycle.messages.length > 0}
           ariaLabel={ariaLabel}
+          targetRole={targetRole}
+          targetName={targetName}
           onChange={lifecycle.onDraftChange}
           onBlur={lifecycle.onBlur}
           onKeyDown={lifecycle.onKeyDown}

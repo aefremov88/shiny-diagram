@@ -123,6 +123,8 @@ export default function NoteBox({
     <StickyNoteSurfaceFrame
       elementRef={frameRef}
       title={view.text}
+      targetRole="note"
+      targetName={view.text}
       dragging={isDragging}
       onClick={onNoteBoxClick}
     >
@@ -132,12 +134,16 @@ export default function NoteBox({
         resizeVisible={isResizeVisible}
         haloStacking={NODE_BEHIND_CONTENT_Z_INDEX}
         affordanceStacking={NODE_ABOVE_CONTENT_Z_INDEX}
+        resizeTargetRole="resize-handle"
+        toResizeTargetName={(handle) => handle}
         onResizeGrab={onResizeGrab}
       />
       <InlineCommitTextArea
         elementRef={contentRef}
         initialValue={view.text.trim()}
         displayText={view.text}
+        targetRole="text"
+        targetName=""
         isEditing={isEditing}
         isEditEnabled={isSelected}
         saveLabel="Save"

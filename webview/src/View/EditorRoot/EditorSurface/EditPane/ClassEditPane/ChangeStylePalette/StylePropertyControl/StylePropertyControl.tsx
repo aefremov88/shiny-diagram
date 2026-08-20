@@ -44,7 +44,7 @@ export default function StylePropertyControl({
         stacking={CHROME_SELECTOR_POPUP_ABOVE_CONTROL_Z_INDEX}
         targetRole="color-select"
         targetName={targetName}
-        optionTargetRole="color-option"
+        optionTargetRole="option"
         onChange={onChange}
       />
     );
@@ -58,6 +58,8 @@ export default function StylePropertyControl({
       presets={property === "strokeWidth" ? WIDTH_PRESETS : DASH_PRESETS}
       documentValues={documentValues}
       stacking={CHROME_SELECTOR_POPUP_ABOVE_CONTROL_Z_INDEX}
+      targetRole="field"
+      targetName={targetName}
       onChange={onChange}
     />
   );

@@ -91,6 +91,8 @@ export default function NamespaceBox({
       strokeWidth={strokeWidth}
       lineStyle={lineStyle}
       color={view.style?.color ?? NAMESPACE_STYLE_CONSTANTS.color}
+      targetRole="namespace"
+      targetName={view.namespaceId}
       onPressStart={onNamespacePress}
       onClick={onNamespaceClick}
     >
@@ -101,7 +103,7 @@ export default function NamespaceBox({
           onDismiss={() => setDiscardErrors([])}
         />
       ) : null}
-      <HullHeaderFrame>
+      <HullHeaderFrame targetRole="header" targetName="">
         <InlineCommitTextField
           initialValue={view.label}
           displayText={view.label}

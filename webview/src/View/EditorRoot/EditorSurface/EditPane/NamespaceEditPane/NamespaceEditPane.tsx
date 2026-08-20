@@ -73,6 +73,8 @@ export default function NamespaceEditPane({
           initialValue={selectedNamespace.label}
           validate={onNameCommit}
           ariaLabel="Namespace name"
+          targetRole="field"
+          targetName="Name"
           isLabelVisible={false}
           validationStacking={CHROME_VALIDATION_ABOVE_CONTROL_Z_INDEX}
           onCommit={() => undefined}
@@ -113,10 +115,18 @@ export default function NamespaceEditPane({
         <ControlGroup columns={2}>
           <Button
             label="Reset style"
+            targetRole="button"
+            targetName="Reset style"
             disabled={selectedNamespace.style === null}
             onClick={onReset}
           />
-          <Button label="Delete" variant="danger" onClick={onDelete} />
+          <Button
+            label="Delete"
+            targetRole="button"
+            targetName="Delete"
+            variant="danger"
+            onClick={onDelete}
+          />
         </ControlGroup>
       </PaneSection>
     </>
