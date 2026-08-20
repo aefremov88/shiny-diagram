@@ -1,4 +1,4 @@
-# Debugging Manual
+# Debugging agent manifest
 
 > **Kind:** Defining  
 > **Document state:** Maintained  

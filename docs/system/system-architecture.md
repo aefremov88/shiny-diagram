@@ -83,7 +83,6 @@ Shell ────────────────────────�
         ↓
       View ────────────────────→ ui/chrome, ui/canvas
 
-ui/{core,chrome,canvas} → shared
 shared = dependency-free Webview foundation
 ```
 

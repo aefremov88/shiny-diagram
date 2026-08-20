@@ -76,7 +76,7 @@ The interface is defined in [Editor interface](./editor-interface.md): every ele
   - visual layout persists after reopening
   - Git diff shows layout changes as text
   - AI can see and preserve user layout
-  - webview stays in sync — no re-render needed for Shiny-originated edits
+  - webview stays in sync — Shiny-originated edits skip the debounce; after VS Code accepts the edit, the host immediately sends a fresh source snapshot and the webview reruns the complete read pipeline
 
 ### 3 Edit source manually
 
@@ -110,7 +110,7 @@ The interface is defined in [Editor interface](./editor-interface.md): every ele
 
 ## Other design choices
 
-- **Class identity vs display label:** Class ID is the Mermaid class name used by relationships, notes, styles, and spatial annotations. Header editing changes the display label. Renaming class IDs is out of scope for the default editor surface.
+- **Class identity vs display label:** Class ID is the Mermaid class name used by relationships, notes, styles, and spatial annotations. Editing the primary class-box name or the edit pane's Name field renames the class ID and rewrites relationship endpoints, direct-style targets, spatial annotations, style applications, and colon-style member owners. Attached-note targets are not rewritten. The separate Label field changes only the optional display label.
 - **Namespace membership is source-backed and can be changed by containment drag:** Dragging a class fully outside a namespace boundary removes it from that namespace. Dragging a class inside a namespace boundary (even partially) adds it to that namespace.
 - **Namespace geometry is derived:** Namespaces never have position annotations. Moving a namespace moves its member classes; then namespace geometry is re-derived from member positions.
 - **Manual layout wins in Editor:** In Editor mode, `@spatial` controls layout. Mermaid `direction` remains source semantics for Autorender and a layout hint for Generate, but it does not override existing manual spatial annotations.

@@ -40,7 +40,7 @@ Prettier owns all formatting decisions: indentation, spacing, line breaks, quote
 
 ### ESLint
 
-Configuration: `eslint.config.js` in the repo root. Uses ESLint 9 flat config format.
+Configuration: `eslint.config.mjs` in the repo root. Uses ESLint 9 flat config format.
 
 Key rules:
 

@@ -1,4 +1,4 @@
-# Debugging Manual
+# Debugging workflow
 
 > **Kind:** Defining  
 > **Document state:** Maintained  

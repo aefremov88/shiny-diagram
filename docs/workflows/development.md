@@ -100,7 +100,7 @@ Checks verify the code and change nothing. Some have a paired rewrite command th
 
 ### 2.4 Boundary constraints
 
-- **Does:** verifies the Webview module boundaries defined in `docs/system/architectural-standards.md` — which layers may import which, and the protocol-file contract between webview and extension host.
+- **Does:** verifies the concrete Webview dependency graph and webview–host protocol boundaries defined in `docs/system/system-architecture.md`, according to the general structural rules in `docs/system/architectural-standards.md`.
 - **Scope:** whole repo — the import graph is global.
 - **Check:** `npm run check:boundaries`.
 - **Files:** `scripts/check-webview-boundaries.mjs`.

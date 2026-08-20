@@ -54,7 +54,7 @@ classBox("Order").member("id")
 classBox("Order").resizeHandle("e")
 
 editPane()
-editPane().field("Name")
+editPane().field("Label")
 editPane().colorSelect("Fill")
 editPane().colorSelect("Fill").option("Orange")
 ```

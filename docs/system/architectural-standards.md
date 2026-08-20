@@ -4,9 +4,9 @@
 > **Document state:** Maintained  
 > **Implementation state:** Aspirational  
 > **Last reviewed:** 2026-08-19  
-> **Scope:** Structural rules for production code in the Extension Host and Webview  
+> **Scope:** Structural rules for all code in this repository  
 
-This document defines **how production code is structured**. The concrete layers, components, and dataflows of Shiny are defined in [System Architecture](./system-architecture.md).
+This document defines **how repository code is structured**. The concrete layers, components, and dataflows of Shiny are defined in [System Architecture](./system-architecture.md).
 
 ## 1. Vocabulary
 
@@ -23,7 +23,7 @@ This document defines **how production code is structured**. The concrete layers
 
 ## 2. Layers
 
-Production code is partitioned into layers.
+Repository code is partitioned into layers.
 
 ### 2.1 Ownership
 

@@ -13,7 +13,7 @@
 
 | Path | Kind | State | Scope |
 | --- | --- | --- | --- |
-| [`docs/documentation-standards.md`](./documentation-standards.md) | Defining | Maintained | Rules and structure for all documentation in this repository — centralized doc/ folder and decentralized planes |
+| [`docs/documentation-standards.md`](./documentation-standards.md) | Defining | Maintained | Rules and structure for all documentation in this repository — centralized docs/ folder and decentralized planes |
 | [`docs/index.md`](./index.md) | Collecting | Maintained | Index of defining documents and registered planes |
 
 ## `docs/agents/`
@@ -37,7 +37,7 @@
 
 | Path | Kind | State | Scope |
 | --- | --- | --- | --- |
-| [`docs/system/architectural-standards.md`](./system/architectural-standards.md) | Defining | Maintained | Structural rules for production code in the Extension Host and Webview |
+| [`docs/system/architectural-standards.md`](./system/architectural-standards.md) | Defining | Maintained | Structural rules for all code in this repository |
 | [`docs/system/coding-standards.md`](./system/coding-standards.md) | Defining | Maintained | Rules and standards of a code: formatting, naming, annotation, syntax patterns |
 | [`docs/system/system-architecture.md`](./system/system-architecture.md) | Defining | Maintained | Concrete system topology, ownership, invariants, and read/write dataflows |
 
