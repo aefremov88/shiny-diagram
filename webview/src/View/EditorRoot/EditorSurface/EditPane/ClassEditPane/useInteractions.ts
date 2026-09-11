@@ -18,6 +18,7 @@ import {
 import { logAction } from "../../../../../shared/logging";
 
 type UseInteractionsInput = {
+  readonly onSelectionRestore: (selectionState: SelectionState) => void;
   readonly styles: readonly DeclaredStyleView[];
   readonly selectedNamedStyle: DeclaredStyleView | undefined;
   readonly selectedDirectStyle: ClassView | undefined;
@@ -43,6 +44,7 @@ type Interactions = {
 };
 
 export function useInteractions({
+  onSelectionRestore,
   styles,
   selectedNamedStyle,
   selectedDirectStyle,
@@ -57,9 +59,18 @@ export function useInteractions({
     (classId: ClassId, name: string) => {
       logAction("name-set", classId, { name });
       const result = dispatchTransaction(toClassNameCommitTransaction(classId, name));
+      if (result.status === "committed") {
+        const renamed = result.outcome.classes.renamed.find((entry) => entry.from === classId);
+        if (renamed) {
+          onSelectionRestore({
+            kind: "classes",
+            classIds: origin.classIds.map((id) => (id === renamed.from ? renamed.to : id)),
+          });
+        }
+      }
       return result.status === "rejected" ? result.errors.map((error) => error.message) : [];
     },
-    [dispatchTransaction]
+    [dispatchTransaction, onSelectionRestore, origin.classIds]
   );
 
   const onAnnotationCommit = useCallback(

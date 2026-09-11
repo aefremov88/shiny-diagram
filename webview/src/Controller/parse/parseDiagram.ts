@@ -25,7 +25,7 @@ export function parseDiagram(source: string): ParseResult {
         diagramType: diagramType.declaration,
       };
     }
-    if (diagramType?.kind !== "class") {
+    if (diagramType?.kind !== "class" && source.trim() !== "") {
       const firstSourceLine = toFirstSourceLine(source);
       return {
         status: "invalidSyntax",
@@ -44,6 +44,7 @@ export function parseDiagram(source: string): ParseResult {
     const syntaxDiagnostics = [
       ...collectUnrecognizedDiagnostics(tokens),
       ...collectInvalidClassBodyDiagnostics(tokens),
+      ...collectMisplacedNamespaceDiagnostics(tokens),
       ...collectEmptyNamespaceDiagnostics(tokens),
     ];
     if (syntaxDiagnostics.length > 0) {
@@ -118,6 +119,25 @@ export function parseDiagram(source: string): ParseResult {
       ],
     };
   }
+}
+
+function collectMisplacedNamespaceDiagnostics(tokens: readonly ParseToken[]): EditorDiagnostic[] {
+  return tokens.flatMap((token) => {
+    if (token.type !== "namespace") return [];
+    const children = token.blockTokens ?? [];
+    const misplaced = children.filter(
+      (child) => !["classDeclaration", "namespace", "blank", "directive"].includes(child.type)
+    );
+    return [
+      ...misplaced.map((child) => ({
+        kind: "syntaxError" as const,
+        message: "Expected a class or namespace declaration inside the namespace",
+        line: child.lineNumber + 1,
+        fragment: child.raw.trim(),
+      })),
+      ...collectMisplacedNamespaceDiagnostics(children),
+    ];
+  });
 }
 
 function collectInvalidClassBodyDiagnostics(tokens: readonly ParseToken[]): EditorDiagnostic[] {

@@ -70,6 +70,9 @@ export function resolveStatementAnchor(
   }
 
   const header = resolveBlockRef(anchor.block, provenance).header;
+  if (anchor.block.kind === "diagram" && sourceText.trim() === "") {
+    return { side: "above", position: header.start, indent: "" };
+  }
   return {
     side: "after",
     position: header.end,

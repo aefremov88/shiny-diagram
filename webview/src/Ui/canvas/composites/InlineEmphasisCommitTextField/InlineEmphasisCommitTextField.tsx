@@ -96,6 +96,8 @@ export default function InlineEmphasisCommitTextField({
       data-target-name={targetName}
       onPointerDown={(event) => event.stopPropagation()}
       onMouseDown={(event) => event.stopPropagation()}
+      onClick={(event) => event.stopPropagation()}
+      onDoubleClick={(event) => event.stopPropagation()}
     >
       <div
         className={styles.toolbar}

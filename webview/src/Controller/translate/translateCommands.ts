@@ -110,6 +110,13 @@ export function translateCommands(
     sourceText
   );
 
+  if (sourceText.trim() === "" && intents.length > 0) {
+    intents.unshift({
+      kind: "insertStatement",
+      payload: "classDiagram",
+      anchor: { kind: "atBlockOpening", block: { kind: "diagram" } },
+    });
+  }
   return { intents, outcome: context.toTransactionOutcome() };
 }
 

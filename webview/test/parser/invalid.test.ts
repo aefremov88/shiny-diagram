@@ -10,12 +10,37 @@ const parse = (name: string) =>
 
 describe("invalid Mermaid handling", () => {
   it("unknown statement", () => expect(parse("unknown-statement").status).toBe("invalidSyntax"));
-  it.fails("misplaced statement", () =>
-    expect(parse("misplaced-statement").status).toBe("invalidSyntax")
-  );
-  it.fails("malformed statement", () =>
-    expect(parse("malformed-statement").status).toBe("invalidSyntax")
-  );
+  it("misplaced statement", () => {
+    expect(parse("misplaced-statement").status).toBe("invalidSyntax");
+    for (const statement of [
+      "A --> B",
+      "classDef warning fill:#f00",
+      "style A fill:#fff",
+      "class A:::warning",
+      "A : +name",
+      'note for A "text"',
+      "direction LR",
+      "%% @spatial:A x=0 y=0 w=10 h=10",
+    ]) {
+      for (const source of [
+        `classDiagram\nnamespace Domain {\n${statement}\n}\n`,
+        `classDiagram\nnamespace Domain {\nnamespace Child {\n${statement}\n}\n}\n`,
+      ])
+        expect(parseDiagram(source).status, source).toBe("invalidSyntax");
+    }
+  });
+  it("malformed statement", () => {
+    expect(parse("malformed-statement").status).toBe("invalidSyntax");
+    for (const source of [
+      "classDiagram\nclass Broken {\n",
+      "classDiagram\nnamespace Domain {\nclass A\n",
+      "classDiagram\nnamespace Domain {\nclass A {\n}\n",
+      "classDiagram\n}\nclass A\n",
+      "classDiagram\nclass A {\n}\n}\nclass B\n",
+      'classDiagram\nA "1 --> B\n',
+    ])
+      expect(parseDiagram(source).status, source).toBe("invalidSyntax");
+  });
   it("lollipop interface statement", () => {
     const source = readFileSync(
       new URL("../fixtures/lollipop-interface-statement.mmd", import.meta.url),

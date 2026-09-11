@@ -37,14 +37,15 @@ export type ParseToken = {
  * Tokenizes Mermaid source while retaining source lines and nested block structure.
  */
 export function tokenize(source: string): ParseToken[] {
-  const rawLines = source.split("\n");
-  return tokenizeLines(rawLines, 0, rawLines.length).nodes;
+  const rawLines = source.split(/\r?\n/);
+  return tokenizeLines(rawLines, 0, rawLines.length, false).nodes;
 }
 
 function tokenizeLines(
   rawLines: string[],
   start: number,
-  end: number
+  end: number,
+  insideBlock: boolean
 ): { nodes: ParseToken[]; nextIndex: number } {
   const nodes: ParseToken[] = [];
   let i = start;
@@ -52,26 +53,27 @@ function tokenizeLines(
   while (i < end) {
     const raw = rawLines[i];
 
-    if (/^\s*\}\s*$/.test(raw)) {
+    if (insideBlock && /^\s*\}\s*$/.test(raw)) {
       break;
     }
 
     const lineNumber = i;
     const type = detectLineType(raw);
+    const structuralText = raw.replace(/"(?:\\.|[^"\\])*"|`[^`]*`/g, "");
 
-    if ((type === "classDeclaration" || type === "namespace") && raw.includes("{")) {
-      const closesOnSameLine = /\{[^}]*\}/.test(raw);
+    if ((type === "classDeclaration" || type === "namespace") && structuralText.includes("{")) {
+      const closesOnSameLine = /\{[^}]*\}/.test(structuralText);
       if (closesOnSameLine) {
         nodes.push({ lineNumber, endLine: lineNumber, raw, fullRaw: raw, type, blockTokens: [] });
         i++;
       } else {
-        const { nodes: blockTokens, nextIndex } = tokenizeLines(rawLines, i + 1, end);
+        const { nodes: blockTokens, nextIndex } = tokenizeLines(rawLines, i + 1, end, true);
         nodes.push({
           lineNumber,
-          endLine: nextIndex,
+          endLine: Math.min(nextIndex, end - 1),
           raw,
           fullRaw: rawLines.slice(lineNumber, nextIndex + 1).join("\n"),
-          type,
+          type: nextIndex < end ? type : "unrecognized",
           blockTokens,
         });
         i = nextIndex + 1;

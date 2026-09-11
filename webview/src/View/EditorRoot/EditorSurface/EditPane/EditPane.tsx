@@ -113,6 +113,7 @@ export default function EditPane({
         <ClassEditPane
           view={view}
           selectionState={editPaneScenario.selectionState}
+          onSelectionRestore={onSelectionRestore}
           onStyleSelect={onStyleSelect}
           onStyleCreateCommitted={onStyleCreateCommitted}
         />

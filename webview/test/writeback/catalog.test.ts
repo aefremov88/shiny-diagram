@@ -463,13 +463,39 @@ const cases: readonly Case[] = [
 describe("write-back catalog", () => {
   it.each(cases)("$title", ({ command, targets, verify }) => {
     const parsed = parseForCommand(source);
-    expectWriteback(command(parsed), source, {
-      targetLines: targets,
-      assertGraph: (graph, result) => {
-        expect(result).not.toBe(source);
-        verify?.(graph, result);
-      },
-    });
+    for (const input of [source, source.replace(/\n/g, "\r\n")]) {
+      expectWriteback(command(parsed), input, {
+        targetLines: targets,
+        assertGraph: (graph, result) => {
+          expect(result).not.toBe(input);
+          verify?.(graph, result);
+        },
+      });
+    }
+    const create = command(parsed);
+    if (
+      create.type === "class.create" ||
+      create.type === "note.create" ||
+      create.type === "style.definition.create"
+    ) {
+      const initialCommand =
+        create.type === "style.definition.create" ? { ...create, applyToClassIds: [] } : create;
+      for (const blank of ["", "\n", " \r\n\t\r\n"]) {
+        expectWriteback(initialCommand, blank, {
+          targetLines: [],
+          assertGraph: (graph, result) => {
+            expect(result.startsWith("classDiagram")).toBe(true);
+            expect(result.match(/classDiagram/g)).toHaveLength(1);
+            expect(result.endsWith(blank)).toBe(true);
+            expect(parseDiagram(result).status).toBe("ready");
+            if (create.type === "class.create") expect(graph.classes.size).toBe(1);
+            if (create.type === "note.create") expect(graph.notes.size).toBe(1);
+            if (create.type === "style.definition.create")
+              expect(graph.styleDefinitions.size).toBe(1);
+          },
+        });
+      }
+    }
   });
 });
 

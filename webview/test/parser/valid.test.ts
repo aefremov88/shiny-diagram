@@ -20,12 +20,22 @@ describe("valid Mermaid is valid Shiny", () => {
       expect(result.provenance.diagram.configDirectives).toHaveLength(1);
     }
   });
-  it("diagram statement", () =>
-    expect(graph("diagram-statement").diagram.kind).toBe("classDiagram"));
+  it("diagram statement", () => {
+    expect(graph("diagram-statement").diagram.kind).toBe("classDiagram");
+    for (const blank of ["", "\n", " \r\n\t\r\n"]) {
+      const parsed = parseDiagram(blank);
+      expect(parsed.status).toBe("ready");
+      if (parsed.status === "ready") expect(parsed.graph.classes.size).toBe(0);
+    }
+  });
   it("direction statement", () =>
     expect(graph("direction-statement").diagram.direction).toBe("LR"));
-  it("class declaration statement", () =>
-    expect(graph("class-declaration-statement").classes.has(toClassId("User"))).toBe(true));
+  it("class declaration statement", () => {
+    expect(graph("class-declaration-statement").classes.has(toClassId("User"))).toBe(true);
+    for (const label of ["Opening { brace", "Closing } brace", "{braces}"]) {
+      expect(parseDiagram(`classDiagram\nclass A["${label}"]\n`).status).toBe("missingAnnotations");
+    }
+  });
   it("namespace declaration statement", () =>
     expect(graph("namespace-declaration-statement").namespaces.has(toNamespaceId("Domain"))).toBe(
       true

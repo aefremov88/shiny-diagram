@@ -23,6 +23,7 @@ import { toDocumentColors, toStrokeSelectUIProps } from "./childProps";
 type ClassEditPaneProps = {
   readonly view: Pick<DiagramView, "classes" | "styles">;
   readonly selectionState: Extract<SelectionState, { readonly kind: "classes" }>;
+  readonly onSelectionRestore: (selectionState: SelectionState) => void;
   readonly onStyleSelect: (
     styleDefId: StyleDefId,
     origin: Extract<SelectionState, { readonly kind: "classes" }>
@@ -36,6 +37,7 @@ type ClassEditPaneProps = {
 export default function ClassEditPane({
   view,
   selectionState,
+  onSelectionRestore,
   onStyleSelect,
   onStyleCreateCommitted,
 }: ClassEditPaneProps): ReactElement {
@@ -72,6 +74,7 @@ export default function ClassEditPane({
 
   // Event handler props derivation
   const { onNameCommit, onAnnotationCommit, onLabelCommit, onStyleAction } = useInteractions({
+    onSelectionRestore,
     styles: declaredStyles,
     selectedNamedStyle,
     selectedDirectStyle,

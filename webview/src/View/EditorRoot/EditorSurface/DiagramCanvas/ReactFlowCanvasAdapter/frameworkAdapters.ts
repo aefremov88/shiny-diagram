@@ -199,7 +199,13 @@ export function toClassBoxNodeDescriptors(
         zIndex: CLASS_NODE_Z_INDEX,
         width: placement.w,
         height: placement.h,
-        style: { width: placement.w, height: placement.h, overflow: "visible" },
+        style: {
+          width: placement.w,
+          height: placement.h,
+          overflow: "visible",
+          // Inline editors remain clickable when React Flow disables dragging.
+          ...(editingState.kind === "none" ? {} : { pointerEvents: "auto" as const }),
+        },
       },
     ];
   });
