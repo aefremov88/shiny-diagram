@@ -29,5 +29,13 @@ function encodeName(arguments_: readonly string[]): string {
 }
 
 function cssString(value: string): string {
-  return JSON.stringify(value).replaceAll("\\u0000", "�");
+  const escaped = Array.from(value, (character) => {
+    const code = character.charCodeAt(0);
+    if (code === 0) return "�";
+    if (code < 32 || code === 127 || character === '"' || character === "\\") {
+      return `\\${code.toString(16)} `;
+    }
+    return character;
+  }).join("");
+  return `"${escaped}"`;
 }

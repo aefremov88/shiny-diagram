@@ -423,7 +423,12 @@ export function toNoteBoxNodeDescriptors(
         zIndex: NOTE_NODE_Z_INDEX,
         width: placement.w,
         height: placement.h,
-        style: { width: placement.w, height: placement.h, overflow: "visible" },
+        style: {
+          width: placement.w,
+          height: placement.h,
+          overflow: "visible",
+          pointerEvents: "auto",
+        },
       },
     ];
   });
