@@ -32,9 +32,10 @@ function cssString(value: string): string {
   const escaped = Array.from(value, (character) => {
     const code = character.charCodeAt(0);
     if (code === 0) return "�";
-    if (code < 32 || code === 127 || character === '"' || character === "\\") {
+    if (code < 32 || code === 127) {
       return `\\${code.toString(16)} `;
     }
+    if (character === '"' || character === "\\") return `\\${character}`;
     return character;
   }).join("");
   return `"${escaped}"`;
